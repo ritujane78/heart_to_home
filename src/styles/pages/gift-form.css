@@ -1,0 +1,90 @@
+.gift-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.75fr);
+  gap: 22px;
+  align-items: start;
+  margin-top: 24px;
+}
+
+.gift-form,
+.payment-panel {
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #dfe1d7;
+  border-radius: 8px;
+  box-shadow: 0 18px 50px rgba(29, 38, 50, 0.08);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.form-grid label {
+  display: grid;
+  gap: 8px;
+}
+
+.form-grid .wide {
+  grid-column: 1 / -1;
+}
+
+.receipt {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.receipt div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e1e4dc;
+}
+
+.receipt-total {
+  font-size: 1.12rem;
+}
+
+.payment-options {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.payment-options label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #dfe1d7;
+  border-radius: 8px;
+}
+
+.payment-options label.active {
+  border-color: #1f6f5c;
+  background: #edf7f2;
+}
+
+.payment-options input {
+  width: auto;
+}
+
+.payment-options svg {
+  color: #1f6f5c;
+}
+
+@media (max-width: 920px) {
+  .gift-flow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

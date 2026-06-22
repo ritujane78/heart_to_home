@@ -1,0 +1,124 @@
+.provider-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
+  color: #163b34;
+  background: #dff0e9;
+  border: 1px solid #b7d9ca;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.service-card {
+  position: relative;
+  display: flex;
+  min-height: 252px;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: #ffffff;
+  border: 2px solid #dfe1d7;
+  border-radius: 8px;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.service-card:hover,
+.service-card.selected {
+  border-color: #1f6f5c;
+  box-shadow: 0 18px 50px rgba(29, 38, 50, 0.12);
+  transform: translateY(-2px);
+}
+
+.service-card input {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  right: 16px;
+  bottom: 16px;
+  accent-color: #1f6f5c;
+}
+
+.service-card p,
+.selection-summary p {
+  color: #65707b;
+  line-height: 1.55;
+}
+
+.service-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+
+.service-card-top span {
+  padding: 4px 9px;
+  color: #ffffff;
+  background: #1f6f5c;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.service-card h2 {
+  margin: 2px 0 0;
+  font-size: 1.25rem;
+}
+
+.selection-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  margin: 22px 0;
+  padding: 18px 20px;
+  background: #172a35;
+  color: #ffffff;
+  border-radius: 8px;
+}
+
+.selection-summary div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+
+.selection-summary span {
+  color: #a9f0d9;
+  font-weight: 800;
+}
+
+.selection-summary p {
+  margin: 0;
+  color: #dfeee9;
+}
+
+@media (max-width: 920px) {
+  .selection-summary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .service-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .provider-banner {
+    align-items: flex-start;
+  }
+}

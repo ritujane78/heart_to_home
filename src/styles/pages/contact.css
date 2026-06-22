@@ -1,0 +1,42 @@
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.contact-grid article {
+  display: grid;
+  gap: 10px;
+  min-height: 180px;
+  padding: 26px;
+  background: #ffffff;
+  border: 1px solid #dfe1d7;
+  border-radius: 8px;
+}
+
+.contact-grid span {
+  color: #65707b;
+  line-height: 1.55;
+}
+
+.contact-grid svg {
+  width: 34px;
+  height: 34px;
+  color: #1f6f5c;
+}
+
+.contact-grid strong {
+  font-size: 1.16rem;
+}
+
+@media (max-width: 920px) {
+  .contact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
