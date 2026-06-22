@@ -68,11 +68,21 @@ button:disabled {
   font-weight: 800;
   padding: 0;
 }
+.brand-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
 
-.brand svg {
-  width: 30px;
-  height: 30px;
-  color: #d44848;
+.brand {
+  gap: 12px;
+}
+
+.brand span {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1e5146;
 }
 
 .tabs {
