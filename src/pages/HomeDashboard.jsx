@@ -45,7 +45,7 @@ function HomeDashboard({ selectedCount, onBrowse, onGiftNow }) {
       <section className="trust-section">
         <div>
           <p className="eyebrow">Why trust this platform?</p>
-          <h2>Care you can follow from abroad</h2>
+          <h2>Care you can Follow from abroad</h2>
         </div>
         <div className="trust-grid">
           {trustItems.map((item) => (

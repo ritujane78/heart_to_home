@@ -1,4 +1,5 @@
 import { Mail, Phone, UserRound } from 'lucide-react';
+import logo from '../assets/images/logo.png';
 
 function ContactPage() {
   return (
@@ -6,7 +7,10 @@ function ContactPage() {
       <div className="section-heading">
         <div>
           <p className="eyebrow">Contact Us</p>
-          <h1>Heart to Home support</h1>
+          <h3>
+            <img src={logo} alt="Heart to Home" className="brand-logo" />
+            support
+          </h3>
         </div>
       </div>
       <div className="contact-grid">

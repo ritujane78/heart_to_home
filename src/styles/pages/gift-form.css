@@ -76,6 +76,76 @@
 .payment-options svg {
   color: #1f6f5c;
 }
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.form-section h3 {
+  margin: 0 0 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e9e4;
+  color: #1f6f5c;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.form-grid label,
+.message-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-grid label span,
+.message-field span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #50655d;
+}
+
+.form-grid input,
+.form-grid select,
+.message-field textarea {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border: 1px solid #d8dfda;
+  border-radius: 10px;
+  background: #fafcfb;
+  font-size: 0.95rem;
+  color: #1d2632;
+  transition: all 0.25s ease;
+}
+
+.form-grid input,
+.form-grid select {
+  height: 50px;
+}
+
+.message-field textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.form-grid input:focus,
+.form-grid select:focus,
+.message-field textarea:focus {
+  outline: none;
+  border-color: #1f6f5c;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(31, 111, 92, 0.12);
+}
+
+.form-grid input::placeholder,
+.message-field textarea::placeholder {
+  color: #9aa59f;
+}
+
 
 @media (max-width: 920px) {
   .gift-flow {

@@ -29,7 +29,7 @@ function ServicesPage({
       <div className="section-heading">
         <div>
           <p className="eyebrow">Browse Services</p>
-          <h1>Select health services to gift</h1>
+          <h2>Select health services to gift</h2>
         </div>
         <button className="primary-action compact" type="button" onClick={onGiftNow} disabled={selectedIds.length === 0}>
           <Gift aria-hidden="true" />

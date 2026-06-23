@@ -1,9 +1,5 @@
 export const serviceProviders = [
   {
-    id: 'kathmandu-care',
-    name: 'Kathmandu Care Clinic'
-  },
-  {
     id: 'clinic-center-a',
     name: 'Clinic Center A'
   },
@@ -21,7 +17,7 @@ export const services = [
   {
     id: 'hs1',
     code: 'HS1',
-    providerId: 'kathmandu-care',
+    providerId: 'clinic-center-a',
     title: 'General Health Checkup',
     description: 'Vitals, physician consultation, basic blood profile, and a written health summary.',
     price: 8500

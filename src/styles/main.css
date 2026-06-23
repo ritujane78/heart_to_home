@@ -1,7 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Comfortaa:wght@300..700&family=Dosis:wght@200..800&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Lilita+One&family=Outfit:wght@100..900&display=swap');
 :root {
   color: #18212f;
   background: #f7f7f2;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Comfortaa", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -68,8 +69,9 @@ h1 {
 
 h2 {
   margin-bottom: 16px;
-  font-size: clamp(1.45rem, 3vw, 2.1rem);
+  font-size: clamp(1.45rem, 3vw, 1.8rem);
   letter-spacing: 0;
+  color: #18212f;
 }
 
 h3 {
@@ -119,10 +121,13 @@ main {
   flex-shrink: 0;
 }
 
-.brand span {
+.brand span ,
+.section-heading span{
   font-size: 1.4rem;
   font-weight: 800;
   color: #1e5146;
+  font-family: "Bebas Neue", sans-serif;
+  letter-spacing: 0.3rem;
 }
 
 .eyebrow {
@@ -145,6 +150,16 @@ main {
 .section-heading h1,
 .section-heading h2 {
   margin-bottom: 0;
+  /* font-family: "Bebas Neue", sans-serif; */
+  letter-spacing: 0.3rem;
+  font-size: 3rem;
+}
+.section-heading h3 {
+  margin-bottom: 0;
+  font-size: 2rem;
+  display: flex;
+  text-transform: uppercase;
+  align-items: center;
 }
 
 .home-grid,
@@ -173,5 +188,6 @@ main {
 
   .brand span {
     font-size: 1rem;
+    font-family: "Bebas Neue", sans-serif;
   }
 }
