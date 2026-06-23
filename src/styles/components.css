@@ -96,16 +96,18 @@
   .tabs {
     width: 100%;
     overflow-x: auto;
-  }
+  }     
 
   .tab {
     flex: 1 0 auto;
+    font-size: smaller;
   }
 }
 
 @media (max-width: 620px) {
   .tab {
     padding: 0 10px;
+    font-size: smaller;
   }
 
   .primary-action,

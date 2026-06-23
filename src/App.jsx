@@ -6,7 +6,7 @@ import { initialGift, serviceProviders, services } from './data/services.js';
 import ContactPage from './pages/ContactPage.jsx';
 import HomeDashboard from './pages/HomeDashboard.jsx';
 import ServicesPage from './pages/ServicesPage.jsx';
-
+    
 function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [selectedIds, setSelectedIds] = useState([]);

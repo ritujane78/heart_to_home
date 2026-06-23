@@ -165,7 +165,7 @@ main {
 .home-grid,
 .services-layout,
 .contact-page {
-  width: min(1180px, 100%);
+  width: mi (1180px, 100%);
   margin: 0 auto;
 }
 
@@ -174,6 +174,9 @@ main {
   .section-heading {
     align-items: stretch;
     flex-direction: column;
+  }
+  .section-heading h2 {
+    font-size: medium;
   }
 }
 
@@ -189,5 +192,8 @@ main {
   .brand span {
     font-size: 1rem;
     font-family: "Bebas Neue", sans-serif;
+  }
+  .section-heading h2 {
+    font-size: medium;
   }
 }
