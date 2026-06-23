@@ -6,11 +6,9 @@ function ContactPage() {
     <section className="contact-page">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Contact Us</p>
-          <h3>
-            <img src={logo} alt="Heart to Home" className="brand-logo" />
-            support
-          </h3>
+          <p className="eyebrow">
+              Contact Us
+            </p>
         </div>
       </div>
       <div className="contact-grid">

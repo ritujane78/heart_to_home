@@ -168,6 +168,26 @@ main {
   width: mi (1180px, 100%);
   margin: 0 auto;
 }
+footer {
+    display: flex;
+    width:100%;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem ;
+    background-color: #1e5146;
+}
+footer p{
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: #ddd;
+    margin: 0;
+    line-height: 1;
+}
+.copyright span {
+    font-family: "Bebas Neue",sans-serif;
+    font-size: 1rem;
+}
 
 @media (max-width: 920px) {
   .topbar,

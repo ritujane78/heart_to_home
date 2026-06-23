@@ -6,7 +6,7 @@ import { initialGift, serviceProviders, services } from './data/services.js';
 import ContactPage from './pages/ContactPage.jsx';
 import HomeDashboard from './pages/HomeDashboard.jsx';
 import ServicesPage from './pages/ServicesPage.jsx';
-    
+
 function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [selectedIds, setSelectedIds] = useState([]);
@@ -123,6 +123,13 @@ function App() {
 
         {activeTab === 'contact' && <ContactPage />}
       </main>
+            <footer>
+        <p className="copyright">
+          <span>Heart To Home</span>
+        </p>
+        <p>&copy; All Rights Reserved by Anisha, Aparna and Ritu.
+        </p>
+      </footer>
     </div>
   );
 }
