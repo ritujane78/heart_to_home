@@ -125,7 +125,8 @@ function App() {
       </main>
             <footer>
         <p className="copyright">
-          <span>Heart To Home</span>
+          {/* <span>Heart To Home</span> */}
+          {/* <img src={logo} alt="Heart to Home" className="brand-logo" /> */}
         </p>
         <p>&copy; All Rights Reserved by Anisha, Aparna and Ritu.
         </p>
