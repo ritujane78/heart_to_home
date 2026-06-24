@@ -123,13 +123,9 @@ function App() {
 
         {activeTab === 'contact' && <ContactPage />}
       </main>
-            <footer>
-        <p className="copyright">
-          {/* <span>Heart To Home</span> */}
-          {/* <img src={logo} alt="Heart to Home" className="brand-logo" /> */}
-        </p>
-        <p>&copy; All Rights Reserved by Anisha, Aparna and Ritu.
-        </p>
+        <footer>
+          <p>&copy; All Rights Reserved by Anisha, Aparna and Ritu.</p>
+          <img src={logo} alt="Heart to Home" />
       </footer>
     </div>
   );
