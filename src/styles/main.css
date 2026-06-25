@@ -50,7 +50,26 @@ body {
   color: #1f6f5c;
   font-weight: 900;
 }
+.service-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: #eef8f4;
+  border: 1px solid #b8dfd0;
+  border-radius: 999px;
+  color: #1f6f5c;
+  font-size: 0.9rem;
+  font-weight: 600;
+  width: fit-content;
+}
 
+.service-location svg {
+  color: #1f6f5c;
+  width: 16px;
+  height: 16px;
+}
 
 button,
 input,
