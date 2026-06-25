@@ -6,6 +6,7 @@ import { initialGift, serviceProviders, services } from './data/services.js';
 import ContactPage from './pages/ContactPage.jsx';
 import HomeDashboard from './pages/HomeDashboard.jsx';
 import ServicesPage from './pages/ServicesPage.jsx';
+import DevelopmentBanner from './components/DevelopmentBanner.jsx';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -93,6 +94,7 @@ function App() {
       </header>
 
       <main>
+        <DevelopmentBanner />
         {activeTab === 'home' && (
           <HomeDashboard
             selectedCount={selectedIds.length}
@@ -124,8 +126,9 @@ function App() {
         {activeTab === 'contact' && <ContactPage />}
       </main>
         <footer>
-          <p>&copy; All Rights Reserved by Anisha, Aparna and Ritu.</p>
+          <p>&copy; All Rights Reserved by </p>
           <img src={logo} alt="Heart to Home" />
+          <span>Heart To Home</span>
       </footer>
     </div>
   );

@@ -17,6 +17,41 @@ body {
   min-height: 100vh;
 }
 
+.development-banner {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 18px 20px;
+  color: #24313f;
+  background: #fff6df;
+  border: 1px solid #ead7a8;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.development-banner svg {
+  flex: 0 0 auto;
+  color: #c05242;
+}
+
+.development-banner strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.development-banner p {
+  margin-bottom: 0;
+  color: #5c6470;
+  line-height: 1.6;
+}
+
+.development-banner a {
+  color: #1f6f5c;
+  font-weight: 900;
+}
+
+
 button,
 input,
 select,
@@ -135,7 +170,7 @@ main {
 
 .eyebrow {
   margin: 0 0 10px;
-  color: #c05242;
+  color: #c05242  ;
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0;
@@ -149,9 +184,12 @@ main {
   align-items: end;
   margin-bottom: 22px;
 }
-
-.section-heading h1,
 .section-heading h2 {
+  margin-bottom: 0;
+  font-size: 3rem;
+  letter-spacing: 0.2rem;
+}
+.section-heading h1 {
   margin-bottom: 0;
   /* font-family: "Bebas Neue", sans-serif; */
   letter-spacing: 0.3rem;
@@ -178,6 +216,7 @@ footer {
     align-items: center;
     justify-content: center;
     background-color: #1e5146;
+    color: #ddd;
 }
 
 footer p {
@@ -185,7 +224,6 @@ footer p {
     padding: 0;
     font-size: 0.8rem;
     font-weight: 300;
-    color: #ddd;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -195,6 +233,12 @@ footer p {
 footer img{
   width: 3rem;
   height: 3rem;
+}
+footer span{
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: "Bebas Neue", sans-serif;
+  letter-spacing: 0.3rem;
 }
 
 @media (max-width: 920px) {

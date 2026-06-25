@@ -31,7 +31,8 @@ function ServicesPage({
           <p className="eyebrow">Browse Services</p>
           <h2>Select health services to gift</h2>
         </div>
-        <button className="primary-action compact" type="button" onClick={onGiftNow} disabled={selectedIds.length === 0}>
+        {/* disabled={selectedIds.length === 0} */}
+        <button className="primary-action compact" type="button" onClick={onGiftNow} disabled={true}>
           <Gift aria-hidden="true" />
           Gift Now
         </button>
