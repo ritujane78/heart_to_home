@@ -32,11 +32,20 @@ function ServicesPage({
           <h2>Select health services to gift</h2>
         </div>
         {/* disabled={selectedIds.length === 0} */}
-        <button className="primary-action compact" type="button" onClick={onGiftNow} disabled={true}>
+        <div className="button-wrapper">
+        <span className="coming-soon-tag">COMING SOON</span>
+
+        <button
+          className="primary-action compact"
+          type="button"
+          onClick={onGiftNow}
+          disabled={true}
+        >
           <Gift aria-hidden="true" />
           Gift Now
         </button>
       </div>
+    </div>
 
       <div className="service-grid">
         {services.map((service) => (

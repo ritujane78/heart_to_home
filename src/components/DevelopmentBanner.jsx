@@ -18,7 +18,7 @@ const whatsappLink = 'https://wa.me/9779800000000';
         </p>
         <p className="service-location">
             <MapPin size={16} />
-            Currently available only in <strong>Kathmandu</strong>.
+            Currently available only in Kathmandu.
         </p>
         </div>
     </div>
