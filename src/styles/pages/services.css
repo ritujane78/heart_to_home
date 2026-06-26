@@ -220,17 +220,9 @@
   }
 
   .currency-select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     background-color: #fff;
     outline: none;
-
-  /* Hide old IE arrow */
-  .currency-select::-ms-expand {
-    display: none;
   }
-
   .service-search input::placeholder {
     font-size: 0.8rem;
     color: #163b34;
@@ -238,20 +230,17 @@
   .selection-summary {
     align-items: stretch;
     flex-direction: column;
+  } 
+  .service-search input:focus,
+  .service-search input:active {
+    outline: none;
+    box-shadow: none;
   }
-  
-.service-search input:focus,
-.service-search input:active {
-  outline: none;
-  box-shadow: none;
-}
-
-.service-search input:focus::placeholder,
-.service-search input:active::placeholder {
-  color: transparent;
-  opacity: 0;
-}
-
+  .service-search input:focus::placeholder,
+  .service-search input:active::placeholder {
+    color: transparent;
+    opacity: 0;
+  }
   .service-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -266,17 +255,17 @@
     align-items: flex-start;
   }
   .coming-soon-tag {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  top: -10px;
-  right: 2px;
-  font-size: 1.2rem !important;
-  font-weight: bolder;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #163b34 !important; 
-  z-index: 2;
-  pointer-events: none;
-}
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: -10px;
+    right: 2px;
+    font-size: 1.2rem !important;
+    font-weight: bolder;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #163b34 !important; 
+    z-index: 2;
+    pointer-events: none;
+  }
 }
