@@ -6,6 +6,7 @@
     giftDetails,
     selectedServices,
     total,
+    formatMoney,
     paymentReady,
     paymentMethod,
     onChange,
@@ -121,12 +122,12 @@
               {selectedServices.map((service) => (
                 <div key={service.id}>
                   <span>{service.code} - {service.title}</span>
-                  <strong>NPR {service.price.toLocaleString()}</strong>
+                  <strong>{formatMoney(service.price)}</strong>
                 </div>
               ))}
               <div className="receipt-total">
                 <span>Total to pay</span>
-                <strong>NPR {total.toLocaleString()}</strong>
+                <strong>{formatMoney(total)}</strong>
               </div>
             </div>
             <div className="payment-options" role="radiogroup" aria-label="Payment options">

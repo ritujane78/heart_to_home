@@ -2,11 +2,19 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Home, Mail, Stethoscope } from 'lucide-react';
 import logo from './assets/images/logo.png';
 import TabButton from './components/TabButton.jsx';
+import {
+  DEFAULT_CURRENCY,
+  fallbackExchangeRates,
+  formatConvertedAmount,
+  supportedCurrencies
+} from './data/currencies.js';
 import { initialGift, serviceProviders, services } from './data/services.js';
 import ContactPage from './pages/ContactPage.jsx';
 import HomeDashboard from './pages/HomeDashboard.jsx';
 import ServicesPage from './pages/ServicesPage.jsx';
 import DevelopmentBanner from './components/DevelopmentBanner.jsx';
+
+const EXCHANGE_RATE_URL = 'https://open.er-api.com/v6/latest/NPR';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -15,6 +23,9 @@ function App() {
   const [giftStarted, setGiftStarted] = useState(false);
   const [paymentReady, setPaymentReady] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('card');
+  const [selectedCurrency, setSelectedCurrency] = useState(DEFAULT_CURRENCY);
+  const [exchangeRates, setExchangeRates] = useState(fallbackExchangeRates);
+  const [exchangeRateStatus, setExchangeRateStatus] = useState('loading');
   const giftFormRef = useRef(null);
 
   const selectedServices = useMemo(
@@ -22,6 +33,10 @@ function App() {
     [selectedIds]
   );
   const total = selectedServices.reduce((sum, service) => sum + service.price, 0);
+  const formatMoney = useMemo(
+    () => (amountNpr) => formatConvertedAmount(amountNpr, selectedCurrency, exchangeRates),
+    [exchangeRates, selectedCurrency]
+  );
   const serviceProviderNames = useMemo(() => {
     const providerNamesById = new Map(
       serviceProviders.map((provider) => [provider.id, provider.name])
@@ -31,6 +46,48 @@ function App() {
     );
 
     return [...uniqueProviderNames].filter(Boolean).join(' | ');
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function loadExchangeRates() {
+      try {
+        setExchangeRateStatus('loading');
+        const response = await fetch(EXCHANGE_RATE_URL);
+
+        if (!response.ok) {
+          throw new Error('Exchange rate request failed');
+        }
+
+        const data = await response.json();
+
+        if (!data.rates) {
+          throw new Error('Exchange rate response was missing rates');
+        }
+
+        const nextRates = supportedCurrencies.reduce((rates, currency) => {
+          rates[currency.code] = Number(data.rates[currency.code] ?? fallbackExchangeRates[currency.code]);
+          return rates;
+        }, {});
+
+        if (isActive) {
+          setExchangeRates({ ...fallbackExchangeRates, ...nextRates, NPR: 1 });
+          setExchangeRateStatus('live');
+        }
+      } catch {
+        if (isActive) {
+          setExchangeRates(fallbackExchangeRates);
+          setExchangeRateStatus('fallback');
+        }
+      }
+    }
+
+    loadExchangeRates();
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -109,12 +166,17 @@ function App() {
             selectedServices={selectedServices}
             serviceProviderNames={serviceProviderNames}
             total={total}
+            selectedCurrency={selectedCurrency}
+            currencies={supportedCurrencies}
+            exchangeRateStatus={exchangeRateStatus}
+            formatMoney={formatMoney}
             giftDetails={giftDetails}
             giftStarted={giftStarted}
             paymentReady={paymentReady}
             paymentMethod={paymentMethod}
             giftFormRef={giftFormRef}
             onToggle={toggleService}
+            onCurrencyChange={setSelectedCurrency}
             onGiftNow={startGiftFlow}
             onGiftDetailsChange={updateGiftDetails}
             onSubmitGift={submitGift}
