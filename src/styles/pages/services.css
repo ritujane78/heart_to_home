@@ -24,6 +24,20 @@
   width: min(420px, 100%);
 }
 
+/* Remove the default focus outline */
+.service-search input:focus,
+.service-search input:active {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Hide the placeholder when focused */
+.service-search input:focus::placeholder,
+.service-search input:active::placeholder {
+  color: transparent;
+  opacity: 0;
+}
+
 .service-search span {
   color: #163b34;
   font-weight: 800;
@@ -191,11 +205,33 @@
   .currency-toolbar {
     justify-content: space-between;
   }
-  .currency-select{
+
+  .currency-select,
+  .service-search input {
+    height: 40px;              /* Same height */
+    padding: 0 12px;
     font-size: 0.8rem;
     color: #163b34;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    line-height: normal;
+    outline: none;
   }
-  .service-search input::placeholder{
+
+  .currency-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    outline: none;
+
+  /* Hide old IE arrow */
+  .currency-select::-ms-expand {
+    display: none;
+  }
+
+  .service-search input::placeholder {
     font-size: 0.8rem;
     color: #163b34;
   }
@@ -203,6 +239,18 @@
     align-items: stretch;
     flex-direction: column;
   }
+  
+.service-search input:focus,
+.service-search input:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.service-search input:focus::placeholder,
+.service-search input:active::placeholder {
+  color: transparent;
+  opacity: 0;
+}
 
   .service-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
