@@ -46,11 +46,15 @@
 }
 
 .primary-action {
+  cursor: pointer;
   color: #ffffff;
   background: #c05242;
   box-shadow: 0 12px 30px rgba(192, 82, 66, 0.22);
+  transition: tranform 0.1s ease;
 }
-
+.primary-action:active{
+    transform: scale(0.98);
+}
 .secondary-action {
   color: #19352f;
   background: #ffffff;

@@ -10,7 +10,7 @@ const whatsappLink = 'https://wa.me/9779800000000';
         <strong>Heart to Home is currently in development and testing.</strong>
         <p >
             Some buttons or parts of the website may not be fully functional yet. Everything promised
-            here will be fulfilled soon. For now, select the services you like and talk to us more on{' '}
+            here will be fulfilled soon. For now, choos the services you like and talk to us more on{' '}
             <a href={whatsappLink} target="_blank" rel="noreferrer">
             WhatsApp
             </a>
