@@ -21,7 +21,7 @@
 .service-search {
   display: grid;
   gap: 8px;
-  width: min(420px, 100%);
+  width: 100%;
 }
 
 /* Remove the default focus outline */
