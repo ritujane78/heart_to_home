@@ -42,7 +42,7 @@ function HomeDashboard({ selectedCount, onBrowse, onGiftNow }) {
           <Step number="1" title="Choose care" text="Pick one or more health services from verified Kathmandu clinics." />
           <Step number="2" title="Add recipient" text="Tell us who the service is for and include a warm personal message." />
           <Step number="3" title="Pay securely" text="Review the total and use a dummy payment option for this prototype." />
-          <Step number="4" title="Track service?" text="Heart to Home shares updates after the appointment is scheduled." />
+          <Step number="4" title="Track service" text="Heart to Home shares updates after the appointment is scheduled." />
         </div>
       </div>
 
