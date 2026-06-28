@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Gift, MapPin } from 'lucide-react';
 import { services } from '../data/services.js';
 import GiftForm from './GiftForm.jsx';
