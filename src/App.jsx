@@ -1,130 +1,178 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Home, Mail, Stethoscope } from 'lucide-react';
-import logo from './assets/images/logo.png';
-import TabButton from './components/TabButton.jsx';
+import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
+import { Home, Mail, Stethoscope } from "lucide-react";
+
+import logo from "./assets/images/logo.png";
+
+import HomeDashboard from "./pages/HomeDashboard.jsx";
+import ServicesPage from "./pages/ServicesPage.jsx";
+import ContactPage from "./pages/ContactPage.jsx";
+
+import DevelopmentBanner from "./components/DevelopmentBanner.jsx";
+import TabButton from "./components/TabButton.jsx";
+
+import ScrollToTop from "./components/ScrollToTop";
+import Login from "./components/Auth/Login";
+import Signup from "./components/Auth/Signup";
+import { useMyContext } from "./store/ContextApi";
+
 import {
   DEFAULT_CURRENCY,
   fallbackExchangeRates,
   formatConvertedAmount,
-  supportedCurrencies
-} from './data/currencies.js';
-import { initialGift, serviceProviders, services } from './data/services.js';
-import ContactPage from './pages/ContactPage.jsx';
-import HomeDashboard from './pages/HomeDashboard.jsx';
-import ServicesPage from './pages/ServicesPage.jsx';
-import DevelopmentBanner from './components/DevelopmentBanner.jsx';
+  supportedCurrencies,
+} from "./data/currencies.js";
 
-const EXCHANGE_RATE_URL = 'https://open.er-api.com/v6/latest/NPR';
+import {
+  initialGift,
+  serviceProviders,
+  services,
+} from "./data/services.js";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+
+const EXCHANGE_RATE_URL = "https://open.er-api.com/v6/latest/NPR";
 
 function App() {
-  const [activeTab, setActiveTab] = useState('home');
   const [selectedIds, setSelectedIds] = useState([]);
   const [giftDetails, setGiftDetails] = useState(initialGift);
   const [giftStarted, setGiftStarted] = useState(false);
   const [paymentReady, setPaymentReady] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('card');
-  const [selectedCurrency, setSelectedCurrency] = useState(DEFAULT_CURRENCY);
-  const [exchangeRates, setExchangeRates] = useState(fallbackExchangeRates);
-  const [exchangeRateStatus, setExchangeRateStatus] = useState('loading');
+  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [isActive, setIsActive] = useState(true)
+
+  const [selectedCurrency, setSelectedCurrency] =
+    useState(DEFAULT_CURRENCY);
+
+  const [exchangeRates, setExchangeRates] =
+    useState(fallbackExchangeRates);
+
+  const [exchangeRateStatus, setExchangeRateStatus] =
+    useState("loading");
+
+  // Access the states by using the useMyContext hook from the ContextProvider
+  const { token, setToken, setCurrentUser, isAdmin, setIsAdmin } =
+    useMyContext();
+
   const giftFormRef = useRef(null);
 
   const selectedServices = useMemo(
     () => services.filter((service) => selectedIds.includes(service.id)),
     [selectedIds]
   );
-  const total = selectedServices.reduce((sum, service) => sum + service.price, 0);
-  const formatMoney = useMemo(
-    () => (amountNpr) => formatConvertedAmount(amountNpr, selectedCurrency, exchangeRates),
-    [exchangeRates, selectedCurrency]
+
+  const total = selectedServices.reduce(
+    (sum, service) => sum + service.price,
+    0
   );
+
+  const formatMoney = useMemo(
+    () => (amount) =>
+      formatConvertedAmount(amount, selectedCurrency, exchangeRates),
+    [selectedCurrency, exchangeRates]
+  );
+
   const serviceProviderNames = useMemo(() => {
     const providerNamesById = new Map(
       serviceProviders.map((provider) => [provider.id, provider.name])
     );
-    const uniqueProviderNames = new Set(
-      services.map((service) => providerNamesById.get(service.providerId))
-    );
 
-    return [...uniqueProviderNames].filter(Boolean).join(' | ');
+    return [
+      ...new Set(
+        services.map((service) =>
+          providerNamesById.get(service.providerId)
+        )
+      ),
+    ]
+      .filter(Boolean)
+      .join(" | ");
   }, []);
 
   useEffect(() => {
-    let isActive = true;
+    // let isActive = true;
 
-    async function loadExchangeRates() {
+    async function loadRates() {
       try {
-        setExchangeRateStatus('loading');
         const response = await fetch(EXCHANGE_RATE_URL);
 
-        if (!response.ok) {
-          throw new Error('Exchange rate request failed');
-        }
+        if (!response.ok) throw new Error();
 
         const data = await response.json();
 
-        if (!data.rates) {
-          throw new Error('Exchange rate response was missing rates');
-        }
-
         const nextRates = supportedCurrencies.reduce((rates, currency) => {
-          rates[currency.code] = Number(data.rates[currency.code] ?? fallbackExchangeRates[currency.code]);
+          rates[currency.code] = Number(
+            data.rates[currency.code] ??
+              fallbackExchangeRates[currency.code]
+          );
           return rates;
         }, {});
 
         if (isActive) {
-          setExchangeRates({ ...fallbackExchangeRates, ...nextRates, NPR: 1 });
-          setExchangeRateStatus('live');
+          setExchangeRates({
+            ...fallbackExchangeRates,
+            ...nextRates,
+            NPR: 1,
+          });
+
+          setExchangeRateStatus("live");
         }
       } catch {
         if (isActive) {
           setExchangeRates(fallbackExchangeRates);
-          setExchangeRateStatus('fallback');
+          setExchangeRateStatus("fallback");
         }
       }
     }
 
-    loadExchangeRates();
+    loadRates();
 
     return () => {
-      isActive = false;
+      setIsActive(false);
+      // isActive = false;
     };
   }, []);
 
   useEffect(() => {
     if (giftStarted && selectedServices.length > 0) {
-      giftFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      giftFormRef.current?.scrollIntoView({
+        behavior: "smooth",
+      });
     }
   }, [giftStarted, selectedServices.length]);
 
-  function toggleService(serviceId) {
+  function toggleService(id) {
     setSelectedIds((current) => {
-      const nextSelectedIds = current.includes(serviceId)
-        ? current.filter((id) => id !== serviceId)
-        : [...current, serviceId];
+      const next = current.includes(id)
+        ? current.filter((x) => x !== id)
+        : [...current, id];
 
-      if (nextSelectedIds.length === 0) {
+      if (next.length === 0) {
         setGiftStarted(false);
       }
 
-      return nextSelectedIds;
+      return next;
     });
+
     setPaymentReady(false);
   }
 
   function startGiftFlow() {
     if (selectedIds.length === 0) return;
+
     setGiftStarted(true);
     setPaymentReady(false);
-    setActiveTab('services');
   }
 
-  function updateGiftDetails(event) {
-    const { name, value } = event.target;
-    setGiftDetails((current) => ({ ...current, [name]: value }));
+  function updateGiftDetails(e) {
+    const { name, value } = e.target;
+
+    setGiftDetails((current) => ({
+      ...current,
+      [name]: value,
+    }));
   }
 
-  function submitGift(event) {
-    event.preventDefault();
+  function submitGift(e) {
+    e.preventDefault();
     setPaymentReady(true);
   }
 
@@ -133,66 +181,119 @@ function App() {
     setGiftDetails(initialGift);
     setGiftStarted(false);
     setPaymentReady(false);
-    setPaymentMethod('card');
+    setPaymentMethod("card");
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem("JWT_TOKEN"); // Updated to remove token from localStorage
+    localStorage.removeItem("USER"); // Remove user details as well
+    localStorage.removeItem("CSRF_TOKEN");
+    localStorage.removeItem("IS_ADMIN");
+    setToken(null);
+    setCurrentUser(null);
+    setIsAdmin(false);
+    navigate("/login");
+  };
+
   return (
-    <div className="app">
-      <header className="topbar">
-        <button className="brand" type="button" onClick={() => setActiveTab('home')}>
-          <img src={logo} alt="Heart to Home" className="brand-logo" />
-          <span>Heart to Home</span>
-        </button>
-        <nav className="tabs" aria-label="Main navigation">
-          <TabButton icon={<Home />} label="Home" active={activeTab === 'home'} onClick={() => setActiveTab('home')} />
-          <TabButton icon={<Stethoscope />} label="Services" active={activeTab === 'services'} onClick={() => setActiveTab('services')} />
-          <TabButton icon={<Mail />} label="Contact Us" active={activeTab === 'contact'} onClick={() => setActiveTab('contact')} />
-        </nav>
-      </header>
+    <Router>
+      <ScrollToTop />
+      <div className="app">
+        <header className="topbar">
+          <NavLink to="/" className="brand">
+            <img src={logo} alt="Heart to Home" className="brand-logo" />
+            <span>Heart to Home</span>
+          </NavLink>
+          
 
-      <main>
-        <DevelopmentBanner />
-        {activeTab === 'home' && (
-          <HomeDashboard
-            selectedCount={selectedIds.length}
-            onBrowse={() => setActiveTab('services')}
-            onGiftNow={startGiftFlow}
-          />
-        )}
+          <nav className="tabs">
+            <NavLink to="/"  end className={`tab ${isActive ? "active" : ""}` }>
+              <TabButton icon={<Home />} label="Home" />
+            </NavLink>
 
-        {activeTab === 'services' && (
-          <ServicesPage
-            selectedIds={selectedIds}
-            selectedServices={selectedServices}
-            serviceProviderNames={serviceProviderNames}
-            total={total}
-            selectedCurrency={selectedCurrency}
-            currencies={supportedCurrencies}
-            exchangeRateStatus={exchangeRateStatus}
-            formatMoney={formatMoney}
-            giftDetails={giftDetails}
-            giftStarted={giftStarted}
-            paymentReady={paymentReady}
-            paymentMethod={paymentMethod}
-            giftFormRef={giftFormRef}
-            onToggle={toggleService}
-            onCurrencyChange={setSelectedCurrency}
-            onGiftNow={startGiftFlow}
-            onGiftDetailsChange={updateGiftDetails}
-            onSubmitGift={submitGift}
-            onPaymentMethodChange={setPaymentMethod}
-            onReset={resetGift}
-          />
-        )}
+            <NavLink to="/services" className={`tab ${isActive ? "active" : ""}`}>
+              <TabButton icon={<Stethoscope />} label="Services" />
+            </NavLink>
 
-        {activeTab === 'contact' && <ContactPage />}
-      </main>
+            <NavLink to="/contact" className={`tab ${isActive ? "active" : ""} `}>
+              <TabButton icon={<Mail />} label="Contact Us" />
+            </NavLink>
+            {token ? (
+              <button
+                onClick={handleLogout}
+                className="w-24 text-center bg-customRed font-semibold px-4 py-2 rounded-sm cursor-pointer hover:text-slate-300 logout-tab"
+              >
+                LogOut
+              </button> 
+              ) : (
+            <NavLink to="/signup" className="tab signup-tab">
+              Sign Up
+            </NavLink>
+            )}
+          </nav>
+        </header>
+
+        {/* <DevelopmentBanner /> */}
+        <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Routes>
+
+        <main>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <HomeDashboard
+                  selectedCount={selectedIds.length}
+                  onBrowse={() => {}}
+                  onGiftNow={startGiftFlow}
+                />
+              }
+            />
+
+            <Route
+              path="/services"
+              element={
+                <ServicesPage
+                  selectedIds={selectedIds}
+                  selectedServices={selectedServices}
+                  serviceProviderNames={serviceProviderNames}
+                  total={total}
+                  selectedCurrency={selectedCurrency}
+                  currencies={supportedCurrencies}
+                  exchangeRateStatus={exchangeRateStatus}
+                  formatMoney={formatMoney}
+                  giftDetails={giftDetails}
+                  giftStarted={giftStarted}
+                  paymentReady={paymentReady}
+                  paymentMethod={paymentMethod}
+                  giftFormRef={giftFormRef}
+                  onToggle={toggleService}
+                  onCurrencyChange={setSelectedCurrency}
+                  onGiftNow={startGiftFlow}
+                  onGiftDetailsChange={updateGiftDetails}
+                  onSubmitGift={submitGift}
+                  onPaymentMethodChange={setPaymentMethod}
+                  onReset={resetGift}
+                />
+              }
+            />
+
+            <Route
+              path="/contact"
+              element={<ContactPage />}
+            />
+          </Routes>
+        </main>
+
         <footer>
-          <p>&copy; All Rights Reserved by </p>
+          <p>&copy; All Rights Reserved by</p>
           <img src={logo} alt="Heart to Home" />
           <span>Heart To Home</span>
-      </footer>
-    </div>
+        </footer>
+      </div>
+    </Router>
   );
 }
 

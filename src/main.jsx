@@ -7,9 +7,12 @@ import './styles/pages/home.css';
 import './styles/pages/services.css';
 import './styles/pages/gift-form.css';
 import './styles/pages/contact.css';
+import { ContextProvider } from "./store/ContextApi";
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <ContextProvider>
+      <App />
+    </ContextProvider>
   </React.StrictMode>
 );
