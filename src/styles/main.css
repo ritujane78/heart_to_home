@@ -175,8 +175,7 @@ main {
   align-items: center;
 }
 
-.signup-tab,
-.logout-tab {
+.signup-tab {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -185,22 +184,62 @@ main {
   padding: 10px 18px;
   border-radius: 6px;
   font-weight: 800;
-}
-
-.signup-tab {
   background: #eed00e;
   color: #000;
 }
 
-.logout-tab {
-  background: #c05242;
-  color: #fff;
-  border: none;
+.signup-tab:hover {
+  opacity: 0.95;
 }
 
-.signup-tab:hover,
-.logout-tab:hover {
-  opacity: 0.95;
+.user-menu {
+  position: relative;
+}
+
+.menu-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: #1e5146;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  width: 170px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: #333;
+  background: white;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.dropdown-item:hover {
+  background: #f5f5f5;
+}
+
+.logout-item {
+  color: #f22809;
+  font-weight: 600;
 }
 
 .topbar {
@@ -285,7 +324,7 @@ main {
 .home-grid,
 .services-layout,
 .contact-page {
-  width: mi (1180px, 100%);
+  /* width: min(1180px, 100%); */
   margin: 0 auto;
 }
 footer {
@@ -337,18 +376,28 @@ footer span{
   .auth-action {
     width: 100%;
   }
-
   .tab {
     flex: 1;
   }
-  .nav-section {
-    flex-direction: column-reverse;
+   .nav-section {
+    display: flex;
+    flex-direction: column;
     align-items: stretch;
-    gap: 12px;
   }
 
-  .signup-tab,
-  .logout-tab {
+  .user-menu {
+    order: -1;      
+    align-self: flex-end; 
+    margin-bottom: 0.75rem;
+  }
+
+  .dropdown-menu {
+    right: 0;
+    left: auto;
+  }
+
+  .signup-tab{
+    order: -1;
     width: 100%;
     margin-left: 0;
   }

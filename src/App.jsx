@@ -15,6 +15,9 @@ import Login from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
 import { useMyContext } from "./store/ContextApi";
 import NotFound from "./components/NotFound";
+import Admin from "./pages/admin/Admin.jsx";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AccessDenied from "./components/Auth/AccessDenied";
 
 import {
   DEFAULT_CURRENCY,
@@ -30,10 +33,12 @@ import {
 } from "./data/services.js";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Order from "./pages/Order.jsx";
 
 const EXCHANGE_RATE_URL = "https://open.er-api.com/v6/latest/NPR";
 
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [giftDetails, setGiftDetails] = useState(initialGift);
   const [giftStarted, setGiftStarted] = useState(false);
@@ -220,16 +225,50 @@ function App() {
                 <TabButton icon={<Mail />} label="Contact Us" />
               </NavLink>
             </nav>
-
             {token ? (
-              <button
-                onClick={handleLogout}
-                className="logout-tab"
-              >
-                Log Out
-              </button>
+              <div className="user-menu">
+                <button
+                  className="menu-btn"
+                  onClick={() => setMenuOpen((prev) => !prev)}
+                >
+                  ☰
+                </button>
+
+                {menuOpen && (
+                  <div className="dropdown-menu">
+                    {isAdmin && (
+                      <NavLink
+                        to="/admin/users"
+                        className="dropdown-item"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Admin
+                      </NavLink>
+                    )}
+                    {isAdmin || (
+                      <NavLink
+                        to="/order/users"
+                        className="dropdown-item"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Orders
+                      </NavLink>
+                    )}
+
+                    <button
+                      className="dropdown-item logout-item"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        handleLogout();
+                      }}
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
-              <NavLink to="/signup" className={`signup-tab ${isActive ? "active" : ""}`}>
+              <NavLink to="/signup" className="signup-tab">
                 Sign Up
               </NavLink>
             )}
@@ -237,9 +276,6 @@ function App() {
         </header>
 
         {/* <DevelopmentBanner /> */}
-        {/* <Routes>
-            
-          </Routes> */}
 
         <main>
           <Routes>
@@ -288,7 +324,23 @@ function App() {
             />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            
+            <Route path="/access-denied" element={<AccessDenied />} />
+              <Route
+                path="/admin/*"
+                element={
+                  <ProtectedRoute adminPage={true}>
+                    <Admin />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/order/*"
+                element={
+                  <ProtectedRoute >
+                    <Order />
+                  </ProtectedRoute>
+                }
+              />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
