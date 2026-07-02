@@ -14,6 +14,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Login from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
 import { useMyContext } from "./store/ContextApi";
+import NotFound from "./components/NotFound";
 
 import {
   DEFAULT_CURRENCY,
@@ -284,6 +285,7 @@ function App() {
               path="/contact"
               element={<ContactPage />}
             />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
 

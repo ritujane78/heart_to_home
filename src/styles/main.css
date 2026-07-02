@@ -171,7 +171,7 @@ main {
   background-color: #eed00e !important;
   color: #000 !important;
   border-radius: 6px;
-  font-weight: bolder;
+  font-weight: bolder; 
 }
 
 .signup-tab:hover {
