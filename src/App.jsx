@@ -205,40 +205,41 @@ function App() {
             <img src={logo} alt="Heart to Home" className="brand-logo" />
             <span>Heart to Home</span>
           </NavLink>
-          
 
-          <nav className="tabs">
-            <NavLink to="/"  end className={`tab ${isActive ? "active" : ""}` }>
-              <TabButton icon={<Home />} label="Home" />
-            </NavLink>
+          <div className="nav-section">
+            <nav className="tabs">
+              <NavLink to="/" end className="tab">
+                <TabButton icon={<Home />} label="Home" />
+              </NavLink>
 
-            <NavLink to="/services" className={`tab ${isActive ? "active" : ""}`}>
-              <TabButton icon={<Stethoscope />} label="Services" />
-            </NavLink>
+              <NavLink to="/services" className="tab">
+                <TabButton icon={<Stethoscope />} label="Services" />
+              </NavLink>
 
-            <NavLink to="/contact" className={`tab ${isActive ? "active" : ""} `}>
-              <TabButton icon={<Mail />} label="Contact Us" />
-            </NavLink>
+              <NavLink to="/contact" className="tab">
+                <TabButton icon={<Mail />} label="Contact Us" />
+              </NavLink>
+            </nav>
+
             {token ? (
               <button
                 onClick={handleLogout}
-                className="w-24 text-center bg-customRed font-semibold px-4 py-2 rounded-sm cursor-pointer hover:text-slate-300 logout-tab"
+                className="logout-tab"
               >
-                LogOut
-              </button> 
-              ) : (
-            <NavLink to="/signup" className="tab signup-tab">
-              Sign Up
-            </NavLink>
+                Log Out
+              </button>
+            ) : (
+              <NavLink to="/signup" className={`signup-tab ${isActive ? "active" : ""}`}>
+                Sign Up
+              </NavLink>
             )}
-          </nav>
+          </div>
         </header>
 
         {/* <DevelopmentBanner /> */}
-        <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-          </Routes>
+        {/* <Routes>
+            
+          </Routes> */}
 
         <main>
           <Routes>
@@ -285,6 +286,9 @@ function App() {
               path="/contact"
               element={<ContactPage />}
             />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

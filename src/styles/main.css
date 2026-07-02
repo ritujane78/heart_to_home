@@ -159,30 +159,48 @@ main {
 }
 
 
-.tab.active {
-  /* background: transparent; */
-  /* color: white;
-  background: #1f6f5c; */
+.tab.active,
+.signup-tab.active {
   font-weight: 600;
   box-shadow: 0 4px 12px #1f6f5cb8;
 }
-.signup-tab {
-  margin-left: auto !important;
-  background-color: #eed00e !important;
-  color: #000 !important;
-  border-radius: 6px;
-  font-weight: bolder; 
+.nav-section {
+  display: flex;
+  align-items: center;
+  gap: 18px;
 }
 
-.signup-tab:hover {
-  /* background-color: #a84436; */
+.auth-action {
+  display: flex;
+  align-items: center;
+}
+
+.signup-tab,
+.logout-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  min-width: 110px;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: 800;
+}
+
+.signup-tab {
+  background: #eed00e;
   color: #000;
 }
+
 .logout-tab {
-  background-color: #c05242 !important;
-  color: #fff !important;
-  border-radius: 6px;
-  font-weight: bolder;
+  background: #c05242;
+  color: #fff;
+  border: none;
+}
+
+.signup-tab:hover,
+.logout-tab:hover {
+  opacity: 0.95;
 }
 
 .topbar {
@@ -310,6 +328,34 @@ footer span{
   }
   .section-heading h2 {
     font-size: medium;
+  }
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .auth-action {
+    width: 100%;
+  }
+
+  .tab {
+    flex: 1;
+  }
+  .nav-section {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .signup-tab,
+  .logout-tab {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .tabs {
+    width: 100%;
+    overflow-x: auto;
   }
 }
 
