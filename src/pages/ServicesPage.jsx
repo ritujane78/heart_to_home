@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Gift, MapPin } from 'lucide-react';
 import { services } from '../data/services.js';
 import GiftForm from './GiftForm.jsx';
+import { useMyContext } from "../store/ContextApi";
 
 function ServicesPage({
   selectedIds,
@@ -25,6 +26,7 @@ function ServicesPage({
   onPaymentMethodChange,
   onReset
 }) {
+  const { token } = useMyContext();
   const [searchQuery, setSearchQuery] = useState('');
   const filteredServices = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -69,25 +71,29 @@ function ServicesPage({
         </label>
       </div>
       <div className="section-heading">
-        <div>
+        <div className="heading-content">
           <p className="eyebrow">Browse Services</p>
           <h2>Select health services to gift</h2>
         </div>
-        <div className="button-wrapper">
-        <span className="coming-soon-tag">COMING SOON</span>
 
-        <button
-          className="primary-action compact"
-          type="button"
-          onClick={onGiftNow}
-          disabled={true} 
+        <div className="button-wrapper">
+          {(!token || selectedIds.length === 0) && (
+            <p className="gift-note">
+              <strong>Note:</strong> The <strong>Gift Now</strong> button will be enabled only after you sign in and select one or more services.
+            </p>
+          )}
+
+          <button
+            className="primary-action compact"
+            type="button"
+            onClick={onGiftNow}
+            disabled={!token || selectedIds.length === 0}
           >
-          {/* disabled={selectedIds.length === 0} */}
-          <Gift aria-hidden="true" />
-          Gift Now
-        </button>
+            <Gift aria-hidden="true" />
+            Gift Now
+          </button>
+        </div>
       </div>
-    </div>
 
       <div className="service-grid">
         {filteredServices.map((service) => (

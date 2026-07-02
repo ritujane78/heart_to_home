@@ -388,7 +388,7 @@ footer span{
   .user-menu {
     order: -1;      
     align-self: flex-end; 
-    margin-bottom: 0.75rem;
+    /* margin-bottom: 0.75rem; */
   }
 
   .dropdown-menu {

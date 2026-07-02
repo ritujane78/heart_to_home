@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, NavLink, useNavigate } from "react-router-dom";
 import { Home, Mail, Stethoscope } from "lucide-react";
 
 import logo from "./assets/images/logo.png";
@@ -44,7 +44,7 @@ function App() {
   const [giftStarted, setGiftStarted] = useState(false);
   const [paymentReady, setPaymentReady] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("card");
-  const [isActive, setIsActive] = useState(true)
+  // const [isActive, setIsActive] = useState(true)
 
   const [selectedCurrency, setSelectedCurrency] =
     useState(DEFAULT_CURRENCY);
@@ -54,12 +54,28 @@ function App() {
 
   const [exchangeRateStatus, setExchangeRateStatus] =
     useState("loading");
+    const navigate = useNavigate();
 
   // Access the states by using the useMyContext hook from the ContextProvider
   const { token, setToken, setCurrentUser, isAdmin, setIsAdmin } =
     useMyContext();
 
   const giftFormRef = useRef(null);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const selectedServices = useMemo(
     () => services.filter((service) => selectedIds.includes(service.id)),
@@ -94,7 +110,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // let isActive = true;
+    let isActive = true;
 
     async function loadRates() {
       try {
@@ -132,8 +148,8 @@ function App() {
     loadRates();
 
     return () => {
-      setIsActive(false);
-      // isActive = false;
+      // setIsActive(false);
+      isActive = false;
     };
   }, []);
 
@@ -202,7 +218,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <>
       <ScrollToTop />
       <div className="app">
         <header className="topbar">
@@ -226,7 +242,7 @@ function App() {
               </NavLink>
             </nav>
             {token ? (
-              <div className="user-menu">
+              <div className="user-menu" ref={menuRef}>
                 <button
                   className="menu-btn"
                   onClick={() => setMenuOpen((prev) => !prev)}
@@ -351,7 +367,7 @@ function App() {
           <span>Heart To Home</span>
         </footer>
       </div>
-    </Router>
+    </>
   );
 }
 

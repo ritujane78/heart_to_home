@@ -8,11 +8,14 @@ import './styles/pages/services.css';
 import './styles/pages/gift-form.css';
 import './styles/pages/contact.css';
 import { ContextProvider } from "./store/ContextApi";
+import { BrowserRouter } from "react-router-dom";
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ContextProvider>
-      <App />
-    </ContextProvider>
+    <BrowserRouter>
+      <ContextProvider>
+        <App />
+      </ContextProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

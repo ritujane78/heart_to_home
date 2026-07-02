@@ -25,19 +25,16 @@ function HomeDashboard({ selectedCount, onBrowse, onGiftNow }) {
             <Stethoscope aria-hidden="true" />
             Browse Services
           </button>
-          {/* disabled={selectedCount === 0} */}
-          <button className="secondary-action" type="button" onClick={onGiftNow} disabled={true}>
+          <button className="secondary-action" type="button" onClick={onGiftNow} disabled={selectedCount === 0}>
             <Gift aria-hidden="true" />
             Gift Now
           </button>
         </div>
       </div>
 
-      <div className="process-panel muted-section">
-        <div className="muted-heading">
+      <div className="process-panel">
           <h2>How gifting works</h2>
-          <span>Coming soon</span>
-        </div>
+
         <div className="steps">
           <Step number="1" title="Choose care" text="Pick one or more health services from verified Kathmandu clinics." />
           <Step number="2" title="Add recipient" text="Tell us who the service is for and include a warm personal message." />
@@ -46,13 +43,10 @@ function HomeDashboard({ selectedCount, onBrowse, onGiftNow }) {
         </div>
       </div>
 
-      <section className="trust-section muted-section">
+      <section className="trust-section ">
         <div>
           <p className="eyebrow">Why trust this platform?</p>
-          <div className="muted-heading">
             <h2>Care you can follow from abroad</h2>
-            <span>Coming soon</span>
-          </div>
         </div>
         <div className="trust-grid">
           {trustItems.map((item) => (
