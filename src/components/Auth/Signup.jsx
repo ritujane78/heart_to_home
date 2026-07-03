@@ -80,7 +80,7 @@ const Signup = () => {
   }, [navigate, token]);
 
   return (
-    <div className="min-h-[calc(100vh-74px)] flex justify-center items-center">
+    <div className="min-h-[calc(100vh-74px)] flex justify-center items-start">
       <form
         onSubmit={handleSubmit(onSubmitHandler)}
         className="sm:w-[450px] w-[360px]  shadow-custom py-6 sm:px-8 px-4"

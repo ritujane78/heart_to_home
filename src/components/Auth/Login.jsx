@@ -119,7 +119,7 @@ const Login = () => {
 
   //step1 will render the login form and step-2 will render the 2fa verification form
   return (
-    <div className="min-h-[calc(100vh-74px)] flex justify-center items-center">
+    <div className="min-h-[calc(100vh-74px)] flex justify-center items-start">
       {step === 1 ? (
         <>
           <form

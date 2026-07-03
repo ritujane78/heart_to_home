@@ -284,9 +284,17 @@ function App() {
                 )}
               </div>
             ) : (
-              <NavLink to="/signup" className="signup-tab">
-                Sign Up
-              </NavLink>
+              <>
+                <div className="auth-buttons">
+                  <NavLink to="/login" className="login-tab">
+                    Log In
+                  </NavLink>
+
+                  <NavLink to="/signup" className="signup-tab">
+                    Sign Up
+                  </NavLink>
+                </div>
+              </>
             )}
           </div>
         </header>

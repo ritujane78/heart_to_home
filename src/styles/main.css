@@ -160,7 +160,8 @@ main {
 
 
 .tab.active,
-.signup-tab.active {
+.signup-tab.active,
+.login-tab.active {
   font-weight: 600;
   box-shadow: 0 4px 12px #1f6f5cb8;
 }
@@ -175,7 +176,7 @@ main {
   align-items: center;
 }
 
-.signup-tab {
+.signup-tab, .login-tab {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -184,9 +185,16 @@ main {
   padding: 10px 18px;
   border-radius: 6px;
   font-weight: 800;
-  background: #eed00e;
   color: #000;
 }
+.signup-tab {
+  background: #eed00e;
+}
+.login-tab {
+  background: #1e5146;
+  color: #fff;
+}
+
 
 .signup-tab:hover {
   opacity: 0.95;
@@ -395,13 +403,21 @@ footer span{
     right: 0;
     left: auto;
   }
-
-  .signup-tab{
-    order: -1;
+  .auth-buttons {
+    display: flex;
     width: 100%;
-    margin-left: 0;
+    gap: 10px;
+    order: -1;
+    margin-bottom: 0.75rem;
   }
 
+  .login-tab,
+  .signup-tab {
+    flex: 1;
+    width: auto;
+    margin: 0;
+    text-align: center;
+  }
   .tabs {
     width: 100%;
     overflow-x: auto;
