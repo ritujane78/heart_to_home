@@ -18,6 +18,7 @@ import NotFound from "./components/NotFound";
 import Admin from "./pages/admin/Admin.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AccessDenied from "./components/Auth/AccessDenied";
+import { Toaster } from "react-hot-toast";
 
 import {
   DEFAULT_CURRENCY,
@@ -34,6 +35,8 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Order from "./pages/Order.jsx";
+import ResetPassword from "./components/Auth/ResetPassword.jsx";
+import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 
 const EXCHANGE_RATE_URL = "https://open.er-api.com/v6/latest/NPR";
 
@@ -302,6 +305,7 @@ function App() {
         {/* <DevelopmentBanner /> */}
 
         <main>
+          <Toaster position="bottom-center" reverseOrder={false} />
           <Routes>
             <Route
               path="/"
@@ -348,6 +352,8 @@ function App() {
             />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/access-denied" element={<AccessDenied />} />
               <Route
                 path="/admin/*"

@@ -102,8 +102,8 @@ const Signup = () => {
             required
             id="username"
             type="text"
-            message="*UserName is required"
-            placeholder="type your username"
+            message="*UserName Is Required"
+            placeholder="Enter Your Username"
             register={register}
             errors={errors}
           />{" "}
@@ -112,8 +112,8 @@ const Signup = () => {
             required
             id="email"
             type="email"
-            message="*Email is required"
-            placeholder="type your email"
+            message="*Email Is Required"
+            placeholder="Enter Your Email"
             register={register}
             errors={errors}
           />

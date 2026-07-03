@@ -11,6 +11,9 @@ const InputField = ({
   autoFocus = false,
   placeholder = "",
   readOnly = false,
+  disabled = false,
+  validation = {},
+  disableCopyPaste = false,
 }) => {
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
@@ -27,28 +30,35 @@ const InputField = ({
         placeholder={placeholder}
         autoFocus={autoFocus}
         readOnly={readOnly}
-        className={`px-2 py-2 border outline-none bg-transparent text-slate-700 rounded-md ${
+        disabled={disabled}
+        className={`px-2 py-2 border outline-none bg-transparent text-slate-700 rounded-md disabled:bg-slate-100 disabled:cursor-not-allowed ${
           autoFocus ? "border-2" : ""
         } ${
           errors[id]?.message ? "border-red-500" : "border-slate-700"
         }`}
+        onCopy={disableCopyPaste ? (e) => e.preventDefault() : undefined}
+        onCut={disableCopyPaste ? (e) => e.preventDefault() : undefined}
+        onPaste={disableCopyPaste ? (e) => e.preventDefault() : undefined}
         {...register(id, {
-          required: {
-            value: required,
-            message,
-          },
+          required: required
+            ? {
+                value: true,
+                message,
+              }
+            : false,
           minLength: min
             ? {
                 value: min,
                 message: `Minimum ${min} characters are required`,
               }
             : undefined,
+          ...validation,
         })}
       />
 
       {errors[id]?.message && (
         <p className="mt-0 text-sm font-semibold text-red-500">
-          {errors[id].message}*
+          {errors[id].message}
         </p>
       )}
     </div>
