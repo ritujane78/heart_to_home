@@ -193,11 +193,17 @@ main {
 .login-tab {
   background: #1e5146;
   color: #fff;
+  transition: transform 0.1s ease;
 }
 
 
-.signup-tab:hover {
-  opacity: 0.95;
+.signup-tab:hover,
+.login-tab:hover {
+  transform: scale(1.05);
+}
+.signup-tab:active,
+.login-tab:active           {
+  transform: scale(0.98);
 }
 
 .user-menu {

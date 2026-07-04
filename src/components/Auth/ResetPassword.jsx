@@ -149,7 +149,7 @@ const ResetPassword = () => {
             password !== confirmPassword
           }
           onClickhandler={() => {}}
-          className="bg-[#1e5146] font-semibold text-white w-full py-2 rounded-sm my-3"
+          className="bg-[#1e5146] font-semibold text-white w-full py-2 rounded-sm my-3 transform transition-transform duration-200  enabled:hover:scale-105 enabled:active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
           type="text"
         >
           {loading ? "Updating..." : passwordUpdated ? "Password Updated" : "Submit"}

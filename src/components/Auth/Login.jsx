@@ -152,12 +152,12 @@ const Login = () => {
             <Buttons
               disabled={loading}
               onClickhandler={() => {}}
-              className="bg-[#1e5146] text-white font-semibold w-full py-2 rounded-sm my-3"
+              className="bg-[#1e5146] text-white font-semibold w-full py-2 rounded-sm my-3 transform transition-transform duration-200 hover:scale-[1.05] active:scale-[0.98]"
               type="text"
             >
               {loading ? <span>Loading...</span> : "LogIn"}
             </Buttons>
-            <p className=" text-sm text-slate-700 mb-4">
+            <p className=" text-sm text-slate-700 mb-4 ">
               <Link
                 className=" underline hover:text-black"
                 to="/forgot-password"
@@ -169,7 +169,7 @@ const Login = () => {
             <p className="text-center text-sm text-slate-700 mt-6">
               Don't have an account?{" "}
               <Link
-                className="text-[#584c02] font-extrabold underline"
+                className="inline-block text-[#584c02] font-extrabold underline transition-transform duration-200 hover:scale-115"
                 to="/signup"
               >
                 SignUp
