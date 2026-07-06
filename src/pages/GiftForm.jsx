@@ -45,12 +45,18 @@
                 name="recipientContact"
                 value={giftDetails.recipientContact}
                 onChange={onChange}
-                placeholder="Phone number or email"
+                placeholder="Phone number"
                 required
+              />
+              <input
+                name="recipientContact"
+                value={giftDetails.recipientContact}
+                onChange={onChange}
+                placeholder="Email (optional)"
               />
             </label>
 
-            <label>
+            <label className='full-width'>
               <span>Relationship</span>
               <select
                 name="relationship"
@@ -86,7 +92,7 @@
                 name="senderContact"
                 value={giftDetails.senderContact}
                 onChange={onChange}
-                placeholder="Phone number or email"
+                placeholder="Email"
                 required
               />
             </label>
