@@ -169,14 +169,6 @@
   color: #dfeee9;
 }
 
-.empty-services {
-  padding: 24px;
-  margin-top: 18px;
-  text-align: center;
-  background: #ffffff;
-  border: 1px dashed #cfd4c8;
-  border-radius: 8px;
-}
 
 .empty-services p {
   margin: 6px 0 0;
@@ -204,6 +196,27 @@
 .gift-note strong {
   color: #1e5146;
 }
+  .service-card {
+    position: relative;
+}
+
+.delete-service-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #dc2626;
+    padding: 4px;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.delete-service-btn:hover {
+    background: rgba(220, 38, 38, 0.1);
+    transform: scale(1.1);
+}
 
 @media (max-width: 768px) {
   .button-wrapper {
@@ -214,6 +227,12 @@
   .gift-note {
     max-width: 100%;
   }
+}
+.provider-text,
+.no-provider {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .coming-soon-tag {

@@ -14,11 +14,21 @@ import ScrollToTop from "./components/ScrollToTop";
 import Login from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
 import { useMyContext } from "./store/ContextApi";
+import api from "./services/api";
 import NotFound from "./components/NotFound";
-import Admin from "./pages/admin/Admin.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AccessDenied from "./components/Auth/AccessDenied";
+
+import AddAService from "./pages/admin/AddAService.jsx";
+import AllUsers from "./pages/admin/AllUsers.jsx";
+import UpdateOrderStatus from "./pages/admin/UpdateOrderStatus.jsx";
+
 import { Toaster } from "react-hot-toast";
+import {
+  PlusCircle,
+  Pencil,
+  Users
+} from "lucide-react";
 
 import {
   DEFAULT_CURRENCY,
@@ -47,7 +57,17 @@ function App() {
   const [giftStarted, setGiftStarted] = useState(false);
   const [paymentReady, setPaymentReady] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("card");
-  // const [isActive, setIsActive] = useState(true)
+  const [services, setServices] = useState([]);
+
+  const fetchServices = async () => {
+    const response = await api.get("/services");
+    setServices(response.data);
+  };
+
+  useEffect(() => {
+    fetchServices();
+    console.log("Services updated:", services);
+  }, []);
 
   const [selectedCurrency, setSelectedCurrency] =
     useState(DEFAULT_CURRENCY);
@@ -95,22 +115,35 @@ function App() {
       formatConvertedAmount(amount, selectedCurrency, exchangeRates),
     [selectedCurrency, exchangeRates]
   );
+  const activeProviders = useMemo(() => {
+  return serviceProviders.filter((provider) =>
+    services.some((service) => service.providerId === provider.id)
+  );
+}, [services]);
+
+  const providerMap = useMemo(
+  () =>
+    new Map(
+      serviceProviders.map((provider) => [provider.id, provider.name])
+    ),
+  []
+);
 
   const serviceProviderNames = useMemo(() => {
-    const providerNamesById = new Map(
-      serviceProviders.map((provider) => [provider.id, provider.name])
-    );
+  return activeProviders.map((provider) => provider.name).join(" | ");
+}, [activeProviders]);
 
-    return [
-      ...new Set(
-        services.map((service) =>
-          providerNamesById.get(service.providerId)
-        )
-      ),
-    ]
-      .filter(Boolean)
-      .join(" | ");
-  }, []);
+
+  //   return [
+  //     ...new Set(
+  //       services.map((service) =>
+  //         providerNamesById.get(service.providerId)
+  //       )
+  //     ),
+  //   ]
+  //     .filter(Boolean)
+  //     .join(" | ");
+  // }, []);
 
   useEffect(() => {
     let isActive = true;
@@ -179,6 +212,19 @@ function App() {
 
     setPaymentReady(false);
   }
+  function removeDeletedService(id) {
+    setSelectedIds((current) => {
+      const next = current.filter((serviceId) => serviceId !== id);
+
+      if (next.length === 0) {
+        setGiftStarted(false);
+      }
+
+      return next;
+    });
+
+    setPaymentReady(false);
+  }
 
   function startGiftFlow() {
     if (selectedIds.length === 0) return;
@@ -219,6 +265,23 @@ function App() {
     setIsAdmin(false);
     navigate("/login");
   };
+  const adminItems = [
+  {
+    title: "Add Service",
+    icon: <PlusCircle className="w-6 h-6" />,
+    path: "/admin/add-service",
+  },
+  {
+    title: "Update Order",
+    icon: <Pencil className="w-6 h-6" />,
+    path: "/admin/update-order-status",
+  },
+  {
+    title: "All Users",
+    icon: <Users className="w-6 h-6" />,
+    path: "/admin/user",
+  },
+];
 
   return (
     <>
@@ -255,15 +318,18 @@ function App() {
 
                 {menuOpen && (
                   <div className="dropdown-menu">
-                    {isAdmin && (
-                      <NavLink
-                        to="/admin/users"
-                        className="dropdown-item"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        Admin
-                      </NavLink>
-                    )}
+                    {isAdmin &&
+                      adminItems.map((item) => (
+                        <NavLink
+                          key={item.path}
+                          to={item.path}
+                          className="dropdown-item"
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          <span className="dropdown-icon">{item.icon}</span>
+                          <span>{item.title}</span>
+                        </NavLink>
+                      ))}
                     {isAdmin || (
                       <NavLink
                         to="/order/users"
@@ -324,7 +390,12 @@ function App() {
                 <ServicesPage
                   selectedIds={selectedIds}
                   selectedServices={selectedServices}
+                  serviceProviders={activeProviders}
+                  providerMap={providerMap}
                   serviceProviderNames={serviceProviderNames}
+                  services={services}
+                  fetchServices={fetchServices}
+                  onServiceDeleted={removeDeletedService}
                   total={total}
                   selectedCurrency={selectedCurrency}
                   currencies={supportedCurrencies}
@@ -342,6 +413,7 @@ function App() {
                   onSubmitGift={submitGift}
                   onPaymentMethodChange={setPaymentMethod}
                   onReset={resetGift}
+
                 />
               }
             />
@@ -356,10 +428,31 @@ function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/access-denied" element={<AccessDenied />} />
               <Route
-                path="/admin/*"
+                path="/admin/add-service"
                 element={
                   <ProtectedRoute adminPage={true}>
-                    <Admin />
+                    <AddAService 
+                      fetchServices={fetchServices} 
+                      services={services}
+                      providers={serviceProviders}
+
+                    />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/user"
+                element={
+                  <ProtectedRoute adminPage={true}>
+                    <AllUsers />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/update-order-status"
+                element={
+                  <ProtectedRoute adminPage={true}>
+                    <UpdateOrderStatus />
                   </ProtectedRoute>
                 }
               />

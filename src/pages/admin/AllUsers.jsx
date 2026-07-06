@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Admin = () => {
+const AllUsers = () => {
   return (
     <div>
-      admin page    
+      all users
     </div>
   )
 }
 
-export default Admin
+export default AllUsers

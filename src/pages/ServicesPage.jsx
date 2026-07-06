@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Gift, MapPin } from 'lucide-react';
-import { services } from '../data/services.js';
+import { Gift, MapPin, Trash2, SearchX, Inbox, CircleOff } from 'lucide-react';
+// import { services } from '../data/services.js';
 import GiftForm from './GiftForm.jsx';
 import { useMyContext } from "../store/ContextApi";
+import toast from "react-hot-toast";
+import api from "../services/api";
 
 function ServicesPage({
   selectedIds,
@@ -24,25 +26,52 @@ function ServicesPage({
   onGiftDetailsChange,
   onSubmitGift,
   onPaymentMethodChange,
-  onReset
+  onReset,
+  services,
+  fetchServices,
+  onServiceDeleted
 }) {
-  const { token } = useMyContext();
+  const { token, isAdmin } = useMyContext();
   const [searchQuery, setSearchQuery] = useState('');
   const filteredServices = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
+  const normalizedQuery = searchQuery.trim().toLowerCase();
 
     if (!normalizedQuery) {
       return services;
     }
 
     return services.filter((service) => service.title.toLowerCase().includes(normalizedQuery));
-  }, [searchQuery]);
+  }, [services, searchQuery]);
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/admin/delete-service/${id}`);
+
+      // Remove deleted service from selectedIds
+      onServiceDeleted(id);
+
+      toast.success("Service deleted successfully");
+
+      await fetchServices();
+    } catch (err) {
+      toast.error("Failed to delete service");
+    }
+  };
 
   return (
     <section className="services-layout">
       <div className="provider-banner">
         <MapPin aria-hidden="true" />
-        <span>Kathmandu providers: {serviceProviderNames}</span>
+        <span className="provider-text">
+          Kathmandu providers:{" "}
+          {serviceProviderNames ? (
+            serviceProviderNames
+          ) : (
+            <span className="no-provider">
+              <CircleOff size={16} />
+            </span>
+          )}
+        </span>
       </div>
       <div className="currency-toolbar">
         <label className="service-search" htmlFor="service-search">
@@ -97,26 +126,55 @@ function ServicesPage({
 
       <div className="service-grid">
         {filteredServices.map((service) => (
-          <label className={`service-card ${selectedIds.includes(service.id) ? 'selected' : ''}`} key={service.id}>
+          <div
+            key={service.id}
+            className={`service-card ${
+              selectedIds.includes(service.id) ? "selected" : ""
+            }`}
+            onClick={() => onToggle(service.id)}
+          >
+            {isAdmin && (
+              <button
+                type="button"
+                className="delete-service-btn"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  if (!window.confirm(`Delete "${service.title}"?`)) {
+                    return;
+                  }
+
+                  await handleDelete(service.id);
+                }}
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
+
             <input
               type="checkbox"
               checked={selectedIds.includes(service.id)}
               onChange={() => onToggle(service.id)}
+              onClick={(e) => e.stopPropagation()}
             />
+
             <div className="service-card-top">
               <span>{service.code}</span>
               <strong>{formatMoney(service.price)}</strong>
             </div>
+
             <h2>{service.title}</h2>
+
             <p>{service.description}</p>
-          </label>
+          </div>
         ))}
       </div>
 
       {filteredServices.length === 0 && (
-        <div className="empty-services">
+      <div className="mt-18 px-24 flex flex-col items-center justify-center py-8 text-gray-500">
+          <SearchX className="w-12 h-12 mb-3 text-gray-400" />
           <strong>No services found</strong>
-          <p>Try searching with another service title.</p>
         </div>
       )}
 
