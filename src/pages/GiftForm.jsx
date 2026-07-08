@@ -12,7 +12,8 @@
     onChange,
     onSubmit,
     onPaymentMethodChange,
-    onReset
+    onReset, 
+    onSaveOrder
   }) {
     return (
       <section className="gift-flow" ref={giftFormRef}>
@@ -42,15 +43,15 @@
             <label>
               <span>Contact Details</span>
               <input
-                name="recipientContact"
-                value={giftDetails.recipientContact}
+                name="recipientPhone"
+                value={giftDetails.recipientPhone}
                 onChange={onChange}
                 placeholder="Phone number"
                 required
               />
               <input
-                name="recipientContact"
-                value={giftDetails.recipientContact}
+                name="recipientEmail"
+                value={giftDetails.recipientEmail}
                 onChange={onChange}
                 placeholder="Email (optional)"
               />
@@ -89,8 +90,8 @@
             <label>
               <span>Contact Details</span>
               <input
-                name="senderContact"
-                value={giftDetails.senderContact}
+                name="senderEmail"
+                value={giftDetails.senderEmail}
                 onChange={onChange}
                 placeholder="Email"
                 required
@@ -151,7 +152,7 @@
                 </label>
               ))}
             </div>
-            <button className="primary-action full" type="button" onClick={onReset}>
+            <button className="primary-action full" type="button"  onClick={onSaveOrder}>
               Confirm Dummy Payment
             </button>
           </section>

@@ -60,9 +60,10 @@ export const relationships = ['Daughter', 'Son', 'Mom', 'Dad', 'Cousin', 'Friend
 
 export const initialGift = {
   recipientName: '',
-  recipientContact: '',
+  recipientEmail: '',
+  recipientPhone: '',
   relationship: 'Daughter',
   message: '',
   senderName: '',
-  senderContact: ''
+  senderEmail: ''
 };

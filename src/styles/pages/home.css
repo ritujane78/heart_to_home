@@ -38,11 +38,15 @@
 }
 
 .process-panel {
-  padding: 30px;
+  padding: 2.5rem;
   background: #ffffff;
   border: 1px solid #dfe1d7;
   border-radius: 8px;
   box-shadow: 0 24px 70px rgba(29, 38, 50, 0.08);
+}
+.process-panel h2{
+  margin-top: 10px;
+  font-size: 2.5rem;
 }
 
 .muted-section {
@@ -88,7 +92,7 @@
 
 .steps {
   display: grid;
-  gap: 16px;
+  gap: 2.5rem;
   margin-top: 2rem;
 }
 

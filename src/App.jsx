@@ -23,11 +23,15 @@ import AddAService from "./pages/admin/AddAService.jsx";
 import AllUsers from "./pages/admin/AllUsers.jsx";
 import UpdateOrderStatus from "./pages/admin/UpdateOrderStatus.jsx";
 
+import toast from "react-hot-toast";
+
+
 import { Toaster } from "react-hot-toast";
 import {
   PlusCircle,
   Pencil,
-  Users
+  Users,
+  LogOut
 } from "lucide-react";
 
 import {
@@ -80,7 +84,7 @@ function App() {
     const navigate = useNavigate();
 
   // Access the states by using the useMyContext hook from the ContextProvider
-  const { token, setToken, setCurrentUser, isAdmin, setIsAdmin } =
+  const { token, setToken, currentUser, setCurrentUser, isAdmin, setIsAdmin } =
     useMyContext();
 
   const giftFormRef = useRef(null);
@@ -196,6 +200,45 @@ function App() {
       });
     }
   }, [giftStarted, selectedServices.length]);
+  const saveOrder = async () => {
+    const convertedTotal =
+      total * exchangeRates[selectedCurrency];
+      console.log("total = " + total);
+      console.log("exchange rates = "+ exchangeRates[selectedCurrency])
+
+    try {
+      const giftOrderRequest = {
+        recipientName: giftDetails.recipientName,
+        recipientPhone: giftDetails.recipientPhone,
+        recipientEmail: giftDetails.recipientEmail,
+
+        relationship: giftDetails.relationship,
+
+        senderName: giftDetails.senderName,
+        senderEmail: giftDetails.senderEmail,
+
+        message: giftDetails.message,
+
+        serviceIds: selectedServices.map(service => String(service.id)),
+
+        totalPrice: convertedTotal,
+
+        currency: selectedCurrency
+
+      };
+
+      await api.post(
+        "/orders",
+        giftOrderRequest,
+      );
+
+      toast.success("Order placed successfully!");
+      resetGift();
+    } catch (error) {
+      console.error(error);
+      toast.error("Unable to place order.");
+    }
+  };
 
   function toggleService(id) {
     setSelectedIds((current) => {
@@ -346,7 +389,8 @@ function App() {
                         setMenuOpen(false);
                         handleLogout();
                       }}
-                    >
+                    > 
+                      <LogOut size={18} />
                       Log Out
                     </button>
                   </div>
@@ -388,6 +432,7 @@ function App() {
               path="/services"
               element={
                 <ServicesPage
+                  onSaveOrder={saveOrder}
                   selectedIds={selectedIds}
                   selectedServices={selectedServices}
                   serviceProviders={activeProviders}

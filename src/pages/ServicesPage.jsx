@@ -29,7 +29,8 @@ function ServicesPage({
   onReset,
   services,
   fetchServices,
-  onServiceDeleted
+  onServiceDeleted,
+  onSaveOrder
 }) {
   const { token, isAdmin } = useMyContext();
   const [searchQuery, setSearchQuery] = useState('');
@@ -190,6 +191,7 @@ function ServicesPage({
 
       {giftStarted && selectedServices.length > 0 && (
         <GiftForm
+          onSaveOrder={onSaveOrder}
           giftFormRef={giftFormRef}
           giftDetails={giftDetails}
           selectedServices={selectedServices}
