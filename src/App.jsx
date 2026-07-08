@@ -31,6 +31,7 @@ import {
   PlusCircle,
   Pencil,
   Users,
+  ClipboardList,
   LogOut
 } from "lucide-react";
 
@@ -322,7 +323,7 @@ function App() {
   {
     title: "All Users",
     icon: <Users className="w-6 h-6" />,
-    path: "/admin/user",
+    path: "/admin/all-users",
   },
 ];
 
@@ -379,7 +380,8 @@ function App() {
                         className="dropdown-item"
                         onClick={() => setMenuOpen(false)}
                       >
-                        Orders
+                        <ClipboardList className="dropdown-icon" />
+                        My Orders
                       </NavLink>
                     )}
 
@@ -486,7 +488,7 @@ function App() {
                 }
               />
               <Route
-                path="/admin/user"
+                path="/admin/all-users"
                 element={
                   <ProtectedRoute adminPage={true}>
                     <AllUsers />
@@ -505,7 +507,10 @@ function App() {
                 path="/order/*"
                 element={
                   <ProtectedRoute >
-                    <Order />
+                    <Order 
+                      selectedCurrency={selectedCurrency}
+                      exchangeRates={exchangeRates}
+                    />
                   </ProtectedRoute>
                 }
               />

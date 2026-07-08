@@ -18,7 +18,7 @@ const Login = () => {
   const [jwtToken, setJwtToken] = useState("");
   const [loading, setLoading] = useState(false);
   // Access the token and setToken function using the useMyContext hook from the ContextProvider
-  const { token, setToken } = useMyContext();
+  const { token, setToken, setIsAdmin } = useMyContext();
   const navigate = useNavigate();
 
   //react hook form initialization
@@ -37,17 +37,26 @@ const Login = () => {
   });
 
   const handleSuccessfulLogin = (token, decodedToken) => {
+    const roles = decodedToken.roles
+      ? decodedToken.roles.split(",")
+      : [];
+
     const user = {
       username: decodedToken.sub,
-      roles: decodedToken.roles ? decodedToken.roles.split(",") : [],
+      roles,
     };
+
     localStorage.setItem("JWT_TOKEN", token);
     localStorage.setItem("USER", JSON.stringify(user));
 
-    //store the token on the context state  so that it can be shared any where in our application by context provider
     setToken(token);
+    setIsAdmin(roles.includes("ROLE_ADMIN"));
 
-    navigate("/");
+    if (roles.includes("ROLE_ADMIN")) {
+      navigate("/admin/all-users");
+    } else {
+      navigate("/order/users");
+    }
   };
 
   //function for handle login with credentials
@@ -79,37 +88,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-
-  //function for verify 2fa authentication
-  const onVerify2FaHandler = async (data) => {
-    const code = data.code;
-    setLoading(true);
-
-    try {
-      const formData = new URLSearchParams();
-      formData.append("code", code);
-      formData.append("jwtToken", jwtToken);
-
-      await api.post("/auth/public/verify-2fa-login", formData, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      });
-
-      const decodedToken = jwtDecode(jwtToken);
-      handleSuccessfulLogin(jwtToken, decodedToken);
-    } catch (error) {
-      console.error("2FA verification error", error);
-      toast.error("Invalid 2FA code. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  //if there is token  exist navigate  the user to the home page if he tried to access the login page
-  useEffect(() => {
-    if (token) navigate("/");
-  }, [navigate, token]);
 
   //step1 will render the login form and step-2 will render the 2fa verification form
   return (
