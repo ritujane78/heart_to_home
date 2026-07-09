@@ -40,11 +40,12 @@ const AddService = ({
 
     await api.post("/admin/add-service", payload);
 
-    toast.success("Service added successfully!");
-
+    
     reset();
-
+    
     await fetchServices();
+    
+    toast.success("Service added successfully!");
 
     } catch (error) {
         toast.error("Failed to add service");
@@ -121,7 +122,7 @@ const AddService = ({
       </div>
 
       <InputField
-        label="Price (in Nrs)"
+        label="Price (in NPR)"
         id="price"
         required
         type="number"

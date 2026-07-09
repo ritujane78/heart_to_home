@@ -9,6 +9,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { BallTriangle } from "react-loader-spinner";
 
 function MyOrdersPage({
   exchangeRates,
@@ -42,27 +43,43 @@ function MyOrdersPage({
     }).format(convertedAmount);
   };
 
-  if (loading) {
-    return <p>Loading orders...</p>;
-  }
-
   return (
-  <div className="min-h-screen bg-gray-100 py-10">
-    <div className="mx-auto max-w-6xl px-4">
-      <h2 className="mb-8 text-3xl font-bold text-gray-800">
-        My Orders
-      </h2>
+<div className="min-h-screen bg-gray-100 py-10">
+  <div className="mx-auto max-w-6xl px-4">
+    <h2 className="mb-8 text-3xl font-bold text-gray-800">
+      My Orders
+    </h2>
 
-      {orders.length === 0 ? (
+    {loading ? (
+      <div className="flex flex-col justify-center items-center h-96 bg-white rounded-xl shadow">
+        <BallTriangle
+          height={100}
+          width={100}
+          radius={5}
+          color="#1e5146"
+          ariaLabel="ball-triangle-loading"
+          visible={true}
+        />
+        <span className="mt-3 text-gray-600 text-lg">
+          Please wait...
+        </span>
+      </div>
+    ) : orders.length === 0 ? (
         <div className="rounded-xl bg-white p-12 text-center shadow">
           <Package className="mx-auto mb-4 h-12 w-12 text-gray-400" />
           <p className="text-lg text-gray-500">
-            No orders found. Buy services for your loved ones <NavLink to={"/services"}>here</NavLink>.
+            No orders, yet! Buy healthcare services for your loved ones{" "}
+            <NavLink
+              to="/services"
+              className="text-[#1e5146] font-semibold hover:underline"
+            >
+              here
+            </NavLink>.
           </p>
         </div>
       ) : (
-        <div className="space-y-8">
-          {orders.map((order) => (
+        <div className="space-y-8">          
+        {orders.map((order) => (
             <div
               key={order.id}
               className="overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-lg"

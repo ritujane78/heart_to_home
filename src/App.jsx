@@ -52,6 +52,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Order from "./pages/Order.jsx";
 import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
+import UserDetails from "./pages/admin/UserDetails.jsx";
 
 const EXCHANGE_RATE_URL = "https://open.er-api.com/v6/latest/NPR";
 
@@ -379,7 +380,7 @@ function App() {
                       ))}
                     {isAdmin || (
                       <NavLink
-                        to="/order/users"
+                        to="/my-orders"
                         className="dropdown-item"
                         onClick={() => setMenuOpen(false)}
                       >
@@ -498,6 +499,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route 
+                path="/admin/users/:userId" 
+                element = {
+                  <ProtectedRoute adminPage={true}>
+                    <UserDetails />
+                  </ProtectedRoute>
+                  }
+                />
               <Route
                 path="/admin/update-order-status"
                 element={
@@ -507,7 +516,7 @@ function App() {
                 }
               />
               <Route
-                path="/order/*"
+                path="/my-orders"
                 element={
                   <ProtectedRoute >
                     <Order 

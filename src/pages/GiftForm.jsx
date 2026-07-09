@@ -1,5 +1,6 @@
   import { CheckCircle2, CreditCard } from 'lucide-react';
   import { relationships } from '../data/services.js';
+import { useState } from 'react';
 
   function GiftForm({
     giftFormRef,
@@ -15,6 +16,13 @@
     onReset, 
     onSaveOrder
   }) {
+    const [isSaving, setIsSaving] = useState(false);
+    const handleSaveOrder = () => {
+      if (isSaving) return;
+
+      setIsSaving(true);
+      onSaveOrder();
+    };
     return (
       <section className="gift-flow" ref={giftFormRef}>
         <form className="gift-form" onSubmit={onSubmit}>
@@ -152,8 +160,13 @@
                 </label>
               ))}
             </div>
-            <button className="primary-action full" type="button"  onClick={onSaveOrder}>
-              Confirm Dummy Payment
+            <button
+              className="primary-action full"
+              type="button"
+              onClick={handleSaveOrder}
+              disabled={isSaving}
+            >
+              {isSaving ? "Processing..." : "Confirm Dummy Payment"}
             </button>
           </section>
         )}

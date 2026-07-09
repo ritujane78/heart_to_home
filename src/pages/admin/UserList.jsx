@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import api from "../../services/api";
+import api from "../../services/api.jsx";
 import { DataGrid } from "@mui/x-data-grid";
 import toast from "react-hot-toast";
-import { BallTriangle } from "react-loader-spinner";
-// import Errors from "../Errors.js";
+import { Blocks } from "react-loader-spinner";
+import Errors from "../Errors.js";
 import moment from "moment";
-import { Link, Routes, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { MdOutlineEmail } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
-import UserDetails from "./UserDetails"
 
 //Material ui data grid has used for the table
 //initialize the columns for the tables and (field) value is used to show data in a specific column dynamically
@@ -21,8 +20,8 @@ export const userListsColumns = [
     disableColumnMenu: true,
     align: "center",
     editable: false,
-    headerClassName: "text-black font-semibold" ,
-    cellClassName: "text-slate-700 font-normal ",
+    headerClassName: "text-black font-semibold border",
+    cellClassName: "text-slate-700 font-normal  border",
     renderHeader: (params) => <span className="text-center">UserName</span>,
   },
 
@@ -33,8 +32,8 @@ export const userListsColumns = [
     width: 260,
     editable: false,
     headerAlign: "center",
-    headerClassName: "text-black font-semibold text-center  ",
-    cellClassName: "text-slate-700 font-normal  text-center ",
+    headerClassName: "text-black font-semibold text-center border ",
+    cellClassName: "text-slate-700 font-normal  border  text-center ",
     align: "center",
     disableColumnMenu: true,
     renderHeader: (params) => <span>Email</span>,
@@ -55,8 +54,8 @@ export const userListsColumns = [
     headerAlign: "center",
     width: 220,
     editable: false,
-    headerClassName: "text-black font-semibold ",
-    cellClassName: "text-slate-700 font-normal ",
+    headerClassName: "text-black font-semibold border",
+    cellClassName: "text-slate-700 font-normal  border  ",
     align: "center",
     disableColumnMenu: true,
     renderHeader: (params) => <span>Created At</span>,
@@ -79,8 +78,8 @@ export const userListsColumns = [
     width: 200,
     editable: false,
     disableColumnMenu: true,
-    headerClassName: "text-black font-semibold ",
-    cellClassName: "text-slate-700 font-normal   ",
+    headerClassName: "text-black font-semibold border ",
+    cellClassName: "text-slate-700 font-normal  border  ",
     renderHeader: (params) => <span className="ps-10">Status</span>,
   },
   {
@@ -88,7 +87,7 @@ export const userListsColumns = [
     headerName: "Action",
     headerAlign: "center",
     editable: false,
-    headerClassName: "text-black font-semibold text-center",
+    headerClassName: "text-black font-semibold text-cente",
     cellClassName: "text-slate-700 font-normal",
     sortable: false,
     width: 200,
@@ -99,7 +98,7 @@ export const userListsColumns = [
           to={`/admin/users/${params.id}`}
           className="h-full flex  items-center justify-center   "
         >
-          <button className="bg-[#1e5146] text-white px-4 flex justify-center items-center  h-9 rounded-md ">
+          <button className="bg-btnColor text-white px-4 flex justify-center items-center  h-9 rounded-md ">
             Views
           </button>
         </Link>
@@ -108,7 +107,7 @@ export const userListsColumns = [
   },
 ];
 
-const AllUsers = () => {
+const UserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -149,32 +148,31 @@ const AllUsers = () => {
     };
   });
 
-  // if (error) {
-  //   return <Errors message={error} />;
-  // }
+  if (error) {
+    return <Errors message={error} />;
+  }
 
   return (
     <div className="p-4">
       <div className="py-4">
-        <h2 className="text-center text-2xl font-bold text-slate-800 uppercase ">
+        <h1 className="text-center text-2xl font-bold text-slate-800 uppercase">
           All Users
-        </h2>
+        </h1>
       </div>
-      <div className="overflow-x-auto w-full mx-auto pb-6">
+      <div className="overflow-x-auto w-full mx-auto">
         {loading ? (
           <>
-            <div className="flex flex-col justify-center items-center h-72">
+            <div className="flex  flex-col justify-center items-center  h-72">
               <span>
-                <BallTriangle
-                  height={100}
-                  width={100}
-                  radius={5}
+                <Blocks
+                  height="70"
+                  width="70"
                   color="#4fa94d"
-                  ariaLabel="ball-triangle-loading"
+                  ariaLabel="blocks-loading"
                   wrapperStyle={{}}
-                  wrapperClass=""
+                  wrapperClass="blocks-wrapper"
                   visible={true}
-                  />
+                />
               </span>
               <span>Please wait...</span>
             </div>
@@ -183,7 +181,7 @@ const AllUsers = () => {
           <>
             {" "}
             <DataGrid
-              className="transparent-grid w-fit mx-auto shadow-lg shadow-gray-300"
+              className="w-fit mx-auto"
               rows={rows}
               columns={userListsColumns}
               initialState={{
@@ -204,4 +202,4 @@ const AllUsers = () => {
   );
 };
 
-export default AllUsers;
+export default UserList;

@@ -109,7 +109,7 @@ function ServicesPage({
         <div className="button-wrapper">
           {(!token || selectedIds.length === 0) && (
             <p className="gift-note">
-              <strong>Note:</strong> The <strong>Gift Now</strong> button will be enabled only after you sign in and select one or more services.
+              <strong>Note:</strong> The <strong>Gift Now</strong> button will be enabled only after you log in and select one or more services.
             </p>
           )}
 

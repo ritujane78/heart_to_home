@@ -367,6 +367,20 @@ main {
   /* width: min(1180px, 100%); */
   margin: 0 auto;
 }
+.transparent-grid,
+.transparent-grid .MuiDataGrid-main,
+.transparent-grid .MuiDataGrid-columnHeaders,
+.transparent-grid .MuiDataGrid-columnHeader,
+.transparent-grid .MuiDataGrid-cell,
+.transparent-grid .MuiDataGrid-row,
+.transparent-grid .MuiDataGrid-footerContainer,
+.transparent-grid .MuiDataGrid-virtualScroller {
+  background-color: transparent !important;
+}
+
+.transparent-grid {
+  border: none;
+}
 footer {
     display: flex;
     width: 100%;
