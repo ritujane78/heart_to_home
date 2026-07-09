@@ -33,11 +33,14 @@ function MyOrdersPage({
     }
   };
 
-  const formatMoney = (amount, sCurrency) =>
-    new Intl.NumberFormat("en-US", {
+  const formatMoney = (amount, sCurrency, exchangeRate = 1) => {
+    const convertedAmount = amount * exchangeRate;
+
+    return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: sCurrency,
-    }).format(amount);
+    }).format(convertedAmount);
+  };
 
   if (loading) {
     return <p>Loading orders...</p>;
@@ -129,7 +132,7 @@ function MyOrdersPage({
                   <div>
                     <p className="text-sm text-gray-500">Total</p>
                     <p className="text-lg font-bold text-green-600">
-                      {formatMoney(order.totalPrice, order.currency)}
+                      {formatMoney(order.totalPrice, order.currency, order.exchangeRate)}
                     </p>
                   </div>
                 </div>
@@ -153,7 +156,7 @@ function MyOrdersPage({
                         </span>
 
                         <span className="font-semibold text-[#1e5146]">
-                          {formatMoney(exchangeRates[order.currency] * service.price, order.currency)}
+                          {formatMoney(exchangeRates[order.currency] * service.price, order.currency, order.exchangeRate)}
                         </span>
                       </div>
                     ))}

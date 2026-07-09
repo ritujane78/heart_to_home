@@ -202,8 +202,9 @@ function App() {
     }
   }, [giftStarted, selectedServices.length]);
   const saveOrder = async () => {
+    const exchangeRate = exchangeRates[selectedCurrency];
     const convertedTotal =
-      total * exchangeRates[selectedCurrency];
+      total * exchangeRate;
       console.log("total = " + total);
       console.log("exchange rates = "+ exchangeRates[selectedCurrency])
 
@@ -224,7 +225,9 @@ function App() {
 
         totalPrice: convertedTotal,
 
-        currency: selectedCurrency
+        currency: selectedCurrency,
+        
+        exchangeRate: exchangeRate
 
       };
 
