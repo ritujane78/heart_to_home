@@ -13,6 +13,8 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatuses, setSelectedStatuses] = useState({});
+  const [updateMessages, setUpdateMessages] = useState({});
+  const [updatingOrders, setUpdatingOrders] = useState({});
 
   useEffect(() => {
     fetchOrders();
@@ -38,12 +40,19 @@ const fetchOrders = async () => {
 };
 
 const updateStatus = async (orderId) => {
+  setUpdatingOrders((prev) => ({
+    ...prev,
+    [orderId]: true,
+  }));
+
   try {
     const newStatus = selectedStatuses[orderId];
 
     await api.put(`/orders/${orderId}/status`, {
       orderStatus: newStatus,
     });
+
+    const updatedOrder = orders.find((order) => order.id === orderId);
 
     setOrders((prev) =>
       prev.map((order) =>
@@ -53,14 +62,27 @@ const updateStatus = async (orderId) => {
       )
     );
 
-    alert("Status updated successfully!");
+    setUpdateMessages((prev) => ({
+      ...prev,
+      [orderId]: updatedOrder?.recipientEmail
+        ? `✅ Status updated successfully. Email sent to ${updatedOrder.recipientEmail}.`
+        : "✅ Status updated successfully.",
+    }));
 
   } catch (err) {
     console.error(err);
-    alert("Unable to update status.");
+
+    setUpdateMessages((prev) => ({
+      ...prev,
+      [orderId]: "❌ Unable to update status.",
+    }));
+  } finally {
+    setUpdatingOrders((prev) => ({
+      ...prev,
+      [orderId]: false,
+    }));
   }
 };
-
   if (loading) return <h2>Loading orders...</h2>;
 
   return (
@@ -171,11 +193,28 @@ const updateStatus = async (orderId) => {
 
           </div>
 
+          {updateMessages[order.id] && (
+            <div
+              className={`text-sm font-medium text-center ${
+                updateMessages[order.id].startsWith("✅")
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {updateMessages[order.id]}
+            </div>
+          )}
+
           <button
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-2 rounded-md transition"
+            className={`font-medium px-8 py-2 rounded-md transition ${
+              updatingOrders[order.id]
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-[#1e5146] hover:bg-blue-700 text-white"
+            }`}
+            disabled={updatingOrders[order.id]}
             onClick={() => updateStatus(order.id)}
           >
-            Update Status
+            {updatingOrders[order.id] ? "Updating..." : "Update Status"}
           </button>
 
         </div>
