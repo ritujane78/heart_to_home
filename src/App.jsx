@@ -239,6 +239,7 @@ function App() {
 
       toast.success("Order placed successfully!");
       resetGift();
+      navigate("/my-orders")
     } catch (error) {
       console.error(error);
       toast.error("Unable to place order.");

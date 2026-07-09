@@ -8,6 +8,7 @@ const STATUS_OPTIONS = [
   "DELIVERED",
   "CANCELED",
 ];
+import {BallTriangle} from "react-loader-spinner"
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -83,7 +84,23 @@ const updateStatus = async (orderId) => {
     }));
   }
 };
-  if (loading) return <h2>Loading orders...</h2>;
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <BallTriangle
+          height={100}
+          width={100}
+          radius={5}
+          color="#1e5146"
+          ariaLabel="ball-triangle-loading"
+          visible={true}
+        />
+        <span className="mt-4 text-lg text-gray-600">
+          Please wait...
+        </span>
+      </div>
+    );
+  }
 
   return (
   <div className="admin-orders max-w-6xl mx-auto px-6 py-8">

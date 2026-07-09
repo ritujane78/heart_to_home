@@ -72,7 +72,7 @@ function MyOrdersPage({
             <NavLink
               to="/services"
               className="text-[#1e5146] font-semibold hover:underline"
-            >
+            > 
               here
             </NavLink>.
           </p>
@@ -91,7 +91,9 @@ function MyOrdersPage({
                     ? "bg-[#1e5146]"
                     : order.orderStatus === "CANCELED"
                     ? "bg-red-500"
-                    : "bg-yellow-500"
+                    : order.orderStatus === "IN_PROCESS"
+                    ? "bg-yellow-500" 
+                    : "bg-lime-500"
                 } px-6 py-4 text-white`}
               >
                 <div className="flex items-center gap-3">
