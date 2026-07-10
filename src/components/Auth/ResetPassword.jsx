@@ -4,7 +4,6 @@ import api from "../../services/api";
 import { useForm } from "react-hook-form";
 import { Divider } from "@mui/material";
 import InputField from "../InputField/InputField";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Buttons from "../../utils/Buttons";
 
 const ResetPassword = () => {
@@ -13,7 +12,7 @@ const ResetPassword = () => {
     handleSubmit,
     reset,
     watch,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     defaultValues: {
       email: "",
@@ -25,8 +24,6 @@ const ResetPassword = () => {
 
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState(""); // "success" or "error"
   const [passwordUpdated, setPasswordUpdated] = useState(false);
@@ -93,7 +90,7 @@ const ResetPassword = () => {
               label="Password"
               required
               id="password"
-              type={showPassword ? "text" : "password"}
+              type="password"
               message="Password is required"
               placeholder="Enter Your Password"
               register={register}
@@ -101,23 +98,14 @@ const ResetPassword = () => {
               min={6}
               disableCopyPaste
             />
-
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-[42px] text-slate-500 hover:text-slate-700"
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
           </div>
 
           {/* Confirm Password */}
-          <div className="relative">
             <InputField
               label="Re-enter Password"
               required
               id="confirmPassword"
-              type={showConfirmPassword ? "text" : "password"}
+              type="password"
               message="Please confirm your password"
               placeholder="Re-enter Your Password"
               register={register}
@@ -128,22 +116,12 @@ const ResetPassword = () => {
                   value === watch("password") || "Passwords do not match",
               }}
             />
-
-    <button
-      type="button"
-      onClick={() =>
-        setShowConfirmPassword(!showConfirmPassword)
-      }
-      className="absolute right-3 top-[42px] text-slate-500 hover:text-slate-700"
-    >
-      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-    </button>
-  </div>
-</div>
+        </div>
         <Buttons
           disabled={
             loading ||
             passwordUpdated ||
+            !isValid ||
             !password ||
             !confirmPassword ||
             password !== confirmPassword
