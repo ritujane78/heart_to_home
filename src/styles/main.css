@@ -266,7 +266,7 @@ main {
 
 .dropdown-item:hover, 
 .dropdown-item.active {
-  background: #c1ddc8;
+  background: #dff0e9;
   /* transform: scale(1.05); */
 }
 
