@@ -98,7 +98,7 @@ const Login = () => {
           >
             <div>
               <h1 className="font-montserrat text-center text-[#1e5146] font-bold text-2xl">
-                Login 
+                Log In
               </h1>
               <p className="text-slate-600 text-center mb-6">
                 Please Enter your username and password{" "}

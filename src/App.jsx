@@ -67,15 +67,23 @@ function App() {
   const [paymentReady, setPaymentReady] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [services, setServices] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchServices = async () => {
-    const response = await api.get("/services");
-    setServices(response.data);
+  const fetchServices = async (pageNumber = 1, keyword = "") => {
+    const response = await api.get("/services", {
+      params: {
+        page: pageNumber - 1,
+        size: 6,
+        keyword,
+      },
+    });
+
+    setServices(response.data.content);
+    setTotalPages(response.data.totalPages);
   };
 
   useEffect(() => {
-    fetchServices();
-    console.log("Services updated:", services);
+    fetchServices(0, 6);
   }, []);
 
   const [selectedCurrency, setSelectedCurrency] =
@@ -109,14 +117,15 @@ function App() {
     };
   }, []);
 
-  const selectedServices = useMemo(
-    () => services.filter((service) => selectedIds.includes(service.id)),
-    [selectedIds]
-  );
+  const [selectedServices, setSelectedServices] = useState([]);
 
-  const total = selectedServices.reduce(
-    (sum, service) => sum + service.price,
-    0
+  const total = useMemo(
+    () =>
+      selectedServices.reduce(
+        (sum, service) => sum + service.price,
+        0
+      ),
+    [selectedServices]
   );
 
   const formatMoney = useMemo(
@@ -249,22 +258,27 @@ function App() {
     }
   };
 
-  function toggleService(id) {
-    setSelectedIds((current) => {
-      const next = current.includes(id)
-        ? current.filter((x) => x !== id)
-        : [...current, id];
+  function toggleService(service) {
+    if (selectedIds.includes(service.id)) {
+      setSelectedIds(prev => prev.filter(id => id !== service.id));
 
-      if (next.length === 0) {
-        setGiftStarted(false);
-      }
+      setSelectedServices(prev =>
+        prev.filter(s => s.id !== service.id)
+      );
+    } else {
+      setSelectedIds(prev => [...prev, service.id]);
 
-      return next;
-    });
+      setSelectedServices(prev => [...prev, service]);
+    }
 
     setPaymentReady(false);
   }
   function removeDeletedService(id) {
+    setSelectedIds(prev => prev.filter(x => x !== id));
+
+    setSelectedServices(prev =>
+      prev.filter(service => service.id !== id)
+    );
     setSelectedIds((current) => {
       const next = current.filter((serviceId) => serviceId !== id);
 
@@ -450,6 +464,7 @@ function App() {
                   providerMap={providerMap}
                   serviceProviderNames={serviceProviderNames}
                   services={services}
+                  totalPages={totalPages}
                   fetchServices={fetchServices}
                   onServiceDeleted={removeDeletedService}
                   total={total}

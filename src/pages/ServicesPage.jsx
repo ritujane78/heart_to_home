@@ -5,6 +5,7 @@ import GiftForm from './GiftForm.jsx';
 import { useMyContext } from "../store/ContextApi";
 import toast from "react-hot-toast";
 import api from "../services/api";
+import Pagination from "@mui/material/Pagination";
 
 function ServicesPage({
   selectedIds,
@@ -29,21 +30,38 @@ function ServicesPage({
   onReset,
   services,
   fetchServices,
+  totalPages,
   onServiceDeleted,
   onSaveOrder
 }) {
   const { token, isAdmin } = useMyContext();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    fetchServices(page, searchQuery);
+  }, [page, searchQuery]);
+  // useEffect(() => {
+  //   fetchServices(page - 1, 6); // Spring uses 0-based pages
+  // }, [page]);
   const filteredServices = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
+    
+    if (!normalizedQuery) {
+      return services;
+    }
+    
+    return services.filter((service) => service.title.toLowerCase().includes(normalizedQuery));
+  }, [services, searchQuery]);
+  
 
-      if (!normalizedQuery) {
-        return services;
-      }
-
-      return services.filter((service) => service.title.toLowerCase().includes(normalizedQuery));
-    }, [services, searchQuery]);
+    const handlePageChange = (event, value) => {
+      setPage(value);
+    };
 
   const handleDelete = async (id) => {
     try {
@@ -55,6 +73,7 @@ function ServicesPage({
       toast.success("Service deleted successfully");
 
       await fetchServices();
+      setPage(1);
     } catch (err) {
       toast.error("Failed to delete service");
     }
@@ -142,7 +161,7 @@ function ServicesPage({
             className={`service-card ${
               selectedIds.includes(service.id) ? "selected" : ""
             }`}
-            onClick={() => onToggle(service.id)}
+            onClick={() => onToggle(service)}
           >
             {isAdmin && (
               <button
@@ -166,7 +185,7 @@ function ServicesPage({
             <input
               type="checkbox"
               checked={selectedIds.includes(service.id)}
-              onChange={() => onToggle(service.id)}
+              onChange={() => onToggle(service)}
               onClick={(e) => e.stopPropagation()}
             />
 
@@ -188,7 +207,15 @@ function ServicesPage({
           <strong>No services found</strong>
         </div>
       )}
-
+      <div className="flex justify-end mt-8">
+        <Pagination
+          page={page}
+          count={totalPages}
+          // color="red"
+          shape="rounded"
+          onChange={handlePageChange}
+        />
+      </div>
 
     </section>
   );

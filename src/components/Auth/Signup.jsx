@@ -87,7 +87,7 @@ const Signup = () => {
       >
         <div>
           <h1 className="font-montserrat text-center text-[#1e5146] font-bold text-2xl">
-            Register
+            Sign Up
           </h1>
           <p className="text-slate-600 text-center mb-6">
             Enter your credentials to create new account
@@ -135,7 +135,7 @@ const Signup = () => {
           className="bg-[#1e5146] text-white font-semibold flex justify-center w-full py-2 rounded-sm my-3 transform transition-transform duration-200 hover:scale-[1.05] active:scale-[0.98]"
           type="text"
         >
-          {loading ? <span>Loading...</span> : "Register"}
+          {loading ? <span>Loading...</span> : "SignUp"}
         </Buttons>
 
         <p className="text-center text-sm text-slate-700 mt-2 ">
@@ -144,7 +144,7 @@ const Signup = () => {
             className="inline-block text-[#584c02] font-extrabold underline transition-transform duration-200 hover:scale-115"
             to="/login"
           >
-            Login
+            LogIn
           </Link>
         </p>
       </form>

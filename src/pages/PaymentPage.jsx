@@ -89,7 +89,7 @@ export default function PaymentPage({
       <button
         onClick={onSaveOrder}
         disabled={isSaving}
-        className="w-full rounded-lg bg-[#1f6f5c] px-6 py-3 font-semibold text-white transition hover:bg-[#174f42] disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-lg primary-action px-6 py-3 font-semibold text-white transition hover:bg-[#174f42] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSaving ? "Processing..." : "Confirm Dummy Payment"}
       </button>

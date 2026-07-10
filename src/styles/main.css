@@ -266,8 +266,8 @@ main {
 
 .dropdown-item:hover, 
 .dropdown-item.active {
-  background: #f6f4f4;
-  transform: scale(1.05);
+  background: #c1ddc8;
+  /* transform: scale(1.05); */
 }
 
 .logout-item {

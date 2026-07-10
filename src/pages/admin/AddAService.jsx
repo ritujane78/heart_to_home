@@ -127,7 +127,7 @@ const AddService = ({
         required
         type="number"
         placeholder="8500"
-        message="Price in NRS is required"
+        message="Price in NPR is required"
         register={register}
         errors={errors}
       />
