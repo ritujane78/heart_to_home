@@ -13,7 +13,8 @@ const UserDetails = () => {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isValid },
+    resetField, 
   } = useForm({
     defaultValues: {
       username: "",
@@ -123,6 +124,7 @@ const UserDetails = () => {
       toast.error("Error updating password " + err.response.data);
     } finally {
       setPasswordLoader(false);
+      resetField("password");
     }
   };
 
@@ -284,9 +286,10 @@ const UserDetails = () => {
                     </Buttons>
                     <Buttons
                       type="button"
-                      onClickhandler={() =>
-                        setIsEditingPassword(!isEditingPassword)
-                      }
+                      onClickhandler={() => {
+                        resetField("password");
+                        setIsEditingPassword(false);
+                      }}
                       className="bg-[#f22809] mb-0 w-fit px-4 py-2 rounded-md text-white"
                     >
                       Cancel

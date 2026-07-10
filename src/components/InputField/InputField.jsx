@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 const InputField = ({
@@ -15,10 +15,17 @@ const InputField = ({
   placeholder = "",
   readOnly = false,
   disabled = false,
+  resetField,
   validation = {},
   disableCopyPaste = false,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (readOnly) {
+      setShowPassword(false);
+    }
+  }, [readOnly]);
 
   const inputType =
     type === "password" && showPassword ? "text" : type;
@@ -40,11 +47,12 @@ const InputField = ({
           autoFocus={autoFocus}
           readOnly={readOnly}
           disabled={disabled}
-          className={`w-full px-2 py-2 pr-10 border outline-none bg-transparent text-slate-700 rounded-md disabled:bg-slate-100 disabled:cursor-not-allowed ${
-            autoFocus ? "border-2" : ""
-          } ${
-            errors[id]?.message ? "border-red-500" : "border-slate-700"
-          }`}
+          className={`w-full px-2 py-2 pr-10 border outline-none bg-transparent text-slate-700 rounded-md
+            ${readOnly ? "cursor-default" : "cursor-text"}
+            disabled:bg-slate-100 disabled:cursor-not-allowed
+            ${autoFocus ? "border-2" : ""}
+            ${errors[id]?.message ? "border-red-500" : "border-slate-700"}
+          `}
           onCopy={disableCopyPaste ? (e) => e.preventDefault() : undefined}
           onCut={disableCopyPaste ? (e) => e.preventDefault() : undefined}
           onPaste={disableCopyPaste ? (e) => e.preventDefault() : undefined}
@@ -65,7 +73,7 @@ const InputField = ({
           })}
         />
 
-        {type === "password" && (
+        {type === "password" && !readOnly && (
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
