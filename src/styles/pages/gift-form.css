@@ -6,8 +6,7 @@
   margin-top: 24px;
 }
 
-.gift-form,
-.payment-panel {
+.gift-form{
   padding: 24px;
   background: #ffffff;
   border: 1px solid #dfe1d7;
@@ -31,7 +30,7 @@
   grid-column: 1 / -1;
 }
 
-.receipt {
+/* .receipt {
   display: grid;
   gap: 12px;
   margin: 20px 0;
@@ -47,9 +46,9 @@
 
 .receipt-total {
   font-size: 1.12rem;
-}
+} */
 
-.payment-options {
+/* .payment-options {
   display: grid;
   gap: 10px;
   margin-bottom: 18px;
@@ -75,7 +74,7 @@
 
 .payment-options svg {
   color: #1f6f5c;
-}
+} */
 .form-section {
   margin-bottom: 2rem;
 }

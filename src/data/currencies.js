@@ -4,7 +4,7 @@ export const DEFAULT_CURRENCY = 'USD';
 export const supportedCurrencies = [
   { code: 'USD', label: 'USD - US Dollar' },
   { code: 'GBP', label: 'GBP - British Pound' },
-  { code: 'NPR', label: 'NRS - Nepali Rupee' },
+  { code: 'NPR', label: 'NPR - Nepali Rupee' },
   { code: 'INR', label: 'INR - Indian Rupee' },
   { code: 'EUR', label: 'EUR - Euro' },
   { code: 'AUD', label: 'AUD - Australian Dollar' },

@@ -34,15 +34,16 @@ function ServicesPage({
 }) {
   const { token, isAdmin } = useMyContext();
   const [searchQuery, setSearchQuery] = useState('');
+
   const filteredServices = useMemo(() => {
-  const normalizedQuery = searchQuery.trim().toLowerCase();
+    const normalizedQuery = searchQuery.trim().toLowerCase();
 
-    if (!normalizedQuery) {
-      return services;
-    }
+      if (!normalizedQuery) {
+        return services;
+      }
 
-    return services.filter((service) => service.title.toLowerCase().includes(normalizedQuery));
-  }, [services, searchQuery]);
+      return services.filter((service) => service.title.toLowerCase().includes(normalizedQuery));
+    }, [services, searchQuery]);
 
   const handleDelete = async (id) => {
     try {
@@ -125,6 +126,15 @@ function ServicesPage({
         </div>
       </div>
 
+        {selectedServices.length > 0 && (
+        <aside className="selection-summary">
+          <div>
+            <strong>{selectedServices.length} selected</strong>
+            <span>Total {formatMoney(total)}</span>
+          </div>
+          <p>{selectedServices.map((service) => service.code).join(', ')}</p>
+        </aside>
+      )}
       <div className="service-grid">
         {filteredServices.map((service) => (
           <div
@@ -179,32 +189,7 @@ function ServicesPage({
         </div>
       )}
 
-      {selectedServices.length > 0 && (
-        <aside className="selection-summary">
-          <div>
-            <strong>{selectedServices.length} selected</strong>
-            <span>Total {formatMoney(total)}</span>
-          </div>
-          <p>{selectedServices.map((service) => service.code).join(', ')}</p>
-        </aside>
-      )}
 
-      {giftStarted && selectedServices.length > 0 && (
-        <GiftForm
-          onSaveOrder={onSaveOrder}
-          giftFormRef={giftFormRef}
-          giftDetails={giftDetails}
-          selectedServices={selectedServices}
-          total={total}
-          formatMoney={formatMoney}
-          paymentReady={paymentReady}
-          paymentMethod={paymentMethod}
-          onChange={onGiftDetailsChange}
-          onSubmit={onSubmitGift}
-          onPaymentMethodChange={onPaymentMethodChange}
-          onReset={onReset}
-        />
-      )}
     </section>
   );
 }

@@ -23,6 +23,9 @@ import AddAService from "./pages/admin/AddAService.jsx";
 import AllUsers from "./pages/admin/AllUsers.jsx";
 import UpdateOrderStatus from "./pages/admin/UpdateOrderStatus.jsx";
 
+import GiftForm from "./pages/GiftForm";
+import PaymentPage from "./pages/PaymentPage";
+
 import toast from "react-hot-toast";
 
 
@@ -278,7 +281,9 @@ function App() {
   function startGiftFlow() {
     if (selectedIds.length === 0) return;
 
-    setGiftStarted(true);
+    navigate("/gift");
+
+    // setGiftStarted(true);
     setPaymentReady(false);
   }
 
@@ -293,7 +298,8 @@ function App() {
 
   function submitGift(e) {
     e.preventDefault();
-    setPaymentReady(true);
+    // setPaymentReady(true);
+    navigate("/payment")
   }
 
   function resetGift() {
@@ -379,7 +385,6 @@ function App() {
                           <span>{item.title}</span>
                         </NavLink>
                       ))}
-                    {isAdmin || (
                       <NavLink
                         to="/my-orders"
                         className="dropdown-item"
@@ -388,7 +393,6 @@ function App() {
                         <ClipboardList className="dropdown-icon" />
                         My Orders
                       </NavLink>
-                    )}
 
                     <button
                       className="dropdown-item logout-item"
@@ -469,6 +473,42 @@ function App() {
                 />
               }
             />
+            <Route
+              path="/gift"
+              element={
+                  <ProtectedRoute>
+                      <GiftForm
+                          giftFormRef={giftFormRef}
+                          giftDetails={giftDetails}
+                          selectedServices={selectedServices}
+                          total={total}
+                          formatMoney={formatMoney}
+                          paymentMethod={paymentMethod}
+                          onChange={updateGiftDetails}
+                          onSubmit={submitGift}
+                          onPaymentMethodChange={setPaymentMethod}
+                          onReset={resetGift}
+                          onSaveOrder={saveOrder}
+                      />
+                  </ProtectedRoute>
+              }
+          />
+
+          <Route
+              path="/payment"
+              element={
+                  <ProtectedRoute>
+                      <PaymentPage
+                          selectedServices={selectedServices}
+                          total={total}
+                          formatMoney={formatMoney}
+                          paymentMethod={paymentMethod}
+                          onPaymentMethodChange={setPaymentMethod}
+                          onSaveOrder={saveOrder}
+                      />
+                  </ProtectedRoute>
+              }
+          />
 
             <Route
               path="/contact"
