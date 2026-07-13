@@ -313,6 +313,7 @@ main {
   height: 60px;
   object-fit: contain;
   flex-shrink: 0;
+  outline: none;
 }
 
 .brand span ,

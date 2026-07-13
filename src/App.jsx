@@ -47,8 +47,6 @@ import {
 
 import {
   initialGift,
-  serviceProviders,
-  services,
 } from "./data/services.js";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -69,6 +67,7 @@ function App() {
   const [services, setServices] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
+  const [serviceProviders, setServiceProviders] = useState([]);
 
   const fetchServices = async (pageNumber = 1, keyword = "") => {
     const response = await api.get("/services", {
@@ -85,6 +84,15 @@ function App() {
 
   useEffect(() => {
     fetchServices();
+  }, []);
+  const fetchProviders = async () => {
+      const response = await api.get("/providers");
+      console.log("response = "+ JSON.stringify(response));
+      setServiceProviders(response.data);
+  };
+
+  useEffect(() => {
+      fetchProviders();
   }, []);
 
   const [selectedCurrency, setSelectedCurrency] =
@@ -136,9 +144,9 @@ function App() {
   );
   const activeProviders = useMemo(() => {
   return serviceProviders.filter((provider) =>
-    services.some((service) => service.providerId === provider.id)
+    services.some((service) => service.provider?.id === provider.id)
   );
-}, [services]);
+}, [services, serviceProviders]);
 
   const providerMap = useMemo(
   () =>
@@ -541,9 +549,10 @@ function App() {
                 element={
                   <ProtectedRoute adminPage={true}>
                     <AddAService 
+                      providers={serviceProviders}
+                      fetchProviders={fetchProviders}
                       fetchServices={fetchServices} 
                       services={services}
-                      providers={serviceProviders}
 
                     />
                   </ProtectedRoute>

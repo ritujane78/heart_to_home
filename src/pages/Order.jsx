@@ -46,7 +46,7 @@ function MyOrdersPage({
   return (
 <div className="min-h-screen bg-gray-100 py-10">
   <div className="mx-auto max-w-6xl px-4">
-    <h2 className="mb-8 text-3xl font-bold text-gray-800">
+    <h2 className="mb-8 text-3xl font-bold text-gray-800 text-center">
       My Orders
     </h2>
 

@@ -65,8 +65,8 @@ const updateStatus = async (orderId) => {
 
     setUpdateMessages((prev) => ({
       ...prev,
-      [orderId]: updatedOrder?.recipientEmail
-        ? `✅ Status updated successfully. Email sent to ${updatedOrder.recipientEmail}.`
+      [orderId]: updatedOrder?.senderEmail
+        ? `✅ Status updated successfully. Email sent to ${updatedOrder.senderEmail}.`
         : "✅ Status updated successfully.",
     }));
 
@@ -109,7 +109,20 @@ const updateStatus = async (orderId) => {
       Gift Orders
     </h2>
 
-    {orders.map((order) => (
+    {orders.length === 0 ? (
+  <div className="bg-white rounded-xl shadow-md border border-gray-200 py-16 px-8 text-center">
+    <Package className="mx-auto mb-4 h-14 w-14 text-gray-400" />
+
+    <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+      No orders yet
+    </h3>
+
+    <p className="text-gray-600">
+      There are currently no gift orders.
+    </p>
+  </div>
+) : (
+  orders.map((order) => (
       <div
         key={order.id}
         className="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-200"
@@ -235,10 +248,9 @@ const updateStatus = async (orderId) => {
           </button>
 
         </div>
-
       </div>
-    ))}
-
-  </div>
-  );
+    ))
+  )}
+</div>
+);
 }
