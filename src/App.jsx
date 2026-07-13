@@ -68,6 +68,7 @@ function App() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [services, setServices] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [isSaving, setIsSaving] = useState(false);
 
   const fetchServices = async (pageNumber = 1, keyword = "") => {
     const response = await api.get("/services", {
@@ -83,7 +84,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetchServices(0, 6);
+    fetchServices();
   }, []);
 
   const [selectedCurrency, setSelectedCurrency] =
@@ -151,18 +152,6 @@ function App() {
   return activeProviders.map((provider) => provider.name).join(" | ");
 }, [activeProviders]);
 
-
-  //   return [
-  //     ...new Set(
-  //       services.map((service) =>
-  //         providerNamesById.get(service.providerId)
-  //       )
-  //     ),
-  //   ]
-  //     .filter(Boolean)
-  //     .join(" | ");
-  // }, []);
-
   useEffect(() => {
     let isActive = true;
 
@@ -215,6 +204,9 @@ function App() {
     }
   }, [giftStarted, selectedServices.length]);
   const saveOrder = async () => {
+    if (isSaving) return;
+
+    setIsSaving(true);
     const exchangeRate = exchangeRates[selectedCurrency];
     const convertedTotal =
       total * exchangeRate;
@@ -234,7 +226,7 @@ function App() {
 
         message: giftDetails.message,
 
-        serviceIds: selectedServices.map(service => String(service.id)),
+        serviceIds: selectedServices.map(service => service.id),
 
         totalPrice: convertedTotal,
 
@@ -243,6 +235,7 @@ function App() {
         exchangeRate: exchangeRate
 
       };
+      console.log("order = " + JSON.stringify(giftOrderRequest));
 
       await api.post(
         "/orders",
@@ -253,8 +246,13 @@ function App() {
       resetGift();
       navigate("/my-orders")
     } catch (error) {
+      console.log(error.response?.status);
+      console.log(error.response?.data);
+      console.log(error.response?.headers);
       console.error(error);
       toast.error("Unable to place order.");
+    } finally {
+          setIsSaving(false);
     }
   };
 
@@ -318,11 +316,13 @@ function App() {
 
   function resetGift() {
     setSelectedIds([]);
+    setSelectedServices([]);
+
     setGiftDetails(initialGift);
     setGiftStarted(false);
     setPaymentReady(false);
     setPaymentMethod("card");
-  }
+}
 
   const handleLogout = () => {
     localStorage.removeItem("JWT_TOKEN"); // Updated to remove token from localStorage
@@ -437,7 +437,7 @@ function App() {
           </div>
         </header>
 
-        {/* <DevelopmentBanner /> */}
+        <DevelopmentBanner />
 
         <main>
           <Toaster position="bottom-center" reverseOrder={false} />
@@ -520,6 +520,8 @@ function App() {
                           paymentMethod={paymentMethod}
                           onPaymentMethodChange={setPaymentMethod}
                           onSaveOrder={saveOrder}
+                          isSaving={isSaving}
+
                       />
                   </ProtectedRoute>
               }

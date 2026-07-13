@@ -1,5 +1,3 @@
-// pages/DummyPaymentPage.jsx
-
 import { CreditCard } from "lucide-react";
 import { Navigate } from "react-router-dom";
 
@@ -85,14 +83,14 @@ export default function PaymentPage({
         ))}
       </div>
 
-      {/* Button */}
       <button
+        type="button"
         onClick={onSaveOrder}
         disabled={isSaving}
-        className="w-full rounded-lg primary-action px-6 py-3 font-semibold text-white transition hover:bg-[#174f42] disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {isSaving ? "Processing..." : "Confirm Dummy Payment"}
-      </button>
+        className="w-full rounded-lg primary-action px-6 py-3 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+        {isSaving ? "Processing Payment..." : "Confirm Dummy Payment"}
+    </button>
     </section>
   );
 }

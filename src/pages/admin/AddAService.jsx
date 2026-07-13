@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -12,6 +12,18 @@ const AddService = ({
     providers,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [disabledServices, setDisabledServices] = useState([]);
+  const [selectedServiceId, setSelectedServiceId] = useState("");
+  const [restoring, setRestoring] = useState(false);
+  
+  const fetchDisabledServices = async () => {
+    const response = await api.get("/admin/disabled-services");
+    setDisabledServices(response.data);
+  };
+
+useEffect(() => {
+    fetchDisabledServices();
+}, []);
 
   const {
     register,
@@ -26,6 +38,30 @@ const AddService = ({
       price: "",
     },
   });
+  const handleRestore = async () => {
+    if (!selectedServiceId) {
+        toast.error("Please select a service.");
+        return;
+    }
+
+    try {
+        setRestoring(true);
+
+        await api.put(`/admin/enable-service/${selectedServiceId}`);
+
+        toast.success("Service restored successfully!");
+
+        setSelectedServiceId("");
+
+        await fetchServices();
+        await fetchDisabledServices();
+
+    } catch {
+        toast.error("Unable to restore service.");
+    } finally {
+        setRestoring(false);
+    }
+};
 
   const onSubmit = async (data) => {
     try {
@@ -33,9 +69,11 @@ const AddService = ({
 
         const payload = {
         providerId: data.providerId,
+        code: data.code.trim().toUpperCase(),
         title: data.title,
         description: data.description,
         price: Number(data.price),
+        enabled: true
     };
 
     await api.post("/admin/add-service", payload);
@@ -48,13 +86,58 @@ const AddService = ({
     toast.success("Service added successfully!");
 
     } catch (error) {
-        toast.error("Failed to add service");
-    } finally {
+        const message =
+          error.response?.data?.message ||
+          error.response?.data ||
+          error.message ||
+          "Failed to add service.";
+
+        toast.error(message);
+      } finally {
         setLoading(false);
-    }
+      }
     };
 
   return (
+    <>
+    <div className="max-w-xl mx-auto mt-10 shadow-custom p-6 rounded-lg flex flex-col gap-4">
+
+      <h2 className="text-2xl font-bold text-center text-[#1e5146]">
+          Restore Deleted Service
+      </h2>
+
+      <div>
+          <label className="block mb-1 font-medium">
+              Disabled Services
+          </label>
+
+          <select
+              className="w-full border rounded-md p-2"
+              value={selectedServiceId}
+              onChange={(e) => setSelectedServiceId(e.target.value)}
+          >
+              <option value="">Select Service</option>
+
+              {disabledServices.map(service => (
+                  <option
+                      key={service.id}
+                      value={service.id}
+                  >
+                      {service.code} - {service.title}
+                  </option>
+              ))}
+          </select>
+      </div>
+
+      <Buttons
+          disabled={restoring || !selectedServiceId}
+          onClickhandler={handleRestore}
+          className="bg-[#1e5146] text-white w-full py-2 rounded-md"
+      >
+          {restoring ? "Restoring..." : "Restore Service"}
+      </Buttons>
+
+  </div>
     <form
       className="max-w-xl mx-auto shadow-custom p-6 rounded-lg flex flex-col gap-3"
     >
@@ -63,6 +146,16 @@ const AddService = ({
       </h2>
 
       <div>
+        <InputField
+          label="Service Code"
+          id="code"
+          required
+          type="text"
+          placeholder="HSGHC"
+          message="Service code is required"
+          register={register}
+          errors={errors}
+      />
         <label className="block mb-1 font-medium">
             Provider <span className="text-red-500">*</span>
         </label>
@@ -131,7 +224,6 @@ const AddService = ({
         register={register}
         errors={errors}
       />
-
       <Buttons
         disabled={loading}
         onClickhandler={handleSubmit(onSubmit)}
@@ -140,6 +232,7 @@ const AddService = ({
         {loading ? "Saving..." : "Add Service"}
       </Buttons>
     </form>
+    </>
   );
 };
 

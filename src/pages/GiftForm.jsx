@@ -18,16 +18,9 @@ import { Navigate } from "react-router-dom";
     onReset, 
     onSaveOrder
   }) {
-    const [isSaving, setIsSaving] = useState(false);
     if (selectedServices.length === 0) {
       return <Navigate to="/services" replace />;
   }
-    const handleSaveOrder = () => {
-      if (isSaving) return;
-
-      setIsSaving(true);
-      onSaveOrder();
-    };
     return (
       <section className='gift-page'>
         <section

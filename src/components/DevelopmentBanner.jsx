@@ -5,7 +5,7 @@ const DevelopmentBanner = () => {
 const whatsappLink = 'https://wa.me/9779800000000';
   return (
     <div className="development-banner">
-        <MessageCircle aria-hidden="true" />
+        {/* <MessageCircle aria-hidden="true" />
         <div>
         <strong>Heart to Home is currently in development and testing.</strong>
         <p >
@@ -15,13 +15,13 @@ const whatsappLink = 'https://wa.me/9779800000000';
             WhatsApp
             </a>
             .
-        </p>
+        </p> */}
         <p className="service-location">
             <MapPin size={16} />
             Currently available only in Kathmandu.
         </p>
-        </div>
-    </div>
+        {/* </div> */}
+      </div>
   )
 }
 
