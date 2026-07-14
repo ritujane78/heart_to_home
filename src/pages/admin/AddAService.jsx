@@ -34,6 +34,7 @@ useEffect(() => {
     reset,
     formState: { errors, isValid },
   } = useForm({
+    mode: 'onChange',
     defaultValues: {
       providerId: "",
       title: "",
@@ -41,6 +42,19 @@ useEffect(() => {
       price: "",
     },
   });
+  const validateTitle = async (title) => {
+    if (!title.trim()) return "Title is required";
+
+    try {
+      const response = await api.get("/admin/title-exists", {
+        params: { title: title.trim() },
+      });
+
+      return response.data ? "A service with this title already exists." : true;
+    } catch (error) {
+      return "Unable to validate title.";
+    }
+  };
   const handleRestore = async () => {
     if (!selectedServiceId) {
         toast.error("Please select a service.");
@@ -181,8 +195,11 @@ const onProviderSubmit = async (data) => {
         required
         type="text"
         placeholder="General Health Checkup"
-        message="Title is required"
         register={register}
+        validation={{
+          required: "Title is required",
+          validate: validateTitle,
+        }}
         errors={errors}
       />
 
