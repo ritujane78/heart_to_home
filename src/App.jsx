@@ -147,6 +147,7 @@ function App() {
     services.some((service) => service.provider?.id === provider.id)
   );
 }, [services, serviceProviders]);
+console.log(activeProviders);
 
   const providerMap = useMemo(
   () =>
@@ -218,8 +219,6 @@ function App() {
     const exchangeRate = exchangeRates[selectedCurrency];
     const convertedTotal =
       total * exchangeRate;
-      console.log("total = " + total);
-      console.log("exchange rates = "+ exchangeRates[selectedCurrency])
 
     try {
       const giftOrderRequest = {
@@ -243,7 +242,6 @@ function App() {
         exchangeRate: exchangeRate
 
       };
-      console.log("order = " + JSON.stringify(giftOrderRequest));
 
       await api.post(
         "/orders",
@@ -251,8 +249,9 @@ function App() {
       );
 
       toast.success("Order placed successfully!");
+      navigate("/my-orders");
       resetGift();
-      navigate("/my-orders")
+
     } catch (error) {
       console.log(error.response?.status);
       console.log(error.response?.data);
@@ -319,7 +318,9 @@ function App() {
   function submitGift(e) {
     e.preventDefault();
     // setPaymentReady(true);
-    navigate("/payment")
+    navigate("/payment", {
+      state: { fromOrder: true },
+    });
   }
 
   function resetGift() {

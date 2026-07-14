@@ -1,5 +1,5 @@
+import { Navigate, useLocation } from "react-router-dom";
 import { CreditCard } from "lucide-react";
-import { Navigate } from "react-router-dom";
 
 export default function PaymentPage({
   selectedServices,
@@ -10,10 +10,15 @@ export default function PaymentPage({
   onSaveOrder,
   isSaving,
 }) {
-  if (selectedServices.length === 0) {
-    return <Navigate to="/services" replace />;
-  }
 
+const location = useLocation();
+
+if (
+  selectedServices.length === 0 &&
+  location.state?.fromOrder !== true
+) {
+  return <Navigate to="/services" replace />;
+}
   return (
     <section className="mx-auto w-full max-w-3xl rounded-xl bg-white border border-gray-200 p-4 sm:p-6 lg:p-8 shadow-sm">
       <p className="mb-2 text-sm font-bold uppercase tracking-wider text-[#1f6f5c]">

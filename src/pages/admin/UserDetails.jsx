@@ -13,15 +13,20 @@ const UserDetails = () => {
     register,
     handleSubmit,
     setValue,
+    resetField,
     formState: { errors, isValid },
-    resetField, 
   } = useForm({
     defaultValues: {
       username: "",
       email: "",
       password: "",
     },
-    mode: "onSubmit",
+    mode: "onTouched",
+  });
+  const {
+    handleSubmit: handleRoleSubmit,
+  } = useForm({
+    mode: "onTouched",
   });
 
   const [loading, setLoading] = useState(false);
@@ -81,21 +86,22 @@ const UserDetails = () => {
   //handle update role
   const handleUpdateRole = async () => {
     setUpdateRoleLoader(true);
+
     try {
       const formData = new URLSearchParams();
       formData.append("userId", userId);
       formData.append("roleName", selectedRole);
 
-      await api.put(`/admin/update-role`, formData, {
+      await api.put("/admin/update-role", formData, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       });
+
       fetchUserDetails();
-      toast.success("Update role successful");
+      toast.success("Role updated successfully");
     } catch (err) {
-      console.log(err);
-      toast.error("Update Role Failed");
+      toast.error("Failed to update role");
     } finally {
       setUpdateRoleLoader(false);
     }
@@ -197,32 +203,47 @@ const UserDetails = () => {
                 <hr />
               </h2>
               <div className="py-4 flex sm:flex-row flex-col sm:items-center items-start gap-4">
-              <div className="flex items-center gap-2">
-                <label className="text-slate-600 text-lg font-semibold ">
-                  Role:{" "}
-                </label>
-                <select
-                  className=" px-8 py-1 rounded-md  border-2 uppercase border-slate-600  "
-                  value={selectedRole}
-                  onChange={handleRoleChange}
+              <form
+                onSubmit={handleRoleSubmit(handleUpdateRole)}
+                className="py-4 flex sm:flex-row flex-col sm:items-center items-start gap-4"
+              >
+                <div className="flex items-center gap-2">
+                  <label className="text-slate-600 text-lg font-semibold">
+                    Role:
+                  </label>
+
+                  <select
+                    className="px-8 py-1 rounded-md border-2 uppercase border-slate-600"
+                    value={selectedRole}
+                    onChange={handleRoleChange}
+                  >
+                    {roles.map((role) => (
+                      <option
+                        key={role.roleId}
+                        value={role.roleName}
+                        className="uppercase"
+                      >
+                        {role.roleName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <Buttons
+                  type="submit"
+                  disabled={updateRoleLoader}
+                  className="bg-[#1e5146] px-4 py-2 rounded-md text-white transition active:scale-[0.98]"
                 >
-                  {roles.map((role) => (
-                    <option
-                      className="bg-slate-200 flex flex-col gap-4 uppercase text-slate-700"
-                      key={role.roleId}
-                      value={role.roleName}
-                    >
-                      {role.roleName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <button
+                  {updateRoleLoader ? "Loading..." : "Update Role"}
+                </Buttons>
+              </form>
+              {/* <button
+                disabled= {!isValid}
                 className="bg-[#1e5146] hover:text-slate-300 px-4 py-2 rounded-md text-white "
                 onClick={handleUpdateRole}
               >
                 {updateRoleLoader ? "Loading..." : "Update Role"}
-              </button>
+              </button> */}
             </div>
               <form
                 className="flex  flex-col  gap-2  "
@@ -272,7 +293,7 @@ const UserDetails = () => {
                     onClickhandler={() =>
                       setIsEditingPassword(!isEditingPassword)
                     }
-                    className="bg-[#1e5146] mb-0 w-fit px-4 py-2 rounded-md text-white"
+                    className="bg-[#1e5146] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.98]"
                   >
                     Click To Edit Password
                   </Buttons>
@@ -280,17 +301,19 @@ const UserDetails = () => {
                   <div className="flex items-center gap-2 ">
                     <Buttons
                       type="submit"
-                      className="bg-[#1e5146] mb-0 w-fit px-4 py-2 rounded-md text-white"
+                      disabled={passwordLoader || !isValid}
+                      className="bg-[#1e5146] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.98]"
                     >
-                      {passwordLoader ? "Loading.." : "Save"}
+                      {passwordLoader ? "Loading..." : "Save"}
                     </Buttons>
                     <Buttons
                       type="button"
+                      disabled={passwordLoader}
                       onClickhandler={() => {
                         resetField("password");
                         setIsEditingPassword(false);
                       }}
-                      className="bg-[#f22809] mb-0 w-fit px-4 py-2 rounded-md text-white"
+                      className="bg-[#f22809] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.98]"
                     >
                       Cancel
                     </Buttons>

@@ -134,7 +134,7 @@ function ServicesPage({
           )}
 
           <button
-            className="primary-action compact"
+            className="primary-action compact transition active:scale-[0.98]"
             type="button"
             onClick={onGiftNow}
             disabled={!token || selectedIds.length === 0}

@@ -10,7 +10,7 @@ const AccessDenied = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-74px)] bg-gray-100">
+    <div className="flex items-start justify-center min-h-[calc(100vh-74px)] bg-gray-100">
       <div className="p-8 rounded-lg max-w-md w-full mx-4 text-center">
         <div className="text-yellow-500 text-6xl mb-4 flex justify-center items-center">
           <FaExclamationTriangle />
@@ -21,7 +21,7 @@ const AccessDenied = () => {
         </p>
         <button
           onClick={goHome}
-          className="bg-[#1e5146] text-white px-4 py-2 rounded hover:bg-[#059669]"
+          className="bg-[#1e5146] text-white px-4 py-2 rounded transform transition-transform duration-200 hover:scale-[1.05] active:scale-[0.98]"
         >
           Go Back Home
         </button>

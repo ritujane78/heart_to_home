@@ -99,8 +99,8 @@ export const userListsColumns = [
           to={`/admin/users/${params.id}`}
           className="h-full flex  items-center justify-center   "
         >
-          <button className="bg-[#1e5146] text-white px-4 flex justify-center items-center  h-9 rounded-md ">
-            Views
+          <button className="bg-[#1e5146] text-white px-4 flex justify-center items-center  h-9 rounded-md transition active:scale-[0.98] ">
+            View
           </button>
         </Link>
       );

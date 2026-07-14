@@ -99,7 +99,7 @@ export const userListsColumns = [
           className="h-full flex  items-center justify-center   "
         >
           <button className="bg-btnColor text-white px-4 flex justify-center items-center  h-9 rounded-md ">
-            Views
+            View
           </button>
         </Link>
       );

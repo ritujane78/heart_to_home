@@ -25,7 +25,7 @@ const Signup = () => {
     handleSubmit,
     reset,
     setError,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     defaultValues: {
       username: "",
@@ -130,12 +130,11 @@ const Signup = () => {
           />
         </div>
         <Buttons
-          disabled={loading}
-          onClickhandler={() => {}}
-          className="bg-[#1e5146] text-white font-semibold flex justify-center w-full py-2 rounded-sm my-3 transform transition-transform duration-200 hover:scale-[1.05] active:scale-[0.98]"
-          type="text"
+          disabled={loading || !isValid}
+          type="submit"
+          className="bg-[#1e5146] text-white font-semibold flex justify-center w-full py-2 rounded-sm my-3 transition active:scale-[0.98]"
         >
-          {loading ? <span>Loading...</span> : "SignUp"}
+          {loading ? "Loading..." : "Sign Up"}
         </Buttons>
 
         <p className="text-center text-sm text-slate-700 mt-2 ">
