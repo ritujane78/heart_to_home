@@ -7,6 +7,7 @@ import {
   Phone,
   User,
   CreditCard,
+  LeafyGreen,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { BallTriangle } from "react-loader-spinner";
@@ -151,7 +152,7 @@ function MyOrdersPage({
                   <div>
                     <p className="text-sm text-gray-500">Total</p>
                     <p className="text-lg font-bold text-green-600">
-                      {formatMoney(order.totalPrice, order.currency, order.exchangeRate)}
+                      {order.totalPrice}
                     </p>
                   </div>
                 </div>
@@ -175,7 +176,7 @@ function MyOrdersPage({
                         </span>
 
                         <span className="font-semibold text-[#1e5146]">
-                          {formatMoney(exchangeRates[order.currency] * service.price, order.currency, order.exchangeRate)}
+                          {formatMoney(service.price, order.currency, order.exchangeRate)}
                         </span>
                       </div>
                     ))}

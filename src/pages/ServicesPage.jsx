@@ -149,7 +149,7 @@ function ServicesPage({
         <aside className="selection-summary">
           <div>
             <strong>{selectedServices.length} selected</strong>
-            <span>Total {formatMoney(total)}</span>
+            <span>Total { total}</span>
           </div>
           <p>{selectedServices.map((service) => service.code).join(', ')}</p>
         </aside>

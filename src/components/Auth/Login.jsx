@@ -36,7 +36,7 @@ const Login = () => {
     mode: "onTouched",
   });
 
-  const handleSuccessfulLogin = (token, decodedToken) => {
+  const handleSuccessfulLogin = (accessToken, refreshToken, decodedToken) => {
     const roles = decodedToken.roles
       ? decodedToken.roles.split(",")
       : [];
@@ -46,10 +46,11 @@ const Login = () => {
       roles,
     };
 
-    localStorage.setItem("JWT_TOKEN", token);
+    localStorage.setItem("JWT_TOKEN", accessToken);
+    localStorage.setItem("REFRESH_TOKEN", refreshToken);
     localStorage.setItem("USER", JSON.stringify(user));
 
-    setToken(token);
+    setToken(accessToken);
     setIsAdmin(roles.includes("ROLE_ADMIN"));
 
     if (roles.includes("ROLE_ADMIN")) {
@@ -70,11 +71,26 @@ const Login = () => {
 
       //reset the input field by using reset() function provided by react hook form after submission
       reset();
+      
 
-      if (response.status === 200 && response.data.jwtToken) {
+      if (
+        response.status === 200 &&
+        response.data.jwtToken &&
+        response.data.refreshToken
+      ) {
         setJwtToken(response.data.jwtToken);
-        const decodedToken = jwtDecode(response.data.jwtToken);
-        handleSuccessfulLogin(response.data.jwtToken, decodedToken);
+        const accessToken = response.data.jwtToken;
+        const refreshToken = response.data.refreshToken;
+
+        setJwtToken(accessToken);
+
+        const decodedToken = jwtDecode(accessToken);
+
+        handleSuccessfulLogin(
+          accessToken,
+          refreshToken,
+          decodedToken
+        );
       } else {
         toast.error(
           "Login failed. Please check your credentials and try again."

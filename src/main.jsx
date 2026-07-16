@@ -11,11 +11,9 @@ import { ContextProvider } from "./store/ContextApi";
 import { BrowserRouter } from "react-router-dom";
 
 createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
     <BrowserRouter>
       <ContextProvider>
         <App />
       </ContextProvider>
     </BrowserRouter>
-  </React.StrictMode>
 );

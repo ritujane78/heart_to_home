@@ -54,7 +54,7 @@ import Order from "./pages/Order.jsx";
 import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import UserDetails from "./pages/admin/UserDetails.jsx";
-
+import { currencySymbols } from "./data/currencies.js";
 const EXCHANGE_RATE_URL = "https://open.er-api.com/v6/latest/NPR";
 
 function App() {
@@ -68,6 +68,8 @@ function App() {
   const [totalPages, setTotalPages] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
   const [serviceProviders, setServiceProviders] = useState([]);
+  const zeroDecimalCurrencies = new Set(['NPR', 'INR', 'JPY']);
+
 
   const fetchServices = async (pageNumber = 1, keyword = "") => {
     const response = await api.get("/services", {
@@ -87,7 +89,6 @@ function App() {
   }, []);
   const fetchProviders = async () => {
       const response = await api.get("/providers");
-      console.log("response = "+ JSON.stringify(response));
       setServiceProviders(response.data);
   };
 
@@ -128,14 +129,29 @@ function App() {
 
   const [selectedServices, setSelectedServices] = useState([]);
 
-  const total = useMemo(
-    () =>
-      selectedServices.reduce(
-        (sum, service) => sum + service.price,
-        0
-      ),
-    [selectedServices]
-  );
+  const total = useMemo(() => {
+    const rate =
+      exchangeRates[selectedCurrency] ??
+      fallbackExchangeRates[selectedCurrency] ??
+      1;
+
+    const convertedTotal = zeroDecimalCurrencies.has(selectedCurrency)
+      ? selectedServices.reduce(
+          (sum, service) => sum + Math.round(service.price * rate),
+          0
+        )
+      : selectedServices.reduce((sum, service) => {
+          const rounded = Math.round(service.price * rate * 100) / 100;
+          return sum + rounded;
+        }, 0);
+
+    const fractionDigits = zeroDecimalCurrencies.has(selectedCurrency) ? 0 : 2;
+
+    return `${currencySymbols[selectedCurrency] ?? `${selectedCurrency} `}${convertedTotal.toLocaleString(undefined, {
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits,
+    })}`;
+  }, [selectedServices, selectedCurrency, exchangeRates]);
 
   const formatMoney = useMemo(
     () => (amount) =>
@@ -147,7 +163,6 @@ function App() {
     services.some((service) => service.provider?.id === provider.id)
   );
 }, [services, serviceProviders]);
-console.log(activeProviders);
 
   const providerMap = useMemo(
   () =>
@@ -216,9 +231,7 @@ console.log(activeProviders);
     if (isSaving) return;
 
     setIsSaving(true);
-    const exchangeRate = exchangeRates[selectedCurrency];
-    const convertedTotal =
-      total * exchangeRate;
+    const exchangeRate = exchangeRates[selectedCurrency];      
 
     try {
       const giftOrderRequest = {
@@ -235,7 +248,7 @@ console.log(activeProviders);
 
         serviceIds: selectedServices.map(service => service.id),
 
-        totalPrice: convertedTotal,
+        totalPrice: total,
 
         currency: selectedCurrency,
         
@@ -251,11 +264,7 @@ console.log(activeProviders);
       toast.success("Order placed successfully!");
       navigate("/my-orders");
       resetGift();
-
     } catch (error) {
-      console.log(error.response?.status);
-      console.log(error.response?.data);
-      console.log(error.response?.headers);
       console.error(error);
       toast.error("Unable to place order.");
     } finally {
@@ -333,14 +342,23 @@ console.log(activeProviders);
     setPaymentMethod("card");
 }
 
-  const handleLogout = () => {
-    localStorage.removeItem("JWT_TOKEN"); // Updated to remove token from localStorage
-    localStorage.removeItem("USER"); // Remove user details as well
-    localStorage.removeItem("IS_ADMIN");
-    setToken(null);
-    setCurrentUser(null);
-    setIsAdmin(false);
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      localStorage.removeItem("JWT_TOKEN");
+      localStorage.removeItem("REFRESH_TOKEN");
+      localStorage.removeItem("USER");
+      localStorage.removeItem("IS_ADMIN");
+
+      setToken(null);
+      setCurrentUser(null);
+      setIsAdmin(false);
+
+      navigate("/login", { replace: true });
+    }
   };
   const adminItems = [
   {
@@ -505,7 +523,6 @@ console.log(activeProviders);
                           giftDetails={giftDetails}
                           selectedServices={selectedServices}
                           total={total}
-                          formatMoney={formatMoney}
                           paymentMethod={paymentMethod}
                           onChange={updateGiftDetails}
                           onSubmit={submitGift}
@@ -525,6 +542,7 @@ console.log(activeProviders);
                           selectedServices={selectedServices}
                           total={total}
                           formatMoney={formatMoney}
+                          selectedCurrency={selectedCurrency}
                           paymentMethod={paymentMethod}
                           onPaymentMethodChange={setPaymentMethod}
                           onSaveOrder={saveOrder}

@@ -118,7 +118,6 @@ const AllUsers = () => {
     const fetchUsers = async () => {
       try {
         const response = await api.get("/admin/getusers");
-        console.log(response.data);
         const usersData = Array.isArray(response.data) ? response.data : [];
         setUsers(usersData);
       } catch (err) {

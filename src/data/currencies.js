@@ -23,7 +23,7 @@ export const fallbackExchangeRates = {
   JPY: 1.05
 };
 
-const currencySymbols = {
+export const currencySymbols = {
   USD: '$',
   GBP: '£',
   NPR: 'Rs ',

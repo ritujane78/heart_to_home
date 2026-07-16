@@ -49,7 +49,7 @@ if (
         <div className="flex flex-col gap-2 bg-white p-4 text-lg font-bold sm:flex-row sm:items-center sm:justify-between">
           <span>Total</span>
           <span className="text-[#1f6f5c]">
-            {formatMoney(total)}
+            {total}
           </span>
         </div>
       </div>

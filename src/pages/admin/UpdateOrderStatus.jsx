@@ -174,7 +174,7 @@ const updateStatus = async (orderId) => {
 
             <p className="flex items-center gap-2 mb-2">
               <CreditCard size={16} />
-              {order.currency} {Number(order.totalPrice).toFixed(2)}
+              {order.totalPrice}
             </p>
 
             <p>

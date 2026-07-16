@@ -9,7 +9,6 @@ import { Navigate } from "react-router-dom";
     giftDetails,
     selectedServices,
     total,
-    formatMoney,
     paymentReady,
     paymentMethod,
     onChange,

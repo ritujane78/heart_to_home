@@ -119,7 +119,6 @@ const onProviderSubmit = async (data) => {
   const onSubmit = async (data) => {
     try {
         setLoading(true);
-        console.log(data.providerId)
 
         const payload = {
         providerId: data.providerId,  
