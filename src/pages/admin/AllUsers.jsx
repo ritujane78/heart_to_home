@@ -9,6 +9,7 @@ import { Link, Routes, Route } from "react-router-dom";
 import { MdOutlineEmail } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
 import UserDetails from "./UserDetails"
+import { FileX } from "lucide-react";
 
 //Material ui data grid has used for the table
 //initialize the columns for the tables and (field) value is used to show data in a specific column dynamically
@@ -17,6 +18,7 @@ export const userListsColumns = [
     field: "username",
     headerName: "UserName",
     minWidth: 200,
+    flex: 1,
     headerAlign: "center",
     disableColumnMenu: true,
     align: "center",
@@ -30,7 +32,8 @@ export const userListsColumns = [
     field: "email",
     headerName: "Email",
     aligh: "center",
-    width: 260,
+    flex: 1.3,
+    minWidth: 240,
     editable: false,
     headerAlign: "center",
     headerClassName: "text-black font-semibold text-center  ",
@@ -53,7 +56,8 @@ export const userListsColumns = [
     field: "created",
     headerName: "Created At",
     headerAlign: "center",
-    width: 220,
+    flex: 1,
+    minWidth: 220,
     editable: false,
     headerClassName: "text-black font-semibold ",
     cellClassName: "text-slate-700 font-normal ",
@@ -76,7 +80,8 @@ export const userListsColumns = [
     headerName: "Status",
     headerAlign: "center",
     align: "center",
-    width: 200,
+    flex: 0.8,
+    minWidth: 170,
     editable: false,
     disableColumnMenu: true,
     headerClassName: "text-black font-semibold ",
@@ -91,7 +96,8 @@ export const userListsColumns = [
     headerClassName: "text-black font-semibold text-center",
     cellClassName: "text-slate-700 font-normal",
     sortable: false,
-    width: 200,
+    flex: 0.8,
+    minWidth: 180,
     renderHeader: (params) => <span>Action</span>,
     renderCell: (params) => {
       return (
