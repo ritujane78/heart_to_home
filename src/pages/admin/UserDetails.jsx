@@ -202,12 +202,12 @@ const UserDetails = () => {
                 Profile Information
                 <hr />
               </h2>
-              <div className="py-4 flex sm:flex-row flex-col sm:items-center items-start gap-4">
+              <div className="flex flex-row items-center justify-center sm:justify-start gap-4 text-center">
               <form
                 onSubmit={handleRoleSubmit(handleUpdateRole)}
-                className="py-4 flex sm:flex-row flex-col sm:items-center items-start gap-4"
+                className="py-4 flex flex-row items-center items-start gap-4"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-sart gap-2">
                   <label className="text-slate-600 text-lg font-semibold">
                     Role:
                   </label>
@@ -234,7 +234,7 @@ const UserDetails = () => {
                   disabled={updateRoleLoader}
                   className="bg-[#1e5146] px-4 py-2 rounded-md text-white transition active:scale-[0.95]"
                 >
-                  {updateRoleLoader ? "Loading..." : "Update Role"}
+                  {updateRoleLoader ? "Loading..." : "Update"}
                 </Buttons>
               </form>
               {/* <button
