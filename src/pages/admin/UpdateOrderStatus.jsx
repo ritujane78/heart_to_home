@@ -3,6 +3,9 @@ import { Package, User, Mail, Phone, Heart, CreditCard } from "lucide-react";
 import './UpdateOrderStatus.css'
 import api from "../../services/api";
 import moment from "moment";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+import {BallTriangle} from "react-loader-spinner"
 
 const STATUS_OPTIONS = [
   "IN_PROCESS",
@@ -10,7 +13,6 @@ const STATUS_OPTIONS = [
   "DELIVERED",
   "CANCELED",
 ];
-import {BallTriangle} from "react-loader-spinner"
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -18,6 +20,8 @@ export default function AdminOrders() {
   const [selectedStatuses, setSelectedStatuses] = useState({});
   const [updateMessages, setUpdateMessages] = useState({});
   const [updatingOrders, setUpdatingOrders] = useState({});
+  const [page, setPage] = useState(1);
+  const ordersPerPage = 3;
 
   useEffect(() => {
     fetchOrders();
@@ -86,6 +90,19 @@ const updateStatus = async (orderId) => {
     }));
   }
 };
+const totalPages = Math.ceil(orders.length / ordersPerPage);
+
+const paginatedOrders = orders.slice(
+  (page - 1) * ordersPerPage,
+  page * ordersPerPage
+);
+const handlePageChange = (event, value) => {
+  setPage(value);
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
@@ -124,7 +141,7 @@ const updateStatus = async (orderId) => {
     </p>
   </div>
 ) : (
-  orders.map((order) => (
+  paginatedOrders.map((order) => (
       <div
         key={order.id}
         className="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-200"
@@ -182,7 +199,6 @@ const updateStatus = async (orderId) => {
             <p>
               Ordered:
               <br />
-              {/* {new Date(order.orderedAt).toLocaleString()} */}
               {moment(order.orderedAt).format(
                     "MMMM DD, YYYY")}
             </p>
@@ -255,6 +271,18 @@ const updateStatus = async (orderId) => {
       </div>
     ))
   )}
+  <div className="flex justify-end mt-8">
+    <Stack spacing={2}>
+      <Pagination
+        count={totalPages}
+        page={page}
+        onChange={handlePageChange}
+        shape="rounded"
+        siblingCount={1}
+        boundaryCount={1}
+      />
+    </Stack>
+  </div>
 </div>
 );
 }
