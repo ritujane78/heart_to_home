@@ -232,7 +232,7 @@ const UserDetails = () => {
                 <Buttons
                   type="submit"
                   disabled={updateRoleLoader}
-                  className="bg-[#1e5146] px-4 py-2 rounded-md text-white transition active:scale-[0.98]"
+                  className="bg-[#1e5146] px-4 py-2 rounded-md text-white transition active:scale-[0.95]"
                 >
                   {updateRoleLoader ? "Loading..." : "Update Role"}
                 </Buttons>
@@ -293,7 +293,7 @@ const UserDetails = () => {
                     onClickhandler={() =>
                       setIsEditingPassword(!isEditingPassword)
                     }
-                    className="bg-[#1e5146] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.98]"
+                    className="bg-[#1e5146] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.95]"
                   >
                     Click To Edit Password
                   </Buttons>
@@ -302,7 +302,7 @@ const UserDetails = () => {
                     <Buttons
                       type="submit"
                       disabled={passwordLoader || !isValid}
-                      className="bg-[#1e5146] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.98]"
+                      className="bg-[#1e5146] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.95]"
                     >
                       {passwordLoader ? "Loading..." : "Save"}
                     </Buttons>
@@ -313,7 +313,7 @@ const UserDetails = () => {
                         resetField("password");
                         setIsEditingPassword(false);
                       }}
-                      className="bg-[#f22809] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.98]"
+                      className="bg-[#f22809] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.95]"
                     >
                       Cancel
                     </Buttons>

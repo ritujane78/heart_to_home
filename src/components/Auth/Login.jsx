@@ -146,7 +146,7 @@ const Login = () => {
             <Buttons
               disabled={loading}
               type="submit"
-              className="bg-[#1e5146] text-white font-semibold w-full py-2 rounded-sm my-3 transition active:scale-[0.98]"
+              className="bg-[#1e5146] text-white font-semibold w-full py-2 rounded-sm my-3 transition active:scale-[0.95]"
             >
               {loading ? "Loading..." : "Log In"}
             </Buttons>
@@ -162,7 +162,7 @@ const Login = () => {
             <p className="text-center text-sm text-slate-700 mt-6">
               Don't have an account?{" "}
               <Link
-                className="inline-block text-[#584c02] font-extrabold underline transform transition-transform duration-200 hover:scale-[1.05] active:scale-[0.98]"
+                className="inline-block text-[#584c02] font-extrabold underline transform transition-transform duration-200 hover:scale-[1.05] active:scale-[0.95]"
                 to="/signup"
               >
                 SignUp

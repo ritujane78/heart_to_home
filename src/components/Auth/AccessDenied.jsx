@@ -21,7 +21,7 @@ const AccessDenied = () => {
         </p>
         <button
           onClick={goHome}
-          className="bg-[#1e5146] text-white px-4 py-2 rounded transform transition-transform duration-200 hover:scale-[1.05] active:scale-[0.98]"
+          className="bg-[#1e5146] text-white px-4 py-2 rounded transform transition-transform duration-200 hover:scale-[1.05] active:scale-[0.95]"
         >
           Go Back Home
         </button>

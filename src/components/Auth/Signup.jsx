@@ -132,7 +132,7 @@ const Signup = () => {
         <Buttons
           disabled={loading || !isValid}
           type="submit"
-          className="bg-[#1e5146] text-white font-semibold flex justify-center w-full py-2 rounded-sm my-3 transition active:scale-[0.98]"
+          className="bg-[#1e5146] text-white font-semibold flex justify-center w-full py-2 rounded-sm my-3 transition active:scale-[0.95]"
         >
           {loading ? "Loading..." : "Sign Up"}
         </Buttons>

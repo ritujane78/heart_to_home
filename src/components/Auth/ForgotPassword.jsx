@@ -107,7 +107,7 @@ const ForgotPassword = () => {
         <Buttons
           disabled={loading || emailSent || !isValid} // Disable the button if loading or email has been sent
           onClickhandler={() => {}}
-          className="bg-[#1e5146] font-semibold text-white w-full py-2 rounded-sm my-3 transform transition-transform duration-200  enabled:hover:scale-105 enabled:active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+          className="bg-[#1e5146] font-semibold text-white w-full py-2 rounded-sm my-3 transform transition-transform duration-200  enabled:hover:scale-105 enabled:active:scale-[0.95] disabled:cursor-not-allowed disabled:opacity-60"
           type="text"
         >
         {loading ? "Sending..." : emailSent ? "Email Sent" : "Send"}

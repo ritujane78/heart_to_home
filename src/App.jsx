@@ -403,7 +403,7 @@ function App() {
               </NavLink>
             </nav>
             {token ? (
-              <div className="user-menu" ref={menuRef}>
+              <div className="user-menu transition active:scale-[0.95]" ref={menuRef}>
                 <button
                   className="menu-btn"
                   onClick={() => setMenuOpen((prev) => !prev)}
