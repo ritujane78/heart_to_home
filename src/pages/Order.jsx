@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { BallTriangle } from "react-loader-spinner";
+import moment from "moment";
 
 function MyOrdersPage({
   exchangeRates,
@@ -142,7 +143,8 @@ function MyOrdersPage({
                   <div>
                     <p className="text-sm text-gray-500">Ordered At</p>
                     <p>
-                      {new Date(order.orderedAt).toLocaleString()}
+                      {/* {new Date(order.orderedAt).toLocaleString()} */}
+                      {moment(order.orderedAt).format("MMMM DD, YYYY")}
                     </p>
                   </div>
                 </div>

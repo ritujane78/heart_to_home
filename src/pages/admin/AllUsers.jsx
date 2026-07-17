@@ -134,7 +134,7 @@ const AllUsers = () => {
 
   const rows = users.map((item) => {
     const formattedDate = moment(item.createdDate).format(
-      "MMMM DD, YYYY, hh:mm A"
+      "MMMM DD, YYYY"
     );
 
     //set the data for each rows in the table according to the field name in columns

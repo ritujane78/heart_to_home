@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Package, User, Mail, Phone, Heart, CreditCard } from "lucide-react";
 import './UpdateOrderStatus.css'
 import api from "../../services/api";
+import moment from "moment";
+
 const STATUS_OPTIONS = [
   "IN_PROCESS",
   "READY_FOR_CLINIC",
@@ -180,7 +182,9 @@ const updateStatus = async (orderId) => {
             <p>
               Ordered:
               <br />
-              {new Date(order.orderedAt).toLocaleString()}
+              {/* {new Date(order.orderedAt).toLocaleString()} */}
+              {moment(order.orderedAt).format(
+                    "MMMM DD, YYYY")}
             </p>
           </div>
 
