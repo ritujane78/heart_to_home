@@ -318,9 +318,14 @@ function App() {
   function updateGiftDetails(e) {
     const { name, value } = e.target;
 
+    const nextValue =
+      name === "recipientPhone"
+        ? value.replace(/\D/g, "")
+        : value;
+
     setGiftDetails((current) => ({
       ...current,
-      [name]: value,
+      [name]: nextValue,
     }));
   }
 

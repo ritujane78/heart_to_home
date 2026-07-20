@@ -1,6 +1,6 @@
 import { CheckCircle2, CreditCard } from 'lucide-react';
 import { relationships } from '../data/services.js';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Navigate } from "react-router-dom";
 
 
@@ -20,6 +20,49 @@ import { Navigate } from "react-router-dom";
     if (selectedServices.length === 0) {
       return <Navigate to="/services" replace />;
   }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const nepalPhoneRegex = /^(01\d{6}|9[78]\d{8})$/;
+
+const errors = useMemo(() => {
+  const e = {};
+
+  if (!giftDetails.recipientName.trim()) {
+    e.recipientName = "Recipient name is required.";
+  }
+
+  if (!giftDetails.recipientPhone.trim()) {
+    e.recipientPhone = "Phone number is required.";
+  } else if (!nepalPhoneRegex.test(giftDetails.recipientPhone.trim())) {
+    e.recipientPhone =
+      "Enter a valid Kathmandu landline (01XXXXXX) or Nepal mobile (97XXXXXXXX / 98XXXXXXXX).";
+  }
+
+  if (
+    giftDetails.recipientEmail.trim() &&
+    !emailRegex.test(giftDetails.recipientEmail.trim())
+  ) {
+    e.recipientEmail = "Enter a valid email address.";
+  }
+
+  if (!giftDetails.senderName.trim()) {
+    e.senderName = "Sender name is required.";
+  }
+
+  if (!giftDetails.senderEmail.trim()) {
+    e.senderEmail = "Sender email is required.";
+  } else if (!emailRegex.test(giftDetails.senderEmail.trim())) {
+    e.senderEmail = "Enter a valid email address.";
+  }
+
+  if (!giftDetails.message.trim()) {
+    e.message = "Message is required.";
+  }
+
+  return e;
+}, [giftDetails]);
+
+const isFormValid = Object.keys(errors).length === 0;
+
     return (
       <section className='gift-page'>
         <section
@@ -28,14 +71,15 @@ import { Navigate } from "react-router-dom";
         >
           <form
             className="w-full max-w-none mx-auto"
-            onSubmit={onSubmit}
+            onSubmit={(e) => {
+              if (!isFormValid) {
+                e.preventDefault();
+                return;
+              }
+
+              onSubmit(e);
+            }}
           >
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">Gift details</p>
-                <h3>Who is receiving this care?</h3>
-              </div>
-            </div>
 
             <div className="form-section">
             <h3>Recipient Details</h3>
@@ -50,6 +94,9 @@ import { Navigate } from "react-router-dom";
                   placeholder="Enter recipient's full name"
                   required
                 />
+                {errors.recipientName && (
+                  <small className="text-red-600">{errors.recipientName}</small>
+                )}
               </label>
 
               <label>
@@ -58,20 +105,34 @@ import { Navigate } from "react-router-dom";
                   name="recipientPhone"
                   value={giftDetails.recipientPhone}
                   onChange={onChange}
-                  placeholder="Phone number"
-                  required
+                  inputMode="numeric"
+                  maxLength={10}
+                  placeholder="9801234567 or 01423456"
                 />
+                <small className="text-gray-500">
+                  Enter a Kathmandu landline (01XXXXXX) or a Nepal mobile number (97XXXXXXXX or 98XXXXXXXX).
+                </small>
+                {errors.recipientPhone && (
+                  <small className="text-red-600">{errors.recipientPhone}</small>
+                )}
                 <input
+                  type='email'
+                  autoComplete="email"
                   name="recipientEmail"
                   value={giftDetails.recipientEmail}
                   onChange={onChange}
                   placeholder="Email (optional)"
                 />
+                {errors.recipientEmail && (
+                  <small className="text-red-600">{errors.recipientEmail}</small>
+                )}
               </label>
 
-              <label className='full-width'>
-                <span>Relationship</span>
+            <div className="form-section full-width">
+              {/* <label className='full-width'> */}
+                <h3>Relationship</h3>
                 <select
+                className='full-width'
                   name="relationship"
                   value={giftDetails.relationship}
                   onChange={onChange}
@@ -80,7 +141,8 @@ import { Navigate } from "react-router-dom";
                     <option key={relationship}>{relationship}</option>
                   ))}
                 </select>
-              </label>
+              {/* </label> */}
+            </div> 
             </div>
           </div>
 
@@ -97,26 +159,34 @@ import { Navigate } from "react-router-dom";
                   placeholder="Enter your full name"
                   required
                 />
+                {errors.senderName && (
+                  <small className="text-red-600">{errors.senderName}</small>
+                )}
               </label>
 
               <label>
                 <span>Contact Details</span>
                 <input
                   name="senderEmail"
+                  type='email'
+                  autoComplete="email"
                   value={giftDetails.senderEmail}
                   onChange={onChange}
                   placeholder="Email"
                   required
                 />
+                {errors.senderEmail && (
+                  <small className="text-red-600">{errors.senderEmail}</small>
+                )}
               </label>
             </div>
           </div>
 
           <div className="form-section">
-            <h3>Personal Message</h3>
+            <h3>Message to Recipient</h3>
 
             <label className="message-field">
-              <span>Message to Recipient</span>
+              {/* <span>Message to Recipient</span> */}
               <textarea
                 name="message"
                 value={giftDetails.message}
@@ -124,11 +194,18 @@ import { Navigate } from "react-router-dom";
                 rows="5"
                 placeholder="Write a thoughtful message to accompany your gift..."
               />
+              {errors.message && (
+                <small className="text-red-600">{errors.message}</small>
+              )}
             </label>
           </div>
 
             <div className="flex justify-center mt-8">
-              <button className="primary-action" type="submit">
+              <button
+                className="primary-action disabled:opacity-50 disabled:cursor-not-allowed"
+                type="submit"
+                disabled={!isFormValid}
+              >
                 <CheckCircle2 aria-hidden="true" />
                 Continue to Payment
               </button>

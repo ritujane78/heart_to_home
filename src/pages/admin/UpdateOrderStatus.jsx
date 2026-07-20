@@ -259,7 +259,7 @@ const handlePageChange = (event, value) => {
             className={`font-medium px-8 py-2 rounded-md transition ${
               updatingOrders[order.id]
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-[#1e5146] hover:bg-blue-700 text-white"
+                : "bg-[#1e5146] text-white"
             }`}
             disabled={updatingOrders[order.id]}
             onClick={() => updateStatus(order.id)}

@@ -8,6 +8,7 @@ import {
   User,
   CreditCard,
   LeafyGreen,
+  Heart,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { BallTriangle } from "react-loader-spinner";
@@ -148,10 +149,10 @@ return (
                   </div>
 
                   <div className="flex gap-3">
-                    <MapPin className="mt-1 text-[#1e5146]" size={18} />
+                    <Heart className="mt-1 text-[#1e5146]" size={18} />
                     <div>
-                      <p className="text-sm text-gray-500">Email</p>
-                      <p>{order.recipientEmail? order.recipientEmail:"______"}</p>
+                      <p className="text-sm text-gray-500">Relationship</p>
+                      <p>{order.relationship}</p>
                     </div>
                   </div>
 
