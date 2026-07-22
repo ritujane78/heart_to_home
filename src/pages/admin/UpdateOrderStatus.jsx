@@ -169,10 +169,10 @@ const handlePageChange = (event, value) => {
               {order.recipientPhone}
             </p>
 
-            <p className="flex items-center gap-2 mb-2">
+            {/* <p className="flex items-center gap-2 mb-2">
               <Mail size={16} />
               {order.recipientEmail}
-            </p>
+            </p> */}
 
             <p className="flex items-center gap-2">
               <Heart size={16} />

@@ -60,7 +60,6 @@ export const relationships = ['Daughter', 'Son', 'Mom', 'Dad', 'Cousin', 'Friend
 
 export const initialGift = {
   recipientName: '',
-  recipientEmail: '',
   recipientPhone: '',
   relationship: 'Daughter',
   message: '',

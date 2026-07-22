@@ -237,7 +237,7 @@ function App() {
       const giftOrderRequest = {
         recipientName: giftDetails.recipientName,
         recipientPhone: giftDetails.recipientPhone,
-        recipientEmail: giftDetails.recipientEmail,
+        // recipientEmail: giftDetails.recipientEmail,
 
         relationship: giftDetails.relationship,
 

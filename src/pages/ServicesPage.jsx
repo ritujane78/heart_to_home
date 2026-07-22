@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Gift, MapPin, Trash2, SearchX, Inbox, CircleOff } from 'lucide-react';
+import { Gift, MapPin, Trash2, SearchX, Inbox, CircleOff , BriefcaseMedical } from 'lucide-react';
 // import { services } from '../data/services.js';
 import GiftForm from './GiftForm.jsx';
 import { useMyContext } from "../store/ContextApi";
@@ -81,19 +81,6 @@ function ServicesPage({
 
   return (
     <section className="services-layout">
-      <div className="provider-banner">
-        <MapPin aria-hidden="true" />
-        <span className="provider-text">
-          Kathmandu providers:{" "}
-          {serviceProviderNames ? (
-            serviceProviderNames
-          ) : (
-            <span className="no-provider">
-              <CircleOff size={16} />
-            </span>
-          )}
-        </span>
-      </div>
       <div className="currency-toolbar">
         <label className="service-search" htmlFor="service-search">
           <input
@@ -216,7 +203,19 @@ function ServicesPage({
           onChange={handlePageChange}
         />
       </div>
-
+        <div className="provider-banner">
+        <BriefcaseMedical aria-hidden="true" />
+        <span className="provider-text">
+          Associate Partners:{" "}
+          {serviceProviderNames ? (
+            serviceProviderNames
+          ) : (
+            <span className="no-provider">
+              <CircleOff size={16} />
+            </span>
+          )}
+        </span>
+      </div>
     </section>
   );
 }

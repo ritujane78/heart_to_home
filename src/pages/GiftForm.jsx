@@ -1,6 +1,6 @@
-import { CheckCircle2, CreditCard } from 'lucide-react';
+import { CheckCircle2, CreditCard, Info, X } from 'lucide-react';
 import { relationships } from '../data/services.js';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Navigate } from "react-router-dom";
 
 
@@ -17,6 +17,18 @@ import { Navigate } from "react-router-dom";
     onReset, 
     onSaveOrder
   }) {
+    const [showPhoneInfo, setShowPhoneInfo] = useState(false);
+    useEffect(() => {
+      const handleKeyDown = (e) => {
+        if (e.key === "Escape") {
+          setShowPhoneInfo(false);
+        }
+      };
+
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
+    
     if (selectedServices.length === 0) {
       return <Navigate to="/services" replace />;
   }
@@ -34,15 +46,15 @@ const errors = useMemo(() => {
     e.recipientPhone = "Phone number is required.";
   } else if (!nepalPhoneRegex.test(giftDetails.recipientPhone.trim())) {
     e.recipientPhone =
-      "Enter a valid Kathmandu landline (01XXXXXX) or Nepal mobile (97XXXXXXXX / 98XXXXXXXX).";
+      "Enter a valid number.";
   }
 
-  if (
-    giftDetails.recipientEmail.trim() &&
-    !emailRegex.test(giftDetails.recipientEmail.trim())
-  ) {
-    e.recipientEmail = "Enter a valid email address.";
-  }
+  // if (
+  //   giftDetails.recipientEmail.trim() &&
+  //   !emailRegex.test(giftDetails.recipientEmail.trim())
+  // ) {
+  //   e.recipientEmail = "Enter a valid email address.";
+  // }
 
   if (!giftDetails.senderName.trim()) {
     e.senderName = "Sender name is required.";
@@ -54,9 +66,6 @@ const errors = useMemo(() => {
     e.senderEmail = "Enter a valid email address.";
   }
 
-  if (!giftDetails.message.trim()) {
-    e.message = "Message is required.";
-  }
 
   return e;
 }, [giftDetails]);
@@ -100,22 +109,31 @@ const isFormValid = Object.keys(errors).length === 0;
               </label>
 
               <label>
-                <span>Contact Details</span>
-                <input
-                  name="recipientPhone"
-                  value={giftDetails.recipientPhone}
-                  onChange={onChange}
-                  inputMode="numeric"
-                  maxLength={10}
-                  placeholder="9801234567 or 01423456"
-                />
-                <small className="text-gray-500">
-                  Enter a Kathmandu landline (01XXXXXX) or a Nepal mobile number (97XXXXXXXX or 98XXXXXXXX).
-                </small>
+               <div className="flex items-center justify-between mb-1">
+              <span>Contact Details</span>
+
+              <button
+                type="button"
+                onClick={() => setShowPhoneInfo(true)}
+                className="ml-[2px] text-[#1F6F5C] hover:text-[#174d40] transition"
+                aria-label="Phone number format"
+              >
+                <Info size={18} />
+              </button>
+            </div>
+
+            <input
+              name="recipientPhone"
+              value={giftDetails.recipientPhone}
+              onChange={onChange}
+              inputMode="numeric"
+              maxLength={10}
+              placeholder="9xxxxxxxxx or 01xxxxxxx"
+            />
                 {errors.recipientPhone && (
                   <small className="text-red-600">{errors.recipientPhone}</small>
                 )}
-                <input
+                {/* <input
                   type='email'
                   autoComplete="email"
                   name="recipientEmail"
@@ -125,7 +143,7 @@ const isFormValid = Object.keys(errors).length === 0;
                 />
                 {errors.recipientEmail && (
                   <small className="text-red-600">{errors.recipientEmail}</small>
-                )}
+                )} */ }
               </label>
 
             <div className="form-section full-width">
@@ -191,12 +209,17 @@ const isFormValid = Object.keys(errors).length === 0;
                 name="message"
                 value={giftDetails.message}
                 onChange={onChange}
+                maxLength={1000}
                 rows="5"
-                placeholder="Write a thoughtful message to accompany your gift..."
+                placeholder="[optional] Write a thoughtful message to accompany your gift..."
+                className='w-full rounded-lg border border-gray-300 px-4 py-3 resize-none
+                            placeholder:text-gray-400
+                            focus:placeholder:opacity-0
+                            focus:border-[#1F6F5C] focus:outline-none focus:ring-2 focus:ring-[#1F6F5C]/20'
               />
-              {errors.message && (
-                <small className="text-red-600">{errors.message}</small>
-              )}
+                <span className="mt-1 self-end text-xs text-gray-500">
+                  {giftDetails.message.length}/1000
+                </span>
             </label>
           </div>
 
@@ -211,6 +234,53 @@ const isFormValid = Object.keys(errors).length === 0;
               </button>
             </div>
           </form>
+          {showPhoneInfo && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+              onClick={() => setShowPhoneInfo(false)}
+            >
+              <div
+                className="relative w-full max-w-md rounded-xl bg-white shadow-2xl p-6"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  type="button"
+                  onClick={() => setShowPhoneInfo(false)}
+                  className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
+                  aria-label="Close"
+                >
+                  <X size={20} />
+                </button>
+
+                <h3 className="text-lg font-semibold text-[#1F6F5C] mb-4">
+                  Phone Number Format
+                </h3>
+
+                <div className="space-y-3 text-sm text-gray-700">
+                  <p>
+                    Please enter one of the following Nepal phone number formats:
+                  </p>
+
+                  <div className="rounded-lg bg-gray-100 p-3">
+                    <p className="font-medium">Kathmandu Landline</p>
+                    <p className="font-mono mt-1">01XXXXXX</p>
+                    <p className="text-gray-600">Example: 01423456</p>
+                  </div>
+
+                  <div className="rounded-lg bg-gray-100 p-3">
+                    <p className="font-medium">Nepal Mobile</p>
+                    <p className="font-mono mt-1">97XXXXXXXX</p>
+                    <p className="font-mono">98XXXXXXXX</p>
+                    <p className="text-gray-600">Example: 9801234567</p>
+                  </div>
+
+                  <p className="text-xs text-gray-500">
+                    Only Kathmandu landline numbers and Nepal mobile numbers are accepted.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
       </section>
     );

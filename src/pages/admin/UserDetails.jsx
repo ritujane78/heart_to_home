@@ -47,6 +47,8 @@ const UserDetails = () => {
       setUser(response.data);
 
       setSelectedRole(response.data.role?.roleName || "");
+      console.log(response);
+      
     } catch (err) {
       setError(err?.response?.data?.message);
       console.error("Error fetching user details", err);
@@ -133,6 +135,9 @@ const UserDetails = () => {
       resetField("password");
     }
   };
+  const isHthAdmin =
+    user?.userName?.toLowerCase() === "hth_admin" &&
+    user?.role?.roleName === "ROLE_ADMIN";
 
   // const handleCheckboxChange = async (e, updateUrl) => {
   //   const { name, checked } = e.target;
@@ -213,9 +218,10 @@ const UserDetails = () => {
                   </label>
 
                   <select
-                    className="px-8 py-1 rounded-md border-2 uppercase border-slate-600"
+                    className="px-8 py-1 rounded-md border-2 uppercase border-slate-600 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
                     value={selectedRole}
                     onChange={handleRoleChange}
+                    disabled={isHthAdmin}
                   >
                     {roles.map((role) => (
                       <option
@@ -231,12 +237,17 @@ const UserDetails = () => {
 
                 <Buttons
                   type="submit"
-                  disabled={updateRoleLoader}
-                  className="bg-[#1e5146] px-4 py-2 rounded-md text-white transition active:scale-[0.95]"
+                  disabled={updateRoleLoader || isHthAdmin}
+                  className="bg-[#1e5146] px-4 py-2 rounded-md text-white transition active:scale-[0.95] disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   {updateRoleLoader ? "Loading..." : "Update"}
                 </Buttons>
               </form>
+              {isHthAdmin && (
+                <p className="text-sm text-red-600 mt-2">
+                  The role cannot be changed.
+                </p>
+              )}
               {/* <button
                 disabled= {!isValid}
                 className="bg-[#1e5146] hover:text-slate-300 px-4 py-2 rounded-md text-white "
