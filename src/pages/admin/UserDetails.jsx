@@ -207,12 +207,17 @@ const UserDetails = () => {
                 Profile Information
                 <hr />
               </h2>
+              {isHthAdmin && (
+                <p className="text-sm text-red-600 mt-2">
+                  The role and password of this admin cannot be changed.
+                </p>
+              )}
               <div className="flex flex-row items-center justify-center sm:justify-start gap-4 text-center">
               <form
                 onSubmit={handleRoleSubmit(handleUpdateRole)}
-                className="py-4 flex flex-row items-center items-start gap-4"
+                className="py-4 flex flex-row items-center gap-4"
               >
-                <div className="flex items-sart gap-2">
+                <div className="flex items-center gap-2">
                   <label className="text-slate-600 text-lg font-semibold">
                     Role:
                   </label>
@@ -243,11 +248,6 @@ const UserDetails = () => {
                   {updateRoleLoader ? "Loading..." : "Update"}
                 </Buttons>
               </form>
-              {isHthAdmin && (
-                <p className="text-sm text-red-600 mt-2">
-                  The role cannot be changed.
-                </p>
-              )}
               {/* <button
                 disabled= {!isValid}
                 className="bg-[#1e5146] hover:text-slate-300 px-4 py-2 rounded-md text-white "
@@ -305,6 +305,7 @@ const UserDetails = () => {
                       setIsEditingPassword(!isEditingPassword)
                     }
                     className="bg-[#1e5146] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.95]"
+                    disabled= {isHthAdmin}
                   >
                     Click To Edit Password
                   </Buttons>
