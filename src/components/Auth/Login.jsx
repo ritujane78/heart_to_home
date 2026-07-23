@@ -54,7 +54,7 @@ const Login = () => {
     setIsAdmin(roles.includes("ROLE_ADMIN"));
 
     if (roles.includes("ROLE_ADMIN")) {
-      navigate("/admin/all-users");
+      navigate("/admin/all-orders");
     } else {
       navigate("/my-orders");
     }

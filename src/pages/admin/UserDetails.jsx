@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { useForm } from "react-hook-form";
 import InputField from "../../components/InputField/InputField";
 import { BallTriangle } from "react-loader-spinner";
 import Buttons from "../../utils/Buttons";
 import toast from "react-hot-toast";
+import { ArrowLeft } from "lucide-react";
 // import Errors from "../Errors";
 
 const UserDetails = () => {
@@ -28,6 +29,7 @@ const UserDetails = () => {
   } = useForm({
     mode: "onTouched",
   });
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [updateRoleLoader, setUpdateRoleLoader] = useState(false);
@@ -139,47 +141,9 @@ const UserDetails = () => {
     user?.userName?.toLowerCase() === "hth_admin" &&
     user?.role?.roleName === "ROLE_ADMIN";
 
-  // const handleCheckboxChange = async (e, updateUrl) => {
-  //   const { name, checked } = e.target;
-
-  //   let message = null;
-  //   if (name === "lock") {
-  //     message = "Update Account Lock status Successful";
-  //   } else if (name === "expire") {
-  //     message = "Update Account Expiry status Successful";
-  //   } else if (name === "enabled") {
-  //     message = "Update Account Enabled status Successful";
-  //   } else if (name === "credentialsExpire") {
-  //     message = "Update Account Credentials Expired status Successful";
-  //   }
-
-  //   try {
-  //     const formData = new URLSearchParams();
-  //     formData.append("userId", userId);
-
-  //     formData.append(name, checked);
-
-  //     await api.put(updateUrl, formData, {
-  //       headers: {
-  //         "Content-Type": "application/x-www-form-urlencoded",
-  //       },
-  //     });
-  //     fetchUserDetails();
-  //     toast.success(message);
-  //   } catch (err) {
-  //     toast.error(err?.response?.data?.message);
-  //     console.log(`Error updating ${name}:`);
-  //   } finally {
-  //     message = null;
-  //   }
-  // };
-
-  // if (error) {
-  //   return <Errors message={error} />;
-  // }
-
   return (
-    <div className="sm:px-12 px-4 py-10   ">
+    <div className="min-h-screen bg-gray-100 py-10">
+  <div className="mx-auto max-w-4xl px-4">
       {loading ? (
         <>
           {" "}
@@ -201,29 +165,57 @@ const UserDetails = () => {
         </>
       ) : (
         <>
-          <div className="lg:w-[70%] sm:w-[90%] w-full  mx-auto shadow-lg shadow-gray-300 p-8 rounded-md">
-            <div>
-              <h2 className="text-slate-800 text-2xl font-bold  pb-4">
-                Profile Information
-                <hr />
-              </h2>
+<div className="overflow-hidden rounded-2xl">
+  <div className="flex items-center justify-between bg-none px-6 py-5 ">
+  <button
+    onClick={() => navigate(-1)}
+    className="flex items-center gap-2 rounded-md px-4 py-2 transition hover:bg-white/30 active:scale-95"
+  >
+    <ArrowLeft size={18} />
+    Back
+  </button>
+
+  <h2 className="flex-1 text-center text-2xl font-bold">
+    User Details
+  </h2>
+
+  <div className="w-24" />
+</div>
+  <div className="p-8 bg-white">
+    
               {isHthAdmin && (
-                <p className="text-sm text-red-600 mt-2">
+                <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                   The role and password of this admin cannot be changed.
                 </p>
               )}
-              <div className="flex flex-row items-center justify-center sm:justify-start gap-4 text-center">
+              <div className="mb-8 rounded-xl border bg-gray-50 p-6">
+
+                <h3 className="mb-5 text-lg font-semibold text-gray-700">
+                Role Management
+                </h3>
               <form
                 onSubmit={handleRoleSubmit(handleUpdateRole)}
-                className="py-4 flex flex-row items-center gap-4"
+                className="flex flex-col gap-4 md:flex-row md:items-center"
               >
                 <div className="flex items-center gap-2">
-                  <label className="text-slate-600 text-lg font-semibold">
-                    Role:
-                  </label>
+                  <label className="font-medium text-gray-700">
+                    Role
+                    </label>
 
                   <select
-                    className="px-8 py-1 rounded-md border-2 uppercase border-slate-600 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+                    className="
+                      rounded-lg
+                      border
+                      border-gray-300
+                      px-4
+                      py-2
+                      uppercase
+                      focus:border-[#1e5146]
+                      focus:outline-none
+                      focus:ring-2
+                      focus:ring-[#1e5146]/20
+                      disabled:bg-gray-100
+                      "
                     value={selectedRole}
                     onChange={handleRoleChange}
                     disabled={isHthAdmin}
@@ -243,21 +235,27 @@ const UserDetails = () => {
                 <Buttons
                   type="submit"
                   disabled={updateRoleLoader || isHthAdmin}
-                  className="bg-[#1e5146] px-4 py-2 rounded-md text-white transition active:scale-[0.95] disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className="
+                    rounded-lg
+                    bg-[#1e5146]
+                    px-6
+                    py-2
+                    text-white
+                    transition
+                    hover:bg-[#18453c]
+                    active:scale-95
+                    disabled:bg-gray-400
+                    "
                 >
                   {updateRoleLoader ? "Loading..." : "Update"}
                 </Buttons>
               </form>
-              {/* <button
-                disabled= {!isValid}
-                className="bg-[#1e5146] hover:text-slate-300 px-4 py-2 rounded-md text-white "
-                onClick={handleUpdateRole}
-              >
-                {updateRoleLoader ? "Loading..." : "Update Role"}
-              </button> */}
             </div>
+              <h3 className="mb-6 text-lg font-semibold text-gray-700">
+                Account Information
+                </h3>
               <form
-                className="flex  flex-col  gap-2  "
+                className="space-y-5"
                 onSubmit={handleSubmit(handleSavePassword)}
               >
                 <InputField
@@ -304,7 +302,15 @@ const UserDetails = () => {
                     onClickhandler={() =>
                       setIsEditingPassword(!isEditingPassword)
                     }
-                    className="bg-[#1e5146] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.95]"
+                    className="
+                      rounded-lg
+                      bg-[#1e5146]
+                      px-5
+                      py-2
+                      text-white
+                      transition
+                      hover:bg-[#18453c]
+                      active:scale-95"
                     disabled= {isHthAdmin}
                   >
                     Click To Edit Password
@@ -314,7 +320,16 @@ const UserDetails = () => {
                     <Buttons
                       type="submit"
                       disabled={passwordLoader || !isValid}
-                      className="bg-[#1e5146] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.95]"
+                      className="
+                        rounded-lg
+                        bg-[#1e5146]
+                        px-6
+                        py-2
+                        text-white
+                        transition
+                        hover:bg-[#18453c]
+                        active:scale-95
+                        "
                     >
                       {passwordLoader ? "Loading..." : "Save"}
                     </Buttons>
@@ -325,7 +340,16 @@ const UserDetails = () => {
                         resetField("password");
                         setIsEditingPassword(false);
                       }}
-                      className="bg-[#f22809] mb-0 w-fit px-4 py-2 rounded-md text-white transition active:scale-[0.95]"
+                      className="
+                        rounded-lg
+                        bg-red-500
+                        px-6
+                        py-2
+                        text-white
+                        transition
+                        hover:bg-red-600
+                        active:scale-95
+                        "
                     >
                       Cancel
                     </Buttons>
@@ -333,84 +357,10 @@ const UserDetails = () => {
                 )}
               </form>
             </div>
-          </div>
-          {/* <div className="lg:w-[70%] sm:w-[90%] w-full  mx-auto shadow-lg shadow-gray-300 p-8 rounded-md"> */}
-            {/* <h2 className="text-slate-800 text-2xl font-bold  pb-4">
-              Admin Actions
-              <hr />
-            </h2> */}
-
-            
-
-            {/* <hr className="py-2" /> */}
-            {/* <div className="flex flex-col gap-4 py-4">
-              <div className="flex items-center gap-2">
-                <label className="text-slate-600 text-sm font-semibold uppercase">
-                  {" "}
-                  Lock Account
-                </label>
-                <input
-                  className="text-14 w-5 h-5"
-                  type="checkbox"
-                  name="lock"
-                  checked={!user?.accountNonLocked}
-                  onChange={(e) =>
-                    handleCheckboxChange(e, "/admin/update-lock-status")
-                  }
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <label className="text-slate-600 text-sm font-semibold uppercase">
-                  {" "}
-                  Account Expiry
-                </label>
-                <input
-                  className="text-14 w-5 h-5"
-                  type="checkbox"
-                  name="expire"
-                  checked={!user?.accountNonExpired}
-                  onChange={(e) =>
-                    handleCheckboxChange(e, "/admin/update-expiry-status")
-                  }
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <label className="text-slate-600 text-sm font-semibold uppercase">
-                  {" "}
-                  Account Enabled
-                </label>
-                <input
-                  className="text-14 w-5 h-5"
-                  type="checkbox"
-                  name="enabled"
-                  checked={user?.enabled}
-                  onChange={(e) =>
-                    handleCheckboxChange(e, "/admin/update-enabled-status")
-                  }
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <label className="text-slate-600 text-sm font-semibold uppercase">
-                  {" "}
-                  Credentials Expired
-                </label>
-                <input
-                  className="text-14 w-5 h-5"
-                  type="checkbox"
-                  name="credentialsExpire"
-                  checked={!user?.credentialsNonExpired}
-                  onChange={(e) =>
-                    handleCheckboxChange(
-                      e,
-                      `/admin/update-credentials-expiry-status?userId=${userId}&expire=${user?.credentialsNonExpired}`
-                    )
-                  }
-                />
-              </div>
-            </div> */}
-          {/* </div> */}
-        </>
+            </div>
+          </>
       )}
+    </div>
     </div>
   );
 };

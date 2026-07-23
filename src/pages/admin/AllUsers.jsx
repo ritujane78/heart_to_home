@@ -5,11 +5,11 @@ import toast from "react-hot-toast";
 import { BallTriangle } from "react-loader-spinner";
 // import Errors from "../Errors.js";
 import moment from "moment";
-import { Link, Routes, Route } from "react-router-dom";
+import { useNavigate, Routes, Route } from "react-router-dom";
 import { MdOutlineEmail } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
-import UserDetails from "./UserDetails"
 import { FileX } from "lucide-react";
+import CustomColumnMenu from "../../components/CustomColumnMenu";
 
 //Material ui data grid has used for the table
 //initialize the columns for the tables and (field) value is used to show data in a specific column dynamically
@@ -20,7 +20,6 @@ export const userListsColumns = [
     minWidth: 200,
     flex: 1,
     headerAlign: "center",
-    disableColumnMenu: true,
     align: "center",
     editable: false,
     headerClassName: "text-black font-semibold" ,
@@ -39,7 +38,6 @@ export const userListsColumns = [
     headerClassName: "text-black font-semibold text-center  ",
     cellClassName: "text-slate-700 font-normal  text-center ",
     align: "center",
-    disableColumnMenu: true,
     renderHeader: (params) => <span>Email</span>,
     renderCell: (params) => {
       return (
@@ -62,7 +60,6 @@ export const userListsColumns = [
     headerClassName: "text-black font-semibold ",
     cellClassName: "text-slate-700 font-normal ",
     align: "center",
-    disableColumnMenu: true,
     renderHeader: (params) => <span>Created At</span>,
     renderCell: (params) => {
       return (
@@ -75,46 +72,10 @@ export const userListsColumns = [
       );
     },
   },
-  {
-    field: "status",
-    headerName: "Status",
-    headerAlign: "center",
-    align: "center",
-    flex: 0.8,
-    minWidth: 170,
-    editable: false,
-    disableColumnMenu: true,
-    headerClassName: "text-black font-semibold ",
-    cellClassName: "text-slate-700 font-normal   ",
-    renderHeader: (params) => <span className="ps-10">Status</span>,
-  },
-  {
-    field: "action",
-    headerName: "Action",
-    headerAlign: "center",
-    editable: false,
-    headerClassName: "text-black font-semibold text-center",
-    cellClassName: "text-slate-700 font-normal",
-    sortable: false,
-    flex: 0.8,
-    minWidth: 180,
-    renderHeader: (params) => <span>Action</span>,
-    renderCell: (params) => {
-      return (
-        <Link
-          to={`/admin/users/${params.id}`}
-          className="h-full flex  items-center justify-center   "
-        >
-          <button className="bg-[#1e5146] text-white px-4 flex justify-center items-center  h-9 rounded-md transition active:scale-[0.95] ">
-            View
-          </button>
-        </Link>
-      );
-    },
-  },
 ];
 
 const AllUsers = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -143,21 +104,14 @@ const AllUsers = () => {
       "MMMM DD, YYYY"
     );
 
-    //set the data for each rows in the table according to the field name in columns
-    //Example: username is the keyword in row it should matche with the field name in column so that the data will show on that column dynamically
     return {
       id: item.id,
       username: item.username,
       email: item.email,
       created: formattedDate,
-      status: item.enabled ? "Active" : "Inactive",
+      user: item,
     };
   });
-
-  // if (error) {
-  //   return <Errors message={error} />;
-  // }
-
   return (
     <div className="p-4">
       <div className="py-4">
@@ -188,9 +142,17 @@ const AllUsers = () => {
           <>
             {" "}
             <DataGrid
-              className="transparent-grid w-fit mx-auto shadow-lg shadow-gray-300"
+              className="transparent-grid w-full max-w-6xl mx-auto shadow-lg shadow-gray-300 rounded-xl"
               rows={rows}
               columns={userListsColumns}
+              onRowClick={(params) =>
+                navigate(`/admin/users/${params.id}`, {
+                  state: { user: params.row.user },
+                })
+              }
+              slots={{
+                columnMenu: CustomColumnMenu,
+              }}
               initialState={{
                 pagination: {
                   paginationModel: {
@@ -199,8 +161,30 @@ const AllUsers = () => {
                 },
               }}
               disableRowSelectionOnClick
-              pageSizeOptions={[6]}
+              pageSizeOptions={[10]}
               disableColumnResize
+              sx={{
+                "& .MuiDataGrid-row": {
+                  cursor: "pointer",
+                  transition: "background-color .2s ease",
+                },
+
+                "& .MuiDataGrid-row:hover": {
+                  backgroundColor: "#e5e7eb !important",
+                },
+
+                "& .MuiDataGrid-row:focus, & .MuiDataGrid-row:focus-within": {
+                  outline: "none",
+                },
+
+                "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
+                  outline: "none",
+                },
+
+                "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within": {
+                  outline: "none",
+                },
+              }}
             />
           </>
         )}

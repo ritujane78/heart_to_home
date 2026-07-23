@@ -21,7 +21,8 @@ import AccessDenied from "./components/Auth/AccessDenied";
 
 import AddAService from "./pages/admin/AddAService.jsx";
 import AllUsers from "./pages/admin/AllUsers.jsx";
-import UpdateOrderStatus from "./pages/admin/UpdateOrderStatus.jsx";
+import AllOrders from "./pages/admin/AllOrders.jsx";
+import OrderDetails from "./pages/admin/OrderDetails.jsx";
 
 import GiftForm from "./pages/GiftForm";
 import PaymentPage from "./pages/PaymentPage";
@@ -372,14 +373,14 @@ function App() {
     path: "/admin/add-service",
   },
   {
-    title: "Update Order",
-    icon: <Pencil className="w-6 h-6" />,
-    path: "/admin/update-order-status",
-  },
-  {
     title: "All Users",
     icon: <Users className="w-6 h-6" />,
     path: "/admin/all-users",
+  },
+  {
+    title: "All Orders",
+    icon: <ClipboardList className="w-6 h-6" />,
+    path: "/admin/all-orders",
   },
 ];
 
@@ -582,6 +583,23 @@ function App() {
                 }
               />
               <Route
+                path="/admin/all-orders"
+                element={
+                  <ProtectedRoute adminPage={true}>
+                    <AllOrders />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/admin/orders/:orderId"
+                element={
+                  <ProtectedRoute adminPage={true}>
+                    <OrderDetails />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/admin/all-users"
                 element={
                   <ProtectedRoute adminPage={true}>
@@ -597,14 +615,6 @@ function App() {
                   </ProtectedRoute>
                   }
                 />
-              <Route
-                path="/admin/update-order-status"
-                element={
-                  <ProtectedRoute adminPage={true}>
-                    <UpdateOrderStatus />
-                  </ProtectedRoute>
-                }
-              />
               <Route
                 path="/my-orders"
                 element={
