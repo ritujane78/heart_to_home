@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Gift, MapPin, Trash2, SearchX, Inbox, CircleOff , BriefcaseMedical } from 'lucide-react';
+import { Gift, MapPin, Trash2, SearchX, Inbox, CircleOff , BriefcaseMedical, Info, X } from 'lucide-react';
 // import { services } from '../data/services.js';
 import GiftForm from './GiftForm.jsx';
 import { useMyContext } from "../store/ContextApi";
@@ -37,6 +37,18 @@ function ServicesPage({
   const { token, isAdmin } = useMyContext();
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [showGiftInfo, setShowGiftInfo] = useState(false);
+
+  useEffect(() => {
+  const handleKeyDown = (e) => {
+    if (e.key === "Escape") {
+      setShowGiftInfo(false);
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, []);
 
   useEffect(() => {
     setPage(1);
@@ -45,9 +57,7 @@ function ServicesPage({
   useEffect(() => {
     fetchServices(page, searchQuery);
   }, [page, searchQuery]);
-  // useEffect(() => {
-  //   fetchServices(page - 1, 6); // Spring uses 0-based pages
-  // }, [page]);
+
   const filteredServices = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
     
@@ -114,12 +124,7 @@ function ServicesPage({
         </div>
 
         <div className="button-wrapper">
-          {(!token || selectedIds.length === 0) && (
-            <p className="gift-note">
-              <strong>Note:</strong> The <strong>Gift Now</strong> button will be enabled only after you log in and select one or more services.
-            </p>
-          )}
-
+          <div className="flex items-center justify-end gap-2 whitespace-nowrap">
           <button
             className="primary-action compact transition active:scale-[0.95]"
             type="button"
@@ -129,6 +134,22 @@ function ServicesPage({
             <Gift aria-hidden="true" />
             Gift Now
           </button>
+          <button
+            type="button"
+            onClick={() => setShowGiftInfo(true)}
+            className="
+              text-[#1F6F5C]
+              hover:text-[#174d40]
+              transition
+              focus:outline-none
+              focus:ring-0
+              outline-none
+            "
+            aria-label="Gift information"
+          >
+            <Info size={18} />
+          </button>
+          </div>
         </div>
       </div>
 
@@ -203,7 +224,7 @@ function ServicesPage({
           onChange={handlePageChange}
         />
       </div>
-        <div className="provider-banner">
+        <div className="provider-banner mt-5">
         <BriefcaseMedical aria-hidden="true" />
         <span className="provider-text">
           Associate Partners:{" "}
@@ -216,6 +237,45 @@ function ServicesPage({
           )}
         </span>
       </div>
+      {showGiftInfo && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setShowGiftInfo(false)}
+        >
+          <div
+            className="relative w-full max-w-md rounded-xl bg-white shadow-2xl p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setShowGiftInfo(false)}
+              className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
+              aria-label="Close"
+            >
+              <X size={20} />
+            </button>
+
+            <h3 className="text-lg font-semibold text-[#1F6F5C] mb-4">
+              Note
+            </h3>
+
+            <div className="text-gray-700 leading-relaxed">
+              <p>
+                The <strong>Gift Now</strong> button will be enabled only after you:
+              </p>
+
+              <ul className="list-disc pl-5 mt-3 space-y-2">
+                <li>Log in to your account.</li>
+                <li>Select one or more healthcare services.</li>
+              </ul>
+
+              <div className="mt-4 rounded-lg bg-[#F5F9F8] border border-[#D6E7E2] p-3 text-sm">
+                Once both conditions are met, you can proceed to complete your gift purchase.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
