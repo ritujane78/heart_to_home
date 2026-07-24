@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Gift, MapPin, Trash2, SearchX, Inbox, CircleOff , BriefcaseMedical, Info, X } from 'lucide-react';
+import { Gift, MapPin, Trash2, SearchX, Inbox, CircleOff , BriefcaseMedical, Info, X, Pencil } from 'lucide-react';
 // import { services } from '../data/services.js';
 import GiftForm from './GiftForm.jsx';
 import { useMyContext } from "../store/ContextApi";
@@ -38,11 +38,35 @@ function ServicesPage({
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [showGiftInfo, setShowGiftInfo] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [providers, setProviders] = useState([]);
+
+  const [editingService, setEditingService] = useState({
+    id: null,
+    code: "",
+    title: "",
+    description: "",
+    price: "",
+    providerId:""
+  });
+  useEffect(() => {
+    fetchProviders();
+  }, []);
+
+  const fetchProviders = async () => {
+    try {
+      const response = await api.get("/providers");
+      setProviders(response.data);
+    } catch (err) {
+      toast.error("Failed to load providers");
+    }
+  };
 
   useEffect(() => {
   const handleKeyDown = (e) => {
     if (e.key === "Escape") {
       setShowGiftInfo(false);
+      setShowEditModal(false);
     }
   };
 
@@ -88,6 +112,50 @@ function ServicesPage({
       toast.error("Failed to delete service");
     }
   };
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+
+    setEditingService((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  const handleEditClick = (service) => {
+    setEditingService({
+      id: service.id,
+      code: service.code,
+      title: service.title,
+      description: service.description,
+      price: service.price,
+      providerId: service.provider?.id ?? ""
+
+    });
+
+    setShowEditModal(true);
+  };
+  const handleUpdateService = async (e) => {
+    e.preventDefault();
+
+    try {
+        await api.put(
+            `/services/admin/update-service/${editingService.id}`,
+            {
+                ...editingService,
+                providerId: Number(editingService.providerId),
+                price: Number(editingService.price)
+            }
+        );
+
+        toast.success("Service updated successfully");
+
+        setShowEditModal(false);
+
+        await fetchServices(page, searchQuery);
+
+    } catch (err) {
+        toast.error("Failed to update service");
+    }
+};
 
   return (
     <section className="services-layout">
@@ -172,22 +240,31 @@ function ServicesPage({
             onClick={() => onToggle(service)}
           >
             {isAdmin && (
-              <button
-                type="button"
-                className="delete-service-btn"
-                onClick={async (e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-
-                  if (!window.confirm(`Delete "${service.title}"?`)) {
-                    return;
-                  }
-
-                  await handleDelete(service.id);
-                }}
+              <div
+                className="absolute bottom-3 left-3 flex gap-2 z-20"
+                onClick={(e) => e.stopPropagation()}
               >
-                <Trash2 size={16} />
-              </button>
+                <button
+                  type="button"
+                  className="text-green-600 hover:text-green-800"
+                  onClick={() => handleEditClick(service)}
+                >
+                  <Pencil size={16} />
+                </button>
+
+                <button
+                  type="button"
+                  className="text-red-600 hover:text-red-800"
+                  onClick={async () => {
+                    if (!window.confirm(`Delete "${service.title}"?`))
+                      return;
+
+                    await handleDelete(service.id);
+                  }}
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             )}
 
             <input
@@ -276,6 +353,108 @@ function ServicesPage({
           </div>
         </div>
       )}
+      {showEditModal && (
+  <div
+    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <form
+      onSubmit={handleUpdateService}
+      className="relative w-full max-w-xl rounded-xl bg-white p-6"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        onClick={() => setShowEditModal(false)}
+        className="absolute right-4 top-4"
+      >
+        <X size={20} />
+      </button>
+
+      <h2 className="mb-6 text-xl font-bold text-[#1F6F5C]">
+        Edit Service
+      </h2>
+
+      <div className="space-y-4">
+        <div>
+    <label className="block mb-1 font-medium">
+        Provider
+    </label>
+
+    <select
+        name="providerId"
+        value={editingService.providerId}
+        onChange={handleEditChange}
+        className="w-full rounded border p-2"
+    >
+        <option value="">
+            Select Provider
+        </option>
+
+        {providers.map((provider) => (
+            <option
+                key={provider.id}
+                value={provider.id}
+            >
+                {provider.name}
+            </option>
+        ))}
+    </select>
+</div>
+
+        <div>
+          <label>Code</label>
+          <input
+            name="code"
+            value={editingService.code}
+            onChange={handleEditChange}
+            className="w-full border rounded p-2"
+          />
+        </div>
+
+        <div>
+          <label>Title</label>
+          <input
+            name="title"
+            value={editingService.title}
+            onChange={handleEditChange}
+            className="w-full border rounded p-2"
+          />
+        </div>
+
+        <div>
+          <label>Description</label>
+          <textarea
+            rows={4}
+            name="description"
+            value={editingService.description}
+            onChange={handleEditChange}
+            className="w-full border rounded p-2"
+          />
+        </div>
+
+        <div>
+          <label>Price (in NPR)</label>
+          <input
+            type="number"
+            step="0.01"
+            name="price"
+            value={editingService.price}
+            onChange={handleEditChange}
+            className="w-full border rounded p-2"
+          />
+        </div>
+
+      </div>
+
+      <button
+        type="submit"
+        className="mt-6 rounded bg-[#1F6F5C] px-5 py-2 text-white"
+      >
+        Update
+      </button>
+
+    </form>
+  </div>
+)}
     </section>
   );
 }

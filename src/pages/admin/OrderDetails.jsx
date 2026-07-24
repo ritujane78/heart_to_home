@@ -134,7 +134,7 @@ const updateStatus = async () => {
           <h4 className="font-semibold mb-2">Services</h4>
 
           <ul className="list-disc list-inside space-y-1">
-            {order.serviceIds.map((service) => (
+            {order.services.map((service) => (
               <li key={service.id}>{service.title}</li>
             ))}
           </ul>
