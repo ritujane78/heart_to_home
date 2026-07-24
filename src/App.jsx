@@ -546,6 +546,7 @@ function App() {
                   <ProtectedRoute>
                       <PaymentPage
                           selectedServices={selectedServices}
+                          giftDetails={giftDetails}
                           total={total}
                           formatMoney={formatMoney}
                           selectedCurrency={selectedCurrency}
