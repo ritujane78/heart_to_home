@@ -49,7 +49,6 @@ const UserDetails = () => {
       setUser(response.data);
 
       setSelectedRole(response.data.role?.roleName || "");
-      console.log(response);
       
     } catch (err) {
       setError(err?.response?.data?.message);

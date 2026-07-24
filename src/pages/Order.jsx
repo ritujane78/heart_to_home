@@ -33,10 +33,6 @@ function MyOrdersPage({
   const fetchOrders = async () => {
     try {
       const response = await api.get(`/orders/my-orders`);
-      console.log(response);
-      console.log(response.data);
-      console.log(typeof response.data);
-      console.log(Array.isArray(response.data));
       setOrders(response.data);
     } catch (err) {
       console.error(err);
