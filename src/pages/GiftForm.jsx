@@ -88,6 +88,18 @@ const isFormValid = Object.keys(errors).length === 0;
 
               onSubmit(e);
             }}
+            onKeyDown={(e) => {
+              if (
+                e.key === "Enter" &&
+                e.target.tagName !== "TEXTAREA"
+              ) {
+                e.preventDefault();
+
+                if (isFormValid) {
+                  e.currentTarget.requestSubmit();
+                }
+              }
+            }}
           >
 
             <div className="form-section">

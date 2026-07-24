@@ -33,6 +33,10 @@ function MyOrdersPage({
   const fetchOrders = async () => {
     try {
       const response = await api.get(`/orders/my-orders`);
+      console.log(response);
+      console.log(response.data);
+      console.log(typeof response.data);
+      console.log(Array.isArray(response.data));
       setOrders(response.data);
     } catch (err) {
       console.error(err);
@@ -183,9 +187,9 @@ return (
                     Services
                   </h4>
 
-                  {order.serviceIds?.length > 0 ? (
+                  {order.services?.length > 0 ? (
                     <div className="space-y-3">
-                      {order.serviceIds.map((service) => (
+                      {order.services.map((service) => (
                         <div
                           key={service.id}
                           className="flex items-center justify-between rounded-lg bg-white px-4 py-3"

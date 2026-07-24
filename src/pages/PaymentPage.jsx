@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { CreditCard } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 export default function PaymentPage({
   selectedServices,
@@ -10,6 +11,11 @@ export default function PaymentPage({
   onSaveOrder,
   isSaving,
 }) {
+  const submitButtonRef = useRef(null);
+  
+  useEffect(() => {
+    submitButtonRef.current?.focus();
+  }, []);
 
 const location = useLocation();
 
@@ -25,6 +31,23 @@ if (
         Dummy Payment
       </p>
 
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!isSaving) {
+            onSaveOrder();
+          }
+        }}
+         onKeyDown={(e) => {
+          if (
+            e.key === "Enter" &&
+            e.target.tagName !== "TEXTAREA"
+          ) {
+            e.preventDefault();
+            e.currentTarget.requestSubmit();
+          }
+        }}
+      >
       <h2 className="mb-6 text-2xl font-bold text-gray-900">
         Payment Summary
       </h2>
@@ -89,13 +112,14 @@ if (
       </div>
 
       <button
-        type="button"
-        onClick={onSaveOrder}
+        ref={submitButtonRef}
+        type="submit"
         disabled={isSaving}
         className="w-full rounded-lg primary-action px-6 py-3 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-    >
+      >
         {isSaving ? "Processing Payment..." : "Confirm Dummy Payment"}
-    </button>
+      </button>
+    </form>
     </section>
   );
 }
