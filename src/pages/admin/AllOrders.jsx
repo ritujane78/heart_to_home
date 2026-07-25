@@ -122,7 +122,6 @@ const AllOrders = () => {
         senderEmail: order.senderEmail,
         status: order.orderStatus.replaceAll("_", " "),
         orderedAt: moment(order.orderedAt).format("MMMM DD, YYYY"),
-        order, 
     }));
   return (
     <div className="py-4">
@@ -179,10 +178,8 @@ const AllOrders = () => {
                 outline: "none",
                 },
             }}
-              onRowClick={(params) =>
-                navigate(`/admin/orders/${params.id}`, {
-                    state: { order: params.row.order },
-                })
+            onRowClick={(params) =>
+              navigate(`/admin/orders/${params.id}`)
               }
               slots={{
     columnMenu: CustomColumnMenu,

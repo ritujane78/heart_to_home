@@ -6,7 +6,8 @@ import moment from "moment";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import {BallTriangle} from "react-loader-spinner"
-import { useLocation, Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const STATUS_OPTIONS = [
   "IN_PROCESS",
@@ -16,20 +17,36 @@ const STATUS_OPTIONS = [
 ];
 
 export default function AdminOrders() {
-const { state } = useLocation();
 const navigate = useNavigate();
 
-const order = state?.order;
+const { id } = useParams();
+
+const [order, setOrder] = useState(null);
+const [loading, setLoading] = useState(true);
+
+const [updating, setUpdating] = useState(false);
+const [updateMessage, setUpdateMessage] = useState("");
+
+useEffect(() => {
+  const fetchOrder = async () => {
+    try {
+      const response = await api.get(`/orders/${id}`);
+      setOrder(response.data);
+      setSelectedStatus(response.data.orderStatus);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchOrder();
+}, [id]);
+
 
 const [selectedStatus, setSelectedStatus] = useState(
   order?.orderStatus ?? ""
 );
-const [updating, setUpdating] = useState(false);
-const [updateMessage, setUpdateMessage] = useState("");
-
-if (!order) {
-  return <Navigate to="/admin/all-orders" replace />;
-}
 
 const updateStatus = async () => {
     setUpdating(true);
@@ -52,6 +69,23 @@ const updateStatus = async () => {
         setUpdating(false);
     }
 };
+
+if (loading) {
+  return (
+    <div className="flex justify-center items-center h-72">
+      <BallTriangle
+        height={100}
+        width={100}
+        color="#4fa94d"
+        visible
+      />
+    </div>
+  );
+}
+
+if (!order) {
+  return <Navigate to="/admin/all-orders" replace />;
+}
 
   return (
    <div className="max-w-6xl mx-auto px-6">

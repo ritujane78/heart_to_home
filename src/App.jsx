@@ -593,7 +593,7 @@ function App() {
               />
 
               <Route
-                path="/admin/orders/:orderId"
+                path="/admin/orders/:id"
                 element={
                   <ProtectedRoute adminPage={true}>
                     <OrderDetails />
