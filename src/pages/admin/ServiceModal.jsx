@@ -81,7 +81,7 @@ const ServiceModal = ({
         price: Number(data.price),
         enabled: true,
       };
-      
+
       if (isEdit) {
         await api.put(`/services/admin/update-service/${service.id}`, {
           ...payload,
@@ -119,7 +119,15 @@ const ServiceModal = ({
         className="relative w-full max-w-xl rounded-xl bg-white shadow-2xl p-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleSubmit(onSubmit)();
+            }
+          }}
+        >
           <button
             type="button"
             onClick={onClose}
@@ -208,7 +216,7 @@ const ServiceModal = ({
             errors={errors}
           />
           <Buttons
-            type = "submit"
+            type="submit"
             disabled={!isValid || (mode === "add" && loading)}
             className="bg-[#1e5146] text-white w-full py-2 rounded-md hover:scale-[1.03] transition"
           >
