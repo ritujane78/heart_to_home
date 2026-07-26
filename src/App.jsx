@@ -18,8 +18,6 @@ import api from "./services/api";
 import NotFound from "./components/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AccessDenied from "./components/Auth/AccessDenied";
-
-import AddAService from "./pages/admin/AddAService.jsx";
 import AllUsers from "./pages/admin/AllUsers.jsx";
 import AllOrders from "./pages/admin/AllOrders.jsx";
 import OrderDetails from "./pages/admin/OrderDetails.jsx";
@@ -70,6 +68,8 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [serviceProviders, setServiceProviders] = useState([]);
   const zeroDecimalCurrencies = new Set(['NPR', 'INR', 'JPY']);
+  const [providerNames, setProviderNames] = useState([]);
+  const [disabledServices, setDisabledServices] = useState([]);
 
 
   const fetchServices = async (pageNumber = 1, keyword = "") => {
@@ -79,10 +79,14 @@ function App() {
         size: 6,
         keyword,
       },
-    });
+    }); 
 
-    setServices(response.data.content);
-    setTotalPages(response.data.totalPages);
+    setServices(response.data.services.content);
+    setTotalPages(response.data.services.totalPages);
+      if (pageNumber === 1 && keyword === "") {
+      setProviderNames(response.data.providerNames);
+    }
+
   };
 
   useEffect(() => {
@@ -159,11 +163,10 @@ function App() {
       formatConvertedAmount(amount, selectedCurrency, exchangeRates),
     [selectedCurrency, exchangeRates]
   );
-  const activeProviders = useMemo(() => {
-  return serviceProviders.filter((provider) =>
-    services.some((service) => service.provider?.id === provider.id)
-  );
-}, [services, serviceProviders]);
+
+const serviceProviderNames = useMemo(() => {
+  return providerNames.join(" | ");
+}, [providerNames]);
 
   const providerMap = useMemo(
   () =>
@@ -172,10 +175,6 @@ function App() {
     ),
   []
 );
-
-  const serviceProviderNames = useMemo(() => {
-  return activeProviders.map((provider) => provider.name).join(" | ");
-}, [activeProviders]);
 
   useEffect(() => {
     let isActive = true;
@@ -288,6 +287,15 @@ function App() {
 
     setPaymentReady(false);
   }
+  const fetchDisabledServices = async () => {
+    const response = await api.get("/admin/disabled-services");
+    setDisabledServices(response.data);
+  };
+
+  useEffect(() => {
+    fetchDisabledServices();
+  }, []);
+
   function removeDeletedService(id) {
     setSelectedIds(prev => prev.filter(x => x !== id));
 
@@ -300,6 +308,7 @@ function App() {
       if (next.length === 0) {
         setGiftStarted(false);
       }
+      fetchDisabledServices();
 
       return next;
     });
@@ -367,11 +376,6 @@ function App() {
     }
   };
   const adminItems = [
-  {
-    title: "Add Service",
-    icon: <PlusCircle className="w-6 h-6" />,
-    path: "/admin/add-service",
-  },
   {
     title: "All Users",
     icon: <Users className="w-6 h-6" />,
@@ -489,12 +493,11 @@ function App() {
               path="/services"
               element={
                 <ServicesPage
-                  onSaveOrder={saveOrder}
                   selectedIds={selectedIds}
                   selectedServices={selectedServices}
-                  serviceProviders={activeProviders}
-                  providerMap={providerMap}
                   serviceProviderNames={serviceProviderNames}
+                  disabledServices={disabledServices}
+                  fetchDisabledServices={fetchDisabledServices}
                   services={services}
                   totalPages={totalPages}
                   fetchServices={fetchServices}
@@ -502,21 +505,10 @@ function App() {
                   total={total}
                   selectedCurrency={selectedCurrency}
                   currencies={supportedCurrencies}
-                  exchangeRateStatus={exchangeRateStatus}
                   formatMoney={formatMoney}
-                  giftDetails={giftDetails}
-                  giftStarted={giftStarted}
-                  paymentReady={paymentReady}
-                  paymentMethod={paymentMethod}
-                  giftFormRef={giftFormRef}
                   onToggle={toggleService}
                   onCurrencyChange={setSelectedCurrency}
                   onGiftNow={startGiftFlow}
-                  onGiftDetailsChange={updateGiftDetails}
-                  onSubmitGift={submitGift}
-                  onPaymentMethodChange={setPaymentMethod}
-                  onReset={resetGift}
-
                 />
               }
             />
@@ -569,20 +561,7 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/access-denied" element={<AccessDenied />} />
-              <Route
-                path="/admin/add-service"
-                element={
-                  <ProtectedRoute adminPage={true}>
-                    <AddAService 
-                      providers={serviceProviders}
-                      fetchProviders={fetchProviders}
-                      fetchServices={fetchServices} 
-                      services={services}
 
-                    />
-                  </ProtectedRoute>
-                }
-              />
               <Route
                 path="/admin/all-orders"
                 element={

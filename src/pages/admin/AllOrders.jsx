@@ -1,4 +1,4 @@
-import {useState,useEffect} from 'react'
+import { useState, useEffect } from "react";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 
@@ -6,123 +6,124 @@ import moment from "moment";
 import { DataGrid } from "@mui/x-data-grid";
 import toast from "react-hot-toast";
 import { BallTriangle } from "react-loader-spinner";
-import CustomColumnMenu from '../../components/CustomColumnMenu';
+import CustomColumnMenu from "../../components/CustomColumnMenu";
 import { MdOutlineEmail } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
 
 const AllOrders = () => {
-    const navigate = useNavigate();
-    const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [selectedStatuses, setSelectedStatuses] = useState({});
+  const navigate = useNavigate();
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedStatuses, setSelectedStatuses] = useState({});
 
-    useEffect(() => {
-        fetchOrders();
-    }, []);
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
-    const fetchOrders = async () => {
+  const fetchOrders = async () => {
     try {
-        const response = await api.get("/orders");
+      const response = await api.get("/orders");
 
-        setOrders(response.data);
-        const statuses = {};
-        response.data.forEach((order) => {
+      setOrders(response.data);
+      const statuses = {};
+      response.data.forEach((order) => {
         statuses[order.id] = order.orderStatus;
-        });
-        setSelectedStatuses(statuses);
-
+      });
+      setSelectedStatuses(statuses);
     } catch (err) {
-        console.error(err);
+      console.error(err);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-    };
-    const columns = [
+  };
+  const columns = [
     {
-        field: "id",
-        headerName: "Order #",
-        flex: 0.6,
-        align: "center",
-        headerAlign: "center",
-        headerClassName: "text-black font-semibold ",
-        cellClassName: "text-slate-700 font-normal ",
-        renderHeader: (params) => <span className="text-center">Order #</span>,
+      field: "id",
+      headerName: "Order #",
+      flex: 0.6,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "text-black font-semibold ",
+      cellClassName: "text-slate-700 font-normal ",
+      renderHeader: (params) => <span className="text-center">Order #</span>,
     },
     {
-        field: "senderEmail",
-        headerName: "Sender Email",
-        flex: 1.4,
-        align: "center",
-        headerAlign: "center",
-        headerClassName: "text-black font-semibold text-center  ",
-        cellClassName: "text-slate-700 font-normal ",
-        renderHeader: (params) => <span className="text-center">Sender Email</span>,
-        renderCell: (params) => {
-              return (
-                <div className=" flex  items-center justify-center  gap-1 ">
-                  <span>
-                    <MdOutlineEmail className="text-slate-700 text-lg" />
-                  </span>
-                  <span>{params?.row?.senderEmail}</span>
-                </div>
-              );
-            },
-    },
-    {
-        field: "status",
-        headerName: "Status",
-        flex: 0.8,
-        align: "center",
-        headerAlign: "center",
-        headerClassName: "text-black font-semibold text-center  ",
-        cellClassName: "text-slate-700 font-normal ",
-        renderHeader: (params) => <span className="text-center">Status</span>,
-        renderCell: (params) => {
-        const colors = {
-        DELIVERED: "bg-[#1e5146]",
-        CANCELED: "bg-red-500",
-        "IN PROCESS": "bg-yellow-500 text-black",
-        "READY FOR CLINIC": "bg-lime-500",
-        };
-
+      field: "senderEmail",
+      headerName: "Sender Email",
+      flex: 1.4,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "text-black font-semibold text-center  ",
+      cellClassName: "text-slate-700 font-normal ",
+      renderHeader: (params) => (
+        <span className="text-center">Sender Email</span>
+      ),
+      renderCell: (params) => {
         return (
-        <span
-            className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${
-            colors[params.value] || "bg-gray-500"
-            }`}
-        >
-            {params.value}
-        </span>
+          <div className=" flex  items-center justify-center  gap-1 ">
+            <span>
+              <MdOutlineEmail className="text-slate-700 text-lg" />
+            </span>
+            <span>{params?.row?.senderEmail}</span>
+          </div>
         );
       },
     },
     {
-        field: "orderedAt",
-        headerName: "Ordered",
-        flex: 1,
-        align: "center",
-        headerAlign: "center",
-        headerClassName: "text-black font-semibold text-center  ",
-        cellClassName: "text-slate-700 font-normal ",
-        renderHeader: (params) => <span className="text-center">Ordered</span>,
-        renderCell: (params) => {
-              return (
-                <div className=" flex justify-center  items-center  gap-1 ">
-                  <span>
-                    <MdDateRange className="text-slate-700 text-lg" />
-                  </span>
-                  <span>{params?.row?.orderedAt}</span>
-                </div>
-              );
-            },
+      field: "status",
+      headerName: "Status",
+      flex: 0.8,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "text-black font-semibold text-center  ",
+      cellClassName: "text-slate-700 font-normal ",
+      renderHeader: (params) => <span className="text-center">Status</span>,
+      renderCell: (params) => {
+        const colors = {
+          DELIVERED: "bg-[#1e5146]",
+          CANCELED: "bg-red-500",
+          "IN PROCESS": "bg-yellow-500 text-black",
+          "READY FOR CLINIC": "bg-lime-500",
+        };
+
+        return (
+          <span
+            className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${
+              colors[params.value] || "bg-gray-500"
+            }`}
+          >
+            {params.value}
+          </span>
+        );
       },
-    ];
-    const rows = orders.map(order => ({
-        id: order.id,
-        senderEmail: order.senderEmail,
-        status: order.orderStatus.replaceAll("_", " "),
-        orderedAt: moment(order.orderedAt).format("MMMM DD, YYYY"),
-    }));
+    },
+    {
+      field: "orderedAt",
+      headerName: "Ordered",
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "text-black font-semibold text-center  ",
+      cellClassName: "text-slate-700 font-normal ",
+      renderHeader: (params) => <span className="text-center">Ordered</span>,
+      renderCell: (params) => {
+        return (
+          <div className=" flex justify-center  items-center  gap-1 ">
+            <span>
+              <MdDateRange className="text-slate-700 text-lg" />
+            </span>
+            <span>{params?.row?.orderedAt}</span>
+          </div>
+        );
+      },
+    },
+  ];
+  const rows = orders.map((order) => ({
+    id: order.id,
+    senderEmail: order.senderEmail,
+    status: order.orderStatus.replaceAll("_", " "),
+    orderedAt: moment(order.orderedAt).format("MMMM DD, YYYY"),
+  }));
   return (
     <div className="py-4">
       <div className="py-4">
@@ -144,7 +145,7 @@ const AllOrders = () => {
                   wrapperStyle={{}}
                   wrapperClass=""
                   visible={true}
-                  />
+                />
               </span>
               <span>Please wait...</span>
             </div>
@@ -158,32 +159,31 @@ const AllOrders = () => {
               columns={columns}
               sx={{
                 "& .MuiDataGrid-row": {
-                cursor: "pointer",
-                transition: "background-color .2s ease",
+                  cursor: "pointer",
+                  transition: "background-color .2s ease",
                 },
 
                 "& .MuiDataGrid-row:hover": {
-                backgroundColor: "#e5e7eb !important",
+                  backgroundColor: "#e5e7eb !important",
                 },
 
                 "& .MuiDataGrid-row:focus, & .MuiDataGrid-row:focus-within": {
-                outline: "none",
+                  outline: "none",
                 },
 
                 "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
-                outline: "none",
+                  outline: "none",
                 },
 
-                "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within": {
-                outline: "none",
-                },
-            }}
-            onRowClick={(params) =>
-              navigate(`/admin/orders/${params.id}`)
-              }
+                "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within":
+                  {
+                    outline: "none",
+                  },
+              }}
+              onRowClick={(params) => navigate(`/admin/orders/${params.id}`)}
               slots={{
-    columnMenu: CustomColumnMenu,
-  }}
+                columnMenu: CustomColumnMenu,
+              }}
               initialState={{
                 pagination: {
                   paginationModel: {
@@ -199,7 +199,7 @@ const AllOrders = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AllOrders
+export default AllOrders;
