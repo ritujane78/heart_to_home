@@ -23,6 +23,7 @@ import Pagination from "@mui/material/Pagination";
 import ProviderModal from "./admin/ProviderModal.jsx";
 import RestoreServiceModal from "./admin/RestoreServiceModal.jsx";
 import ServiceModal from "./admin/ServiceModal.jsx";
+import { scrollToTop } from "../utils/ScrollToTop.js"; 
 
 function ServicesPage({
   selectedIds,
@@ -106,13 +107,13 @@ function ServicesPage({
     );
   }, [services, searchQuery]);
 
-  const handlePageChange = (event, value) => {
+  const handlePageChange = (_, value) => {
     setPage(value);
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   };
+
+  useEffect(() => {
+    scrollToTop();
+  }, [page]);
 
   const handleDelete = async (id) => {
     try {
