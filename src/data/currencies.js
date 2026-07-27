@@ -4,8 +4,6 @@ export const DEFAULT_CURRENCY = 'USD';
 export const supportedCurrencies = [
   { code: 'USD', label: 'USD - US Dollar' },
   { code: 'GBP', label: 'GBP - British Pound' },
-  { code: 'NPR', label: 'NPR - Nepali Rupee' },
-  { code: 'INR', label: 'INR - Indian Rupee' },
   { code: 'EUR', label: 'EUR - Euro' },
   { code: 'AUD', label: 'AUD - Australian Dollar' },
   { code: 'CAD', label: 'CAD - Canadian Dollar' },
@@ -13,10 +11,8 @@ export const supportedCurrencies = [
 ];
 
 export const fallbackExchangeRates = {
-  NPR: 1,
   USD: 0.0073,
   GBP: 0.0055,
-  INR: 0.625,
   EUR: 0.0063,
   AUD: 0.011,
   CAD: 0.01,
@@ -26,15 +22,13 @@ export const fallbackExchangeRates = {
 export const currencySymbols = {
   USD: '$',
   GBP: '£',
-  NPR: 'Rs ',
-  INR: '₹',
   EUR: '€',
   AUD: 'A$',
   CAD: 'C$',
   JPY: '¥'
 };
 
-const zeroDecimalCurrencies = new Set(['NPR', 'INR', 'JPY']);
+export const zeroDecimalCurrencies = new Set(['JPY']);
 
 export function formatConvertedAmount(amountNpr, currencyCode, exchangeRates) {
   const rate = exchangeRates[currencyCode] ?? fallbackExchangeRates[currencyCode] ?? 1;

@@ -108,6 +108,10 @@ function ServicesPage({
 
   const handlePageChange = (event, value) => {
     setPage(value);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const handleDelete = async (id) => {
@@ -242,21 +246,21 @@ function ServicesPage({
                 Gift Now
               </button>
               <button
-  type="button"
-  onClick={() => setShowGiftInfo(true)}
-  className="
-  -translate-y-3
-  text-[#1F6F5C]
-  hover:text-[#174d40]
-  transition
-  focus:outline-none
-  focus:ring-0
-  outline-none
-"
-  aria-label="Gift information"
->
-  <Info size={18} />
-</button>
+                type="button"
+                onClick={() => setShowGiftInfo(true)}
+                className="
+                  -translate-y-3
+                  text-[#1F6F5C]
+                  hover:text-[#174d40]
+                  transition
+                  focus:outline-none
+                  focus:ring-0
+                  outline-none
+                "
+                aria-label="Gift information"
+              >
+                <Info size={18} />
+              </button>
             </div>
           </div>
         </div>
@@ -320,7 +324,7 @@ function ServicesPage({
                     onClick={() => handleEditClick(service)}
                     className="outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 border-none"
                   >
-                    <Pencil size={16}  className="text-[#1e5146] "/>
+                    <Pencil size={16} className="text-[#1e5146] " />
                   </button>
 
                   <button

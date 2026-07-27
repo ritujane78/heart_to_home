@@ -97,7 +97,7 @@ const ServiceModal = ({
 
       reset();
 
-      await await fetchServices(currentPage, searchQuery);
+      await fetchServices(currentPage, searchQuery);
 
       onClose();
     } catch (error) {

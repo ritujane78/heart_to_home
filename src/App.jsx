@@ -53,7 +53,7 @@ import Order from "./pages/Order.jsx";
 import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import UserDetails from "./pages/admin/UserDetails.jsx";
-import { currencySymbols } from "./data/currencies.js";
+import { currencySymbols, zeroDecimalCurrencies } from "./data/currencies.js";
 const EXCHANGE_RATE_URL = "https://open.er-api.com/v6/latest/NPR";
 
 function App() {
@@ -67,7 +67,6 @@ function App() {
   const [totalPages, setTotalPages] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
   const [serviceProviders, setServiceProviders] = useState([]);
-  const zeroDecimalCurrencies = new Set(['NPR', 'INR', 'JPY']);
   const [providerNames, setProviderNames] = useState([]);
   const [disabledServices, setDisabledServices] = useState([]);
 
@@ -219,14 +218,6 @@ const serviceProviderNames = useMemo(() => {
       isActive = false;
     };
   }, []);
-
-  useEffect(() => {
-    if (giftStarted && selectedServices.length > 0) {
-      giftFormRef.current?.scrollIntoView({
-        behavior: "smooth",
-      });
-    }
-  }, [giftStarted, selectedServices.length]);
   const saveOrder = async () => {
     if (isSaving) return;
 
@@ -261,9 +252,7 @@ const serviceProviderNames = useMemo(() => {
         giftOrderRequest,
       );
 
-      toast.success("Order placed successfully!");
-      navigate("/my-orders");
-      resetGift();
+      
     } catch (error) {
       console.error(error);
       toast.error("Unable to place order.");
@@ -293,8 +282,10 @@ const serviceProviderNames = useMemo(() => {
   };
 
   useEffect(() => {
-    fetchDisabledServices();
-  }, []);
+    if (token && isAdmin) {
+      fetchDisabledServices();
+    }
+  }, [token, isAdmin]);
 
   function removeDeletedService(id) {
     setSelectedIds(prev => prev.filter(x => x !== id));
@@ -546,7 +537,8 @@ const serviceProviderNames = useMemo(() => {
                           onPaymentMethodChange={setPaymentMethod}
                           onSaveOrder={saveOrder}
                           isSaving={isSaving}
-
+                          setIsSaving={setIsSaving}
+                          resetGift={resetGift}
                       />
                   </ProtectedRoute>
               }
