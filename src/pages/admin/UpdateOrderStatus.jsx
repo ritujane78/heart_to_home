@@ -6,6 +6,7 @@ import moment from "moment";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import {BallTriangle} from "react-loader-spinner"
+import { scrollToTop } from "../../utils/ScrollToTop";
 
 const STATUS_OPTIONS = [
   "IN_PROCESS",
@@ -24,7 +25,7 @@ export default function AdminOrders() {
   const ordersPerPage = 3;
 
   useEffect(() => {
-    fetchOrders();
+    await fetchOrders();
   }, []);
 
 const fetchOrders = async () => {
@@ -98,10 +99,7 @@ const paginatedOrders = orders.slice(
 );
 const handlePageChange = (event, value) => {
   setPage(value);
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
+  scrollToTop();
 };
   if (loading) {
     return (

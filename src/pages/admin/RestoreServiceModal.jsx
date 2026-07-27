@@ -40,7 +40,7 @@ const RestoreServiceModal = ({
 
       setSelectedServiceId("");
 
-      fetchServices();
+      await fetchServices();
       fetchDisabledServices();
       onClose();
     } catch {
