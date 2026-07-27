@@ -380,18 +380,21 @@ function ServicesPage({
           />
         </div>
         <div className="provider-banner mt-5">
-          <BriefcaseMedical aria-hidden="true" />
-          <span className="provider-text">
-            Associate Partners:{" "}
-            {serviceProviderNames ? (
-              serviceProviderNames
-            ) : (
-              <span className="no-provider">
-                <CircleOff size={16} />
-              </span>
-            )}
-          </span>
-        </div>
+  <BriefcaseMedical className="provider-icon" aria-hidden="true" />
+
+  <span className="provider-label">
+    Associate Partners:
+  </span>
+
+  {serviceProviderNames ? (
+    <span className="provider-value">{serviceProviderNames}</span>
+  ) : (
+    <span className="no-provider">
+      <CircleOff size={16} />
+      No partner available
+    </span>
+  )}
+</div>
         {showGiftInfo && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
