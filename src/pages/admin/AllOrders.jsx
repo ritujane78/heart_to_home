@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, Routes, Route, useNavigate } from "react-router-dom";
+import { Link, Routes, Route, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import api from "../../services/api";
 
 import moment from "moment";
@@ -15,6 +15,8 @@ const AllOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatuses, setSelectedStatuses] = useState({});
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     fetchOrders();
@@ -36,6 +38,44 @@ const AllOrders = () => {
       setLoading(false);
     }
   };
+
+const [filterModel, setFilterModel] = useState(() => {
+  const field = searchParams.get("field");
+  const operator = searchParams.get("op");
+  const value = searchParams.get("value");
+
+  if (!field || !operator || value == null) {
+    return { items: [] };
+  }
+
+  return {
+    items: [
+      {
+        field,
+        operator,
+        value,
+      },
+    ],
+  };
+});
+
+const handleFilterModelChange = (newModel) => {
+  setFilterModel(newModel);
+
+  const params = new URLSearchParams();
+
+  if (newModel.items.length > 0) {
+    const { field, operator, value } = newModel.items[0];
+
+    if (value) {
+      params.set("field", field);
+      params.set("op", operator);
+      params.set("value", value);
+    }
+  }
+
+  setSearchParams(params, { replace: true });
+};
   const columns = [
     {
       field: "id",
@@ -180,10 +220,12 @@ const AllOrders = () => {
                     outline: "none",
                   },
               }}
-              onRowClick={(params) => navigate(`/admin/orders/${params.id}`)}
+              onRowClick={(params) => navigate(`/admin/orders/${params.id}${location.search}`)}
               slots={{
                 columnMenu: CustomColumnMenu,
               }}
+              filterModel={filterModel}
+              onFilterModelChange={handleFilterModelChange}
               initialState={{
                 pagination: {
                   paginationModel: {
