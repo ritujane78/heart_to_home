@@ -115,9 +115,14 @@ export default function PaymentPage({
       toast.error(result.error.message || "Payment failed.");
       return;
     }
-    await onSaveOrder();
+    const response = await onSaveOrder();
+    
 
-    toast.success("Order placed successfully!");
+    if (response.data.emailSent) {
+      toast.success(response.data.message);
+    } else {
+      toast(response.data.message, { icon: "⚠️" });
+    }
     navigate("/my-orders");
     resetGift();
   } catch (error) {

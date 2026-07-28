@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
-import { Package, User, Mail, Phone, Heart, CreditCard, ArrowLeft } from "lucide-react";
-import './UpdateOrderStatus.css'
+import {
+  Package,
+  User,
+  Mail,
+  Phone,
+  Heart,
+  CreditCard,
+  ArrowLeft,
+} from "lucide-react";
+import "./UpdateOrderStatus.css";
 import api from "../../services/api";
 import moment from "moment";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import {BallTriangle} from "react-loader-spinner"
+import { BallTriangle } from "react-loader-spinner";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
@@ -17,103 +25,94 @@ const STATUS_OPTIONS = [
 ];
 
 export default function AdminOrders() {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const { id } = useParams();
+  const { id } = useParams();
 
-const [order, setOrder] = useState(null);
-const [loading, setLoading] = useState(true);
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-const [updating, setUpdating] = useState(false);
-const [updateMessage, setUpdateMessage] = useState("");
+  const [updating, setUpdating] = useState(false);
+  const [updateMessage, setUpdateMessage] = useState("");
 
-useEffect(() => {
-  const fetchOrder = async () => {
-    try {
-      const response = await api.get(`/orders/${id}`);
-      setOrder(response.data);
-      setSelectedStatus(response.data.orderStatus);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const response = await api.get(`/orders/${id}`);
+        setOrder(response.data);
+        setSelectedStatus(response.data.orderStatus);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchOrder();
-}, [id]);
+    fetchOrder();
+  }, [id]);
 
+  const [selectedStatus, setSelectedStatus] = useState(
+    order?.orderStatus ?? "",
+  );
 
-const [selectedStatus, setSelectedStatus] = useState(
-  order?.orderStatus ?? ""
-);
-
-const updateStatus = async () => {
+  const updateStatus = async () => {
     setUpdating(true);
 
     try {
-        await api.put(`/orders/${order.id}/status`, {
-            orderStatus: selectedStatus,
-        });
+      const response = await api.put(`/orders/${order.id}/status`, {
+        orderStatus: selectedStatus,
+      });
 
+      setOrder(response.data.order);
 
-        setUpdateMessage(
-            order.senderEmail
-                ? `✅ Status updated successfully. Email sent to ${order.senderEmail}.`
-                : "✅ Status updated successfully."
-        );
+      if (response.data.emailSent) {
+        setUpdateMessage(`✅ ${response.data.message}`);
+      } else {
+        setUpdateMessage(`⚠️ ${response.data.message}`);
+      }
     } catch (err) {
-        console.error(err);
-        setUpdateMessage("❌ Unable to update status.");
+      console.error(err);
+      setUpdateMessage("❌ Unable to update status.");
     } finally {
-        setUpdating(false);
+      setUpdating(false);
     }
-};
+  };
 
-if (loading) {
-  return (
-    <div className="flex justify-center items-center h-72">
-      <BallTriangle
-        height={100}
-        width={100}
-        color="#4fa94d"
-        visible
-      />
-    </div>
-  );
-}
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-72">
+        <BallTriangle height={100} width={100} color="#4fa94d" visible />
+      </div>
+    );
+  }
 
-if (!order) {
-  return <Navigate to="/admin/all-orders" replace />;
-}
+  if (!order) {
+    return <Navigate to="/admin/all-orders" replace />;
+  }
 
   return (
-   <div className="max-w-6xl mx-auto px-6">
+    <div className="max-w-6xl mx-auto px-6">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 rounded-md px-4 py-2"
+        >
+          <ArrowLeft size={18} />
+          Back
+        </button>
 
-  {/* Header */}
-  <div className="flex items-center justify-between mb-4">
-    <button
-      onClick={() => navigate(-1)}
-      className="flex items-center gap-2 rounded-md px-4 py-2"
-    >
-      <ArrowLeft size={18} />
-      Back
-    </button>
+        <h2 className="flex-1 text-center text-2xl font-bold">
+          Gift Order #{order.id}
+        </h2>
 
-    <h2 className="flex-1 text-center text-2xl font-bold">
-      Gift Order #{order.id}
-    </h2>
+        {/* Spacer so title stays centered */}
+        <div className="w-24" />
+      </div>
 
-    {/* Spacer so title stays centered */}
-    <div className="w-24" />
-  </div>
-
-  {/* White card */}
-  <div
-    className="bg-white rounded-xl shadow-md p-6 border border-gray-200"
-  >
+      {/* White card */}
+      <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-
           <div>
             <h4 className="font-semibold mb-3">Recipient</h4>
 
@@ -157,11 +156,9 @@ if (!order) {
             <p>
               Ordered:
               <br />
-              {moment(order.orderedAt).format(
-                    "MMMM DD, YYYY")}
+              {moment(order.orderedAt).format("MMMM DD, YYYY")}
             </p>
           </div>
-
         </div>
 
         <div className="mt-8">
@@ -175,12 +172,8 @@ if (!order) {
         </div>
 
         <div className="mt-8 flex flex-col items-center gap-4 border-t pt-6">
-
           <div className="flex items-center gap-4">
-
-            <label className="font-semibold">
-              Status
-            </label>
+            <label className="font-semibold">Status</label>
 
             <select
               className="border rounded-md px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -193,14 +186,15 @@ if (!order) {
                 </option>
               ))}
             </select>
-
           </div>
           {updateMessage && (
             <div
               className={`text-sm font-medium text-center ${
                 updateMessage.startsWith("✅")
                   ? "text-green-600"
-                  : "text-red-600"
+                  : updateMessage.startsWith("⚠️")
+                    ? "text-amber-600"
+                    : "text-red-600"
               }`}
             >
               {updateMessage}
@@ -217,10 +211,8 @@ if (!order) {
           >
             {updating ? "Updating..." : "Update Status"}
           </button>
-
         </div>
       </div>
-      </div>
-);
+    </div>
+  );
 }
-

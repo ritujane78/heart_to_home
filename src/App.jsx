@@ -247,7 +247,7 @@ const serviceProviderNames = useMemo(() => {
 
       };
 
-      await api.post(
+       return await api.post(
         "/orders",
         giftOrderRequest,
       );

@@ -51,11 +51,19 @@ const Signup = () => {
     try {
       setLoading(true);
       const response = await api.post("/auth/public/signup", sendData);
-      toast.success("Reagister Successful");
-      reset();
-      if (response.data) {
-        navigate("/login");
+
+      const message = response.data?.message || "Registration successful.";
+
+      if (message.toLowerCase().includes("couldn't send")) {
+        toast(message, {
+          icon: "⚠️",
+        });
+      } else {
+        toast.success(message);
       }
+
+      reset();
+      navigate("/login");
     } catch (error) {
       // Add an error programmatically by using the setError function provided by react-hook-form
       //setError(keyword,message) => keyword means the name of the field where I want to show the error
