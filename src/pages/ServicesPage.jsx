@@ -200,7 +200,6 @@ function ServicesPage({
         fetchServices={fetchServices}
         fetchDisabledServices={fetchDisabledServices}
         onClose={() => setShowRestoreServicesModal(false)}
-        fetchServices={fetchServices}
       />
       <section className="services-layout">
         <div className="currency-toolbar">
@@ -259,6 +258,7 @@ function ServicesPage({
                   outline-none
                 "
                 aria-label="Gift information"
+                title="Button info"
               >
                 <Info size={18} />
               </button>
@@ -270,6 +270,7 @@ function ServicesPage({
             <button
               onClick={handleAddClick}
               className="outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 border-none"
+              title="Add Services"
             >
               <div className="w-10 h-10 rounded-full bg-[#c05242] flex items-center justify-center">
                 <Plus className="text-white" size={18} />
@@ -279,6 +280,7 @@ function ServicesPage({
             <button
               onClick={() => setShowProviderModal(true)}
               className="outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 border-none"
+              title="Add Providers"
             >
               <div className="w-10 h-10 rounded-full bg-[#c05242] flex items-center justify-center">
                 <Hospital className="text-white" size={20} />
@@ -288,6 +290,7 @@ function ServicesPage({
             <button
               onClick={() => setShowRestoreServicesModal(true)}
               className="outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 border-none"
+              title="Restore Services"
             >
               <div className="w-10 h-10 rounded-full bg-[#c05242] flex items-center justify-center">
                 <RotateCcw className="text-white" size={18} />
@@ -321,22 +324,22 @@ function ServicesPage({
                 >
                   <button
                     type="button"
-                    className="text-green-600 hover:text-green-800"
                     onClick={() => handleEditClick(service)}
                     className="outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 border-none"
+                    title="Edit"
                   >
                     <Pencil size={16} className="text-[#1e5146] " />
                   </button>
 
                   <button
                     type="button"
-                    className="text-red-600 hover:text-red-800"
                     onClick={async () => {
                       if (!window.confirm(`Delete "${service.title}"?`)) return;
 
                       await handleDelete(service.id);
                     }}
                     className="outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 border-none"
+                    title="Delete"
                   >
                     <Trash2 size={16} className="text-[#c05242]" />
                   </button>

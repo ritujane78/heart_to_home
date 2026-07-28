@@ -9,6 +9,7 @@ import { BallTriangle } from "react-loader-spinner";
 import CustomColumnMenu from "../../components/CustomColumnMenu";
 import { MdOutlineEmail } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
+import { Package } from "lucide-react";
 
 const AllOrders = () => {
   const navigate = useNavigate();
@@ -171,7 +172,7 @@ const handleFilterModelChange = (newModel) => {
           All Orders
         </h2>
       </div>
-      <div className="overflow-x-auto w-full mx-auto pb-6">
+      <div className="overflow-x-auto w-full max-w-300 mx-auto pb-6">
         {loading ? (
           <>
             <div className="flex flex-col justify-center items-center h-72">
@@ -193,6 +194,7 @@ const handleFilterModelChange = (newModel) => {
         ) : (
           <>
             {" "}
+            {rows.length > 0 ? (
             <DataGrid
               className="transparent-grid w-full max-w-7xl mx-auto shadow-lg shadow-gray-300 rounded-xl"
               rows={rows}
@@ -234,9 +236,17 @@ const handleFilterModelChange = (newModel) => {
                 },
               }}
               disableRowSelectionOnClick
-              pageSizeOptions={[6]}
+              pageSizeOptions={[10]}
               disableColumnResize
             />
+            ) : (
+  <div className="rounded-xl bg-white p-12 text-center shadow">
+            <Package className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+            <p className="text-lg text-gray-500">
+              No orders, yet!
+            </p>
+          </div>
+)}
           </>
         )}
       </div>

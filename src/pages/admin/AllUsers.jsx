@@ -156,7 +156,7 @@ const AllUsers = () => {
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 6,
+                    pageSize: 10,
                   },
                 },
               }}
