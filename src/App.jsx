@@ -256,6 +256,7 @@ const serviceProviderNames = useMemo(() => {
     } catch (error) {
       console.error(error);
       toast.error("Unable to place order.");
+      return;
     } finally {
           setIsSaving(false);
     }
