@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
 import Divider from "@mui/material/Divider";
 import toast from "react-hot-toast";
 
@@ -37,11 +35,15 @@ const Login = () => {
   });
 
   const handleSuccessfulLogin = (accessToken, refreshToken, decodedToken) => {
+    
+    const email = decodedToken.email;
+    
     const roles = decodedToken.roles
       ? decodedToken.roles.split(",")
       : [];
 
     const user = {
+      email,
       username: decodedToken.sub,
       roles,
     };

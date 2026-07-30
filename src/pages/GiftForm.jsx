@@ -2,6 +2,7 @@ import { CheckCircle2, CreditCard, Info, X } from 'lucide-react';
 import { relationships } from '../data/services.js';
 import { useState, useMemo, useEffect } from 'react';
 import { Navigate } from "react-router-dom";
+import { useMyContext } from '../store/ContextApi.jsx';
 
 
   function GiftForm({
@@ -17,13 +18,24 @@ import { Navigate } from "react-router-dom";
     onReset, 
     onSaveOrder
   }) {
+    const {currentUser} = useMyContext();
     const [showPhoneInfo, setShowPhoneInfo] = useState(false);
     useEffect(() => {
+      console.log("user = " + JSON.stringify(currentUser));
+      
       const handleKeyDown = (e) => {
         if (e.key === "Escape") {
           setShowPhoneInfo(false);
         }
       };
+      if (!giftDetails.senderEmail && currentUser?.email) {
+        onChange({
+          target: {
+            name: "senderEmail",
+            value: currentUser.email,
+          },
+        });
+      }
 
       window.addEventListener("keydown", handleKeyDown);
       return () => window.removeEventListener("keydown", handleKeyDown);
