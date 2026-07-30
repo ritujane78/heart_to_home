@@ -42,21 +42,26 @@ import {
   fallbackExchangeRates,
   formatConvertedAmount,
   supportedCurrencies,
-} from "./data/currencies.js";
+} from "./data/defaultValues.js";
 
-import {
-  initialGift,
-} from "./data/services.js";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Order from "./pages/Order.jsx";
 import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import UserDetails from "./pages/admin/UserDetails.jsx";
-import { currencySymbols, zeroDecimalCurrencies } from "./data/currencies.js";
+import { currencySymbols, zeroDecimalCurrencies } from "./data/defaultValues.js";
 const EXCHANGE_RATE_URL = "https://open.er-api.com/v6/latest/NPR";
 
 function App() {
+  const initialGift = {
+    recipientName: '',
+    recipientPhone: '',
+    relationship: 'Daughter',
+    message: '',
+    senderName: '',
+    senderEmail: ''
+  };
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [giftDetails, setGiftDetails] = useState(initialGift);
@@ -69,6 +74,7 @@ function App() {
   const [serviceProviders, setServiceProviders] = useState([]);
   const [providerNames, setProviderNames] = useState([]);
   const [disabledServices, setDisabledServices] = useState([]);
+
 
 
   const fetchServices = async (pageNumber = 1, keyword = "") => {

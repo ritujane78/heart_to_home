@@ -1,7 +1,7 @@
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { CreditCard } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { currencySymbols, zeroDecimalCurrencies } from "../data/currencies";
+import { currencySymbols, zeroDecimalCurrencies } from "../data/defaultValues";
 import api from "../services/api";
 import toast from "react-hot-toast";
 import {

@@ -1,3 +1,4 @@
+export const relationships = ['Daughter', 'Son', 'Mom', 'Dad', 'Cousin', 'Friend', 'Uncle', 'Aunt', 'Grandpa', 'Grandma'];
 export const BASE_CURRENCY = 'NPR';
 export const DEFAULT_CURRENCY = 'USD';
 

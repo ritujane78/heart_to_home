@@ -1,8 +1,8 @@
 import { CheckCircle2, CreditCard, Info, X } from 'lucide-react';
-import { relationships } from '../data/services.js';
 import { useState, useMemo, useEffect } from 'react';
 import { Navigate } from "react-router-dom";
 import { useMyContext } from '../store/ContextApi.jsx';
+import { relationships } from '../data/defaultValues.js';
 
 
   function GiftForm({
