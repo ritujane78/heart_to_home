@@ -176,6 +176,21 @@ return (
                     </div>
                   </div>
                 </div>
+                {/* Message */}
+<div className="border-t  px-6 py-5">
+
+  <div className="rounded-lg border border-emerald-200 bg-white p-4">
+    {order.message?.trim() ? (
+      <p className="whitespace-pre-wrap text-gray-700">
+        {order.message}
+      </p>
+    ) : (
+      <p className="italic text-gray-500">
+        No personal message was included with this order.
+      </p>
+    )}
+  </div>
+</div>
 
                 {/* Services */}
                 <div className="border-t bg-gray-50 px-6 py-5">

@@ -126,11 +126,6 @@ export default function AdminOrders() {
               {order.recipientPhone}
             </p>
 
-            {/* <p className="flex items-center gap-2 mb-2">
-              <Mail size={16} />
-              {order.recipientEmail}
-            </p> */}
-
             <p className="flex items-center gap-2">
               <Heart size={16} />
               {order.relationship}
@@ -142,7 +137,6 @@ export default function AdminOrders() {
 
             <p className="mb-2">{order.senderName}</p>
             <p className="mb-2">{order.senderEmail}</p>
-            <p>{order.message}</p>
           </div>
 
           <div>
