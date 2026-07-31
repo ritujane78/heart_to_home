@@ -15,15 +15,20 @@ import { BallTriangle } from "react-loader-spinner";
 import moment from "moment";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import { useMyContext } from "../store/ContextApi";
+import { formatGreetingName } from "../utils/nameUtils";
 
 function MyOrdersPage({
   exchangeRates,
   selectedCurrency
 }) {
+  const {currentUser} = useMyContext();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const ordersPerPage = 3;
+
+  const formattedFirstName = formatGreetingName(currentUser?.firstName);
 
 
   useEffect(() => {
@@ -66,9 +71,19 @@ const handlePageChange = (event, value) => {
 return (
   <div className="min-h-screen bg-gray-100 py-10">
     <div className="mx-auto max-w-6xl px-4">
-      <h2 className="mb-8 text-3xl font-bold text-gray-800 text-center">
-        My Orders
-      </h2>
+      <div className="mb-8 flex flex-col items-center gap-3">
+      <div className="flex items-center gap-3 px-6 py-3 ">
+        <div>
+          <h2 className="text-2xl font-bold text-[#1e5146]">
+            👋 {formattedFirstName}! 
+          </h2>
+        </div>
+      </div>
+
+  <h2 className="text-3xl font-bold text-gray-800">
+    Your Orders
+  </h2>
+</div>
 
       {loading ? (
         <div className="flex flex-col justify-center items-center h-96 bg-white rounded-xl shadow">
@@ -84,7 +99,7 @@ return (
             Please wait...
           </span>
         </div>
-      ) : orders.length === 0 ? (
+      ) :orders.length === 0 ? (
           <div className="rounded-xl bg-white p-12 text-center shadow">
             <Package className="mx-auto mb-4 h-12 w-12 text-gray-400" />
             <p className="text-lg text-gray-500">

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
-import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
 import Divider from "@mui/material/Divider";
 import Buttons from "../../utils/Buttons";
 import InputField from "../InputField/InputField";
@@ -28,6 +26,8 @@ const Signup = () => {
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
+      firstName: "",
+      lastName: "",
       username: "",
       email: "",
       password: "",
@@ -40,8 +40,10 @@ const Signup = () => {
   }, []);
 
   const onSubmitHandler = async (data) => {
-    const { username, email, password } = data;
+    const { firstName, lastName, username, email, password } = data;
     const sendData = {
+      firstName,
+      lastName,
       username,
       email,
       password,
@@ -65,9 +67,6 @@ const Signup = () => {
       reset();
       navigate("/login");
     } catch (error) {
-      // Add an error programmatically by using the setError function provided by react-hook-form
-      //setError(keyword,message) => keyword means the name of the field where I want to show the error
-
       if (
         error?.response?.data?.message === "Error: Username is already taken!"
       ) {
@@ -105,38 +104,64 @@ const Signup = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <InputField
-            label="UserName"
-            required
-            id="username"
-            type="text"
-            message="*UserName Is Required"
-            placeholder="Enter Your Username"
-            register={register}
-            errors={errors}
-          />{" "}
-          <InputField
-            label="Email"
-            required
-            id="email"
-            type="email"
-            message="*Email Is Required"
-            placeholder="Enter Your Email"
-            register={register}
-            errors={errors}
-          />
-          <InputField
-            label="Password"
-            required
-            id="password"
-            type="password"
-            message="*Password is required"
-            placeholder="type your password"
-            register={register}
-            errors={errors}
-            min={6}
-          />
-        </div>
+  <div className="grid grid-cols-2 gap-3">
+    <InputField
+      label="First Name"
+      required
+      id="firstName"
+      type="text"
+      message="*First Name is required"
+      placeholder="First Name"
+      register={register}
+      errors={errors}
+    />
+
+    <InputField
+      label="Last Name"
+      required
+      id="lastName"
+      type="text"
+      message="*Last Name is required"
+      placeholder="Last Name"
+      register={register}
+      errors={errors}
+    />
+  </div>
+
+  <InputField
+    label="UserName"
+    required
+    id="username"
+    type="text"
+    message="*UserName Is Required"
+    placeholder="Enter Your Username"
+    register={register}
+    errors={errors}
+  />
+
+  <InputField
+    label="Email"
+    required
+    id="email"
+    type="email"
+    message="*Email Is Required"
+    placeholder="Enter Your Email"
+    register={register}
+    errors={errors}
+  />
+
+  <InputField
+    label="Password"
+    required
+    id="password"
+    type="password"
+    message="*Password is required"
+    placeholder="Type your password"
+    register={register}
+    errors={errors}
+    min={6}
+  />
+</div>
         <Buttons
           disabled={loading || !isValid}
           type="submit"

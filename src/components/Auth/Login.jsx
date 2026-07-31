@@ -34,7 +34,9 @@ const Login = () => {
     mode: "onTouched",
   });
 
-  const handleSuccessfulLogin = (accessToken, refreshToken, decodedToken) => {
+  const handleSuccessfulLogin = (accessToken, refreshToken, decodedToken) => {  
+    const firstName = decodedToken.firstName
+    const lastName = decodedToken.lastName;
     
     const email = decodedToken.email;
     
@@ -43,6 +45,8 @@ const Login = () => {
       : [];
 
     const user = {
+      firstName,
+      lastName,
       email,
       username: decodedToken.sub,
       roles,

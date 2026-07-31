@@ -21,13 +21,20 @@ import { relationships } from '../data/defaultValues.js';
     const {currentUser} = useMyContext();
     const [showPhoneInfo, setShowPhoneInfo] = useState(false);
     useEffect(() => {
-      console.log("user = " + JSON.stringify(currentUser));
       
       const handleKeyDown = (e) => {
         if (e.key === "Escape") {
           setShowPhoneInfo(false);
         }
       };
+      if (!giftDetails.senderName && currentUser.firstName && currentUser.lastName) {
+        onChange({
+          target: {
+            name: "senderName",
+            value: currentUser.firstName + " " + currentUser.lastName,
+          },
+        });
+      }
       if (!giftDetails.senderEmail && currentUser?.email) {
         onChange({
           target: {
