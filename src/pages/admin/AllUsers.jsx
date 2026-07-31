@@ -135,7 +135,7 @@ const AllUsers = () => {
                   visible={true}
                   />
               </span>
-              <span>Please wait...</span>
+              <span className="mt-3 text-gray-600 text-lg">Please wait...</span>
             </div>
           </>
         ) : (

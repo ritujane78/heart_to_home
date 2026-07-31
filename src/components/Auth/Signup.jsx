@@ -66,20 +66,38 @@ const Signup = () => {
 
       reset();
       navigate("/login");
-    } catch (error) {
-      if (
-        error?.response?.data?.message === "Error: Username is already taken!"
-      ) {
-        setError("username", { message: "username is already taken" });
-      } else if (
-        error?.response?.data?.message === "Error: Email is already in use!"
-      ) {
-        setError("email", { message: "Email is already in use" });
-      }
-    } finally {
-      setLoading(false);
+    }  catch (error) {
+    const message = error.response?.data?.message;
+
+    if (message === "Error: Username is already taken!") {
+      setError("username", {
+        type: "manual",
+        message: "This username is already taken.",
+      });
+      toast.error("This username is already taken.");
+    } else if (message === "Error: Email is already in use!") {
+      setError("email", {
+        type: "manual",
+        message: "This email is already registered.",
+      });
+      toast.error("This email is already registered.");
+    } else if (error.response?.status >= 500) {
+      toast.error(
+        "Something went wrong on our end. Please try again later."
+      );
+    } else if (!error.response) {
+      toast.error(
+        "Unable to connect. Please check your internet connection and try again."
+      );
+    } else {
+      toast.error(
+        message || "Unable to create your account. Please try again."
+      );
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   //if there is token  exist navigate to the user to the home page if he tried to access the login page
   useEffect(() => {

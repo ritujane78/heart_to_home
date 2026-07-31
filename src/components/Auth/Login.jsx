@@ -103,10 +103,22 @@ const Login = () => {
         );
       }
     } catch (error) {
-      if (error) {
-        toast.error("Invalid credentials");
-      }
-    } finally {
+    if (error.response?.status === 401) {
+      toast.error("Invalid email or password.");
+    } else if (error.response?.status === 403) {
+      toast.error("Your account is not authorized to sign in.");
+    } else if (error.response?.status >= 500) {
+      toast.error("Something went wrong on our end. Please try again later.");
+    } else if (!error.response) {
+      toast.error(
+        "Unable to connect. Please check your internet connection and try again."
+      );
+    } else {
+      toast.error(
+        error.response?.data?.message || "Unable to sign in. Please try again."
+      );
+    } 
+  }finally {
       setLoading(false);
     }
   };
