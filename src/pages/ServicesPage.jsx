@@ -395,7 +395,7 @@ function ServicesPage({
     <span className="no-provider">
       <CircleOff size={16} />
       No partner available
-    </span>
+    </span> 
   )}
 </div>
         {showGiftInfo && (

@@ -114,7 +114,10 @@ return (
           </div>
         ) : (
           <div className="space-y-8">          
-          {paginatedOrders.map((order) => (
+          {paginatedOrders.map((order, index) => {
+            const serialNumber = (page - 1) * ordersPerPage + index + 1;
+
+            return (
               <div
                 key={order.id}
                 className="overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-lg"
@@ -133,9 +136,9 @@ return (
                 >
                   <div className="flex items-center gap-3">
                     <Package size={22} />
-                    <h3 className="text-xl font-semibold">
+                    {/* <h3 className="text-xl font-semibold">
                       Order #{order.id}
-                    </h3>
+                    </h3> */}
                   </div>
                   <span className="rounded-full bg-white/20 px-4 py-1 text-sm font-semibold backdrop-blur-sm">
                     {order.orderStatus}
@@ -237,7 +240,8 @@ return (
                   )}
                 </div>
               </div>
-            ))}
+            );
+          })}
             <div className="flex justify-end mt-8">
               <Stack spacing={2}>
                 <Pagination
