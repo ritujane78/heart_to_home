@@ -369,7 +369,7 @@ const serviceProviderNames = useMemo(() => {
       setToken(null);
       setCurrentUser(null);
       setIsAdmin(false);
-
+      toast.success("Logged out successfully");
       navigate("/login", { replace: true });
     }
   };
