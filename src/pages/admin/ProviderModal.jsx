@@ -5,6 +5,7 @@ import Buttons from "../../utils/Buttons";
 import toast from "react-hot-toast";
 import api from "../../services/api";
 import { X } from "lucide-react";
+import { handleApiError } from "../../utils/errorHandler";
 
 const ProviderModal = ({ open, onClose, providers, fetchProviders }) => {
   const [providerLoading, setProviderLoading] = useState(false);
@@ -32,13 +33,11 @@ const ProviderModal = ({ open, onClose, providers, fetchProviders }) => {
 
       await fetchProviders();
       onClose();
-      
     } catch (error) {
-      if (error.response?.status === 409) {
-        toast.error(error.response.data);
-      } else {
-        toast.error("Failed to add provider.");
-      }
+      handleApiError(
+        error,
+        "Failed to add provider."
+      );
     } finally {
       setProviderLoading(false);
     }

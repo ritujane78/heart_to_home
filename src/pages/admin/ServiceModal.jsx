@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import api from "../../services/api";
 import InputField from "../../components/InputField/InputField";
 import Buttons from "../../utils/Buttons";
+import { handleApiError } from "../../utils/errorHandler";
 
 const ServiceModal = ({
   open,
@@ -101,13 +102,10 @@ const ServiceModal = ({
 
       onClose();
     } catch (error) {
-      const message =
-        error.response?.data?.message ||
-        error.response?.data ||
-        error.message ||
-        "Failed to add service.";
-
-      toast.error(message);
+      handleApiError(
+        error,
+        isEdit ? "Failed to update the service." : "Failed to add the service.",
+      );
     } finally {
       setLoading(false);
     }

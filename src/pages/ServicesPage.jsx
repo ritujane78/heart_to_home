@@ -14,7 +14,6 @@ import {
   Hospital,
   RotateCcw,
 } from "lucide-react";
-// import { services } from '../data/services.js';
 import GiftForm from "./GiftForm.jsx";
 import { useMyContext } from "../store/ContextApi";
 import toast from "react-hot-toast";
@@ -24,6 +23,7 @@ import ProviderModal from "./admin/ProviderModal.jsx";
 import RestoreServiceModal from "./admin/RestoreServiceModal.jsx";
 import ServiceModal from "./admin/ServiceModal.jsx";
 import { scrollToTop } from "../utils/ScrollToTop.js"; 
+import { handleApiError } from "../utils/errorHandler.js";
 
 function ServicesPage({
   selectedIds,
@@ -64,8 +64,15 @@ function ServicesPage({
   });
 
   const fetchProviders = async () => {
-    const response = await api.get("/providers");
-    setProviders(response.data);
+    try {
+      const response = await api.get("/providers");
+      setProviders(response.data);
+    } catch (error) {
+      handleApiError(
+        error,
+        "Unable to load providers."
+      );
+    }
   };
 
   useEffect(() => {
@@ -128,6 +135,10 @@ function ServicesPage({
       setPage(1);
     } catch (err) {
       toast.error("Failed to delete service");
+      handleApiError(
+              error,
+              "Unable to delete the service."
+            );
     }
   };
   const handleEditChange = (e) => {
@@ -173,6 +184,10 @@ function ServicesPage({
       await fetchServices(page, searchQuery);
     } catch (err) {
       toast.error("Failed to update service");
+      handleApiError(
+        error,
+        "Unable to update the service."
+      );
     }
   };
 

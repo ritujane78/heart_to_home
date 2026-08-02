@@ -17,14 +17,6 @@ const RestoreServiceModal = ({
   const [selectedServiceId, setSelectedServiceId] = useState("");
   const [restoring, setRestoring] = useState(false);
 
-  // const fetchDisabledServices = async () => {
-  //   const response = await api.get("/admin/disabled-services");
-  //   setDisabledServices(response.data);
-  // };
-
-  // useEffect(() => {
-  //   fetchDisabledServices();
-  // }, []);
   const handleRestore = async () => {
     if (!selectedServiceId) {
       toast.error("Please select a service.");
@@ -45,6 +37,7 @@ const RestoreServiceModal = ({
       onClose();
     } catch {
       toast.error("Unable to restore service.");
+      handleApiError(error, "Unable to restore the service.");
     } finally {
       setRestoring(false);
     }
@@ -62,12 +55,12 @@ const RestoreServiceModal = ({
             e.preventDefault();
             handleRestore();
           }}
-            onKeyDown={(e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleRestore();
-    }
-  }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleRestore();
+            }
+          }}
         >
           <button
             type="button"

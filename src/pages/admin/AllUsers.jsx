@@ -10,6 +10,7 @@ import { MdOutlineEmail } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
 import { FileX } from "lucide-react";
 import CustomColumnMenu from "../../components/CustomColumnMenu";
+import { handleApiError } from "../../utils/errorHandler";
 
 //Material ui data grid has used for the table
 //initialize the columns for the tables and (field) value is used to show data in a specific column dynamically
@@ -90,7 +91,10 @@ const AllUsers = () => {
       } catch (err) {
         setError(err?.response?.data?.message);
 
-        toast.error("Error fetching users", err);
+        handleApiError(
+              error,
+              "Unable to fetch users."
+            );
       } finally {
         setLoading(false);
       }

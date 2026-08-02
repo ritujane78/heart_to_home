@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useMyContext } from "../../store/ContextApi";
 import { useEffect } from "react";
+import { handleApiError } from "../../utils/errorHandler";
 
 const Signup = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -66,38 +67,16 @@ const Signup = () => {
 
       reset();
       navigate("/login");
-    }  catch (error) {
-    const message = error.response?.data?.message;
-
-    if (message === "Error: Username is already taken!") {
-      setError("username", {
-        type: "manual",
-        message: "This username is already taken.",
-      });
-      toast.error("This username is already taken.");
-    } else if (message === "Error: Email is already in use!") {
-      setError("email", {
-        type: "manual",
-        message: "This email is already registered.",
-      });
-      toast.error("This email is already registered.");
-    } else if (error.response?.status >= 500) {
-      toast.error(
-        "Something went wrong on our end. Please try again later."
+    } catch (error) {
+      handleApiError(
+        error,
+        "Unable to create your account. Please try again.",
+        setError,
       );
-    } else if (!error.response) {
-      toast.error(
-        "Unable to connect. Please check your internet connection and try again."
-      );
-    } else {
-      toast.error(
-        message || "Unable to create your account. Please try again."
-      );
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   //if there is token  exist navigate to the user to the home page if he tried to access the login page
   useEffect(() => {
@@ -122,64 +101,64 @@ const Signup = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-  <div className="grid grid-cols-2 gap-3">
-    <InputField
-      label="First Name"
-      required
-      id="firstName"
-      type="text"
-      message="*First Name is required"
-      placeholder="First Name"
-      register={register}
-      errors={errors}
-    />
+          <div className="grid grid-cols-2 gap-3">
+            <InputField
+              label="First Name"
+              required
+              id="firstName"
+              type="text"
+              message="*First Name is required"
+              placeholder="First Name"
+              register={register}
+              errors={errors}
+            />
 
-    <InputField
-      label="Last Name"
-      required
-      id="lastName"
-      type="text"
-      message="*Last Name is required"
-      placeholder="Last Name"
-      register={register}
-      errors={errors}
-    />
-  </div>
+            <InputField
+              label="Last Name"
+              required
+              id="lastName"
+              type="text"
+              message="*Last Name is required"
+              placeholder="Last Name"
+              register={register}
+              errors={errors}
+            />
+          </div>
 
-  <InputField
-    label="UserName"
-    required
-    id="username"
-    type="text"
-    message="*UserName Is Required"
-    placeholder="Enter Your Username"
-    register={register}
-    errors={errors}
-  />
+          <InputField
+            label="UserName"
+            required
+            id="username"
+            type="text"
+            message="*UserName Is Required"
+            placeholder="Enter Your Username"
+            register={register}
+            errors={errors}
+          />
 
-  <InputField
-    label="Email"
-    required
-    id="email"
-    type="email"
-    message="*Email Is Required"
-    placeholder="Enter Your Email"
-    register={register}
-    errors={errors}
-  />
+          <InputField
+            label="Email"
+            required
+            id="email"
+            type="email"
+            message="*Email Is Required"
+            placeholder="Enter Your Email"
+            register={register}
+            errors={errors}
+          />
 
-  <InputField
-    label="Password"
-    required
-    id="password"
-    type="password"
-    message="*Password is required"
-    placeholder="Type your password"
-    register={register}
-    errors={errors}
-    min={6}
-  />
-</div>
+          <InputField
+            label="Password"
+            required
+            id="password"
+            type="password"
+            message="*Password is required"
+            placeholder="Type your password"
+            register={register}
+            errors={errors}
+            min={6}
+          />
+        </div>
         <Buttons
           disabled={loading || !isValid}
           type="submit"

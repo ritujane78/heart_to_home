@@ -9,6 +9,7 @@ import api from "../../services/api.jsx";
 import InputField from "../InputField/InputField.jsx";
 import Buttons from "../../utils/Buttons.jsx";
 import { useMyContext } from "../../store/ContextApi.jsx";
+import { handleApiError } from "../../utils/errorHandler";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -34,15 +35,13 @@ const Login = () => {
     mode: "onTouched",
   });
 
-  const handleSuccessfulLogin = (accessToken, refreshToken, decodedToken) => {  
-    const firstName = decodedToken.firstName
+  const handleSuccessfulLogin = (accessToken, refreshToken, decodedToken) => {
+    const firstName = decodedToken.firstName;
     const lastName = decodedToken.lastName;
-    
+
     const email = decodedToken.email;
-    
-    const roles = decodedToken.roles
-      ? decodedToken.roles.split(",")
-      : [];
+
+    const roles = decodedToken.roles ? decodedToken.roles.split(",") : [];
 
     const user = {
       firstName,
@@ -77,7 +76,6 @@ const Login = () => {
 
       //reset the input field by using reset() function provided by react hook form after submission
       reset();
-      
 
       if (
         response.status === 200 &&
@@ -92,33 +90,15 @@ const Login = () => {
 
         const decodedToken = jwtDecode(accessToken);
 
-        handleSuccessfulLogin(
-          accessToken,
-          refreshToken,
-          decodedToken
-        );
+        handleSuccessfulLogin(accessToken, refreshToken, decodedToken);
       } else {
         toast.error(
-          "Login failed. Please check your credentials and try again."
+          "Login failed. Please check your credentials and try again.",
         );
       }
     } catch (error) {
-    if (error.response?.status === 401) {
-      toast.error("Invalid email or password.");
-    } else if (error.response?.status === 403) {
-      toast.error("Your account is not authorized to sign in.");
-    } else if (error.response?.status >= 500) {
-      toast.error("Something went wrong on our end. Please try again later.");
-    } else if (!error.response) {
-      toast.error(
-        "Unable to connect. Please check your internet connection and try again."
-      );
-    } else {
-      toast.error(
-        error.response?.data?.message || "Unable to sign in. Please try again."
-      );
-    } 
-  }finally {
+      handleApiError(error, "Unable to sign in. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
@@ -126,67 +106,64 @@ const Login = () => {
   //step1 will render the login form and step-2 will render the 2fa verification form
   return (
     <div className="min-h-[calc(100vh-74px)] flex justify-center items-start">
-          <form
-            onSubmit={handleSubmit(onLoginHandler)}
-            className="sm:w-[450px] w-[360px]  shadow-custom py-8 sm:px-8 px-4"
+      <form
+        onSubmit={handleSubmit(onLoginHandler)}
+        className="sm:w-[450px] w-[360px]  shadow-custom py-8 sm:px-8 px-4"
+      >
+        <div>
+          <h1 className="font-montserrat text-center text-[#1e5146] font-bold text-2xl">
+            Log In
+          </h1>
+          <p className="text-slate-600 text-center mb-6">
+            Please Enter your username and password{" "}
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <InputField
+            label="UserName"
+            required
+            id="username"
+            type="text"
+            message="*UserName is required"
+            placeholder="type your username"
+            register={register}
+            errors={errors}
+          />{" "}
+          <InputField
+            label="Password"
+            required
+            id="password"
+            type="password"
+            message="*Password is required"
+            placeholder="type your password"
+            register={register}
+            errors={errors}
+          />
+        </div>
+        <Buttons
+          disabled={loading}
+          type="submit"
+          className="bg-[#1e5146] text-white font-semibold w-full py-2 rounded-sm my-3 transition active:scale-[0.95]"
+        >
+          {loading ? "Loading..." : "Log In"}
+        </Buttons>
+        <p className=" text-sm text-slate-700 mb-4 ">
+          <Link className=" underline hover:text-black" to="/forgot-password">
+            Forgot Password?
+          </Link>
+        </p>
+
+        <p className="text-center text-sm text-slate-700 mt-6">
+          Don't have an account?{" "}
+          <Link
+            className="inline-block text-[#584c02] font-extrabold underline transform transition-transform duration-200 hover:scale-[1.05] active:scale-[0.95]"
+            to="/signup"
           >
-            <div>
-              <h1 className="font-montserrat text-center text-[#1e5146] font-bold text-2xl">
-                Log In
-              </h1>
-              <p className="text-slate-600 text-center mb-6">
-                Please Enter your username and password{" "}
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <InputField
-                label="UserName"
-                required
-                id="username"
-                type="text"
-                message="*UserName is required"
-                placeholder="type your username"
-                register={register}
-                errors={errors}
-              />{" "}
-              <InputField
-                label="Password"
-                required
-                id="password"
-                type="password"
-                message="*Password is required"
-                placeholder="type your password"
-                register={register}
-                errors={errors}
-              />
-            </div>
-            <Buttons
-              disabled={loading}
-              type="submit"
-              className="bg-[#1e5146] text-white font-semibold w-full py-2 rounded-sm my-3 transition active:scale-[0.95]"
-            >
-              {loading ? "Loading..." : "Log In"}
-            </Buttons>
-            <p className=" text-sm text-slate-700 mb-4 ">
-              <Link
-                className=" underline hover:text-black"
-                to="/forgot-password"
-              >
-                Forgot Password?
-              </Link>
-            </p>
-
-            <p className="text-center text-sm text-slate-700 mt-6">
-              Don't have an account?{" "}
-              <Link
-                className="inline-block text-[#584c02] font-extrabold underline transform transition-transform duration-200 hover:scale-[1.05] active:scale-[0.95]"
-                to="/signup"
-              >
-                SignUp
-              </Link>
-            </p>
-          </form>
+            SignUp
+          </Link>
+        </p>
+      </form>
     </div>
   );
 };

@@ -16,6 +16,7 @@ import Stack from "@mui/material/Stack";
 import { BallTriangle } from "react-loader-spinner";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { handleApiError } from "../../utils/errorHandler";
 
 const STATUS_OPTIONS = [
   "IN_PROCESS",
@@ -43,6 +44,10 @@ export default function AdminOrders() {
         setSelectedStatus(response.data.orderStatus);
       } catch (err) {
         console.error(err);
+        handleApiError(
+              error,
+              "Unable to fetch  the order."
+            );
       } finally {
         setLoading(false);
       }
@@ -65,14 +70,23 @@ export default function AdminOrders() {
 
       setOrder(response.data.order);
 
-      if (response.data.emailSent) {
-        setUpdateMessage(`✅ ${response.data.message}`);
-      } else {
-        setUpdateMessage(`⚠️ ${response.data.message}`);
-      }
-    } catch (err) {
-      console.error(err);
-      setUpdateMessage("❌ Unable to update status.");
+      setUpdateMessage(
+        response.data.emailSent
+          ? `✅ ${response.data.message}`
+          : `⚠️ ${response.data.message}`
+      );
+    } catch (error) {
+      handleApiError(
+        error,
+        "Unable to update the order status."
+      );
+
+      setUpdateMessage(
+        `❌ ${
+          error.response?.data?.message ||
+          "Unable to update the order status."
+        }`
+      );
     } finally {
       setUpdating(false);
     }

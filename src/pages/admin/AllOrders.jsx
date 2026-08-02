@@ -10,6 +10,7 @@ import CustomColumnMenu from "../../components/CustomColumnMenu";
 import { MdOutlineEmail } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
 import { Package } from "lucide-react";
+import { handleApiError } from "../../utils/errorHandler";
 
 const AllOrders = () => {
   const navigate = useNavigate();
@@ -35,6 +36,10 @@ const AllOrders = () => {
       setSelectedStatuses(statuses);
     } catch (err) {
       console.error(err);
+      handleApiError(
+            error,
+            "Unable to fetch orders."
+          );
     } finally {
       setLoading(false);
     }

@@ -11,6 +11,7 @@ import {
   CardExpiryElement,
   CardCvcElement,
 } from "@stripe/react-stripe-js";
+import { handleApiError } from "../utils/errorHandler";
 
 const elementOptions = {
   style: {
@@ -58,15 +59,15 @@ export default function PaymentPage({
 
   const checkout = async () => {
     if (!stripe || !elements || isSaving) return;
-    
-    // 1. Validate services
+
+    // Validate selected services before payment
     try {
       await api.post("/orders/validate", {
         serviceIds: selectedServices.map((s) => s.id),
       });
     } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
+      handleApiError(
+        error,
         "Some selected services are no longer available."
       );
       return;
@@ -81,12 +82,10 @@ export default function PaymentPage({
 
     setIsSaving(true);
 
-
     try {
-      // 1. Create Payment Intent
-      // Find the currency code from the symbol at the beginning of `total`
+      // Determine currency and amount
       const currencyEntry = Object.entries(currencySymbols).find(([, symbol]) =>
-        total.startsWith(symbol),
+        total.startsWith(symbol)
       );
 
       if (!currencyEntry) {
@@ -95,25 +94,27 @@ export default function PaymentPage({
 
       const [currency, symbol] = currencyEntry;
 
-      // Remove the symbol and commas, then parse the numeric amount
       const amount = parseFloat(
-        total.replace(symbol, "").replace(/,/g, "").trim(),
+        total.replace(symbol, "").replace(/,/g, "").trim()
       );
 
       const paymentInfo = {
         amount: Math.round(
-          zeroDecimalCurrencies.has(currency) ? amount : amount * 100,
+          zeroDecimalCurrencies.has(currency)
+            ? amount
+            : amount * 100
         ),
         currency,
         email: giftDetails.senderEmail,
       };
 
+      // Create Payment Intent
       const { data } = await api.post(
         "/orders/payment/secure/payment-intent",
-        paymentInfo,
+        paymentInfo
       );
 
-      // 2. Confirm payment with Stripe
+      // Confirm payment with Stripe
       const result = await stripe.confirmCardPayment(data.client_secret, {
         payment_method: {
           card: cardNumberElement,
@@ -124,28 +125,34 @@ export default function PaymentPage({
         },
       });
 
+      // Stripe.js client-side errors
       if (result.error) {
         toast.error(result.error.message || "Payment failed.");
         return;
       }
+
+      // Save order
       const response = await onSaveOrder();
+
+      if (!response) {
+        return;
+      }
 
       if (response.data.emailSent) {
         toast.success(response.data.message);
       } else {
-        toast(response.data.message, { icon: "⚠️" });
+        toast(response.data.message, {
+          icon: "⚠️",
+        });
       }
+
       navigate("/my-orders");
       resetGift();
     } catch (error) {
-      console.error(error);
-
-      toast.error(
-        error.response?.data?.message ||
-          error.message ||
-          "Something went wrong during checkout.",
+      handleApiError(
+        error,
+        "Something went wrong during checkout."
       );
-      return;
     } finally {
       setIsSaving(false);
     }

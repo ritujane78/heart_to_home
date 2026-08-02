@@ -51,6 +51,7 @@ import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import UserDetails from "./pages/admin/UserDetails.jsx";
 import { currencySymbols, zeroDecimalCurrencies } from "./data/defaultValues.js";
+import { handleApiError } from "./utils/errorHandler";
 const EXCHANGE_RATE_URL = "https://open.er-api.com/v6/latest/NPR";
 
 function App() {
@@ -77,30 +78,59 @@ function App() {
 
 
 
-  const fetchServices = async (pageNumber = 1, keyword = "") => {
+  // const fetchServices = async (pageNumber = 1, keyword = "") => {
+  //   const response = await api.get("/services", {
+  //     params: {
+  //       page: pageNumber - 1,
+  //       size: 6,
+  //       keyword,
+  //     },
+  //   }); 
+
+  //   setServices(response.data.services.content);
+  //   setTotalPages(response.data.services.totalPages);
+  //     if (pageNumber === 1 && keyword === "") {
+  //     setProviderNames(response.data.providerNames);
+  //   }
+
+  // };
+const fetchServices = async (pageNumber = 1, keyword = "") => {
+  try {
     const response = await api.get("/services", {
       params: {
         page: pageNumber - 1,
         size: 6,
         keyword,
       },
-    }); 
+    });
 
     setServices(response.data.services.content);
     setTotalPages(response.data.services.totalPages);
-      if (pageNumber === 1 && keyword === "") {
+
+    if (pageNumber === 1 && keyword === "") {
       setProviderNames(response.data.providerNames);
     }
-
-  };
-
+  } catch (error) {
+    handleApiError(
+      error,
+      "Unable to load healthcare services."
+    );
+  }
+};
   useEffect(() => {
     fetchServices();
   }, []);
   const fetchProviders = async () => {
-      const response = await api.get("/providers");
-      setServiceProviders(response.data);
-  };
+  try {
+    const response = await api.get("/providers");
+    setServiceProviders(response.data);
+  } catch (error) {
+    handleApiError(
+      error,
+      "Unable to load providers."
+    );
+  }
+};
 
   useEffect(() => {
       fetchProviders();
@@ -234,7 +264,6 @@ const serviceProviderNames = useMemo(() => {
       const giftOrderRequest = {
         recipientName: giftDetails.recipientName,
         recipientPhone: giftDetails.recipientPhone,
-        // recipientEmail: giftDetails.recipientEmail,
 
         relationship: giftDetails.relationship,
 
@@ -260,12 +289,14 @@ const serviceProviderNames = useMemo(() => {
 
       
     } catch (error) {
-      console.error(error);
-      toast.error("Unable to place order.");
-      return;
-    } finally {
-          setIsSaving(false);
-    }
+        handleApiError(
+          error,
+          "Unable to place your order. Please try again."
+        );
+        return null;
+      } finally {
+        setIsSaving(false);
+      }
   };
 
   function toggleService(service) {
@@ -284,9 +315,16 @@ const serviceProviderNames = useMemo(() => {
     setPaymentReady(false);
   }
   const fetchDisabledServices = async () => {
+  try {
     const response = await api.get("/admin/disabled-services");
     setDisabledServices(response.data);
-  };
+  } catch (error) {
+    handleApiError(
+      error,
+      "Unable to load disabled services."
+    );
+  }
+};
 
   useEffect(() => {
     if (token && isAdmin) {
@@ -359,8 +397,11 @@ const serviceProviderNames = useMemo(() => {
     try {
       await api.post("/auth/logout");
     } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
+    handleApiError(
+      error,
+      "Logout failed."
+    );
+  } finally {
       localStorage.removeItem("JWT_TOKEN");
       localStorage.removeItem("REFRESH_TOKEN");
       localStorage.removeItem("USER");

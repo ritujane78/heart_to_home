@@ -7,6 +7,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import {BallTriangle} from "react-loader-spinner"
 import { scrollToTop } from "../../utils/ScrollToTop";
+import { handleApiError } from "../../utils/errorHandler";
 
 const STATUS_OPTIONS = [
   "IN_PROCESS",
@@ -42,6 +43,10 @@ const fetchOrders = async () => {
 
   } catch (err) {
     console.error(err);
+    handleApiError(
+          error,
+          "Unable to load order information."
+        );
   } finally {
     setLoading(false);
   }
@@ -76,14 +81,17 @@ const updateStatus = async (orderId) => {
         ? `✅ Status updated successfully. Email sent to ${updatedOrder.senderEmail}.`
         : "✅ Status updated successfully.",
     }));
-
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleApiError(
+      error,
+      "Unable to update the order status."
+    );
 
     setUpdateMessages((prev) => ({
-      ...prev,
-      [orderId]: "❌ Unable to update status.",
-    }));
+    ...prev,
+    [orderId]:
+      `❌ ${error.response?.data?.message || "Unable to update the order status."}`,
+  }));
   } finally {
     setUpdatingOrders((prev) => ({
       ...prev,

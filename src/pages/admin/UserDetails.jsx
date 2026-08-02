@@ -24,9 +24,7 @@ const UserDetails = () => {
     },
     mode: "onTouched",
   });
-  const {
-    handleSubmit: handleRoleSubmit,
-  } = useForm({
+  const { handleSubmit: handleRoleSubmit } = useForm({
     mode: "onTouched",
   });
   const navigate = useNavigate();
@@ -44,15 +42,19 @@ const UserDetails = () => {
 
   const fetchUserDetails = useCallback(async () => {
     setLoading(true);
+
     try {
       const response = await api.get(`/admin/user/${userId}`);
-      setUser(response.data);
 
+      setUser(response.data);
       setSelectedRole(response.data.role?.roleName || "");
-      
-    } catch (err) {
-      setError(err?.response?.data?.message);
-      console.error("Error fetching user details", err);
+      setError("");
+    } catch (error) {
+      handleApiError(error, "Unable to load user details.");
+
+      setError(error.response?.data?.message || "Unable to load user details.");
+
+      console.error("Error fetching user details", error);
     } finally {
       setLoading(false);
     }
@@ -70,9 +72,12 @@ const UserDetails = () => {
     try {
       const response = await api.get("/admin/roles");
       setRoles(response.data);
-    } catch (err) {
-      setError(err?.response?.data?.message);
-      console.error("Error fetching roles", err);
+    } catch (error) {
+      handleApiError(error, "Unable to load roles.");
+
+      setError(error.response?.data?.message || "Unable to load roles.");
+
+      console.error("Error fetching roles", error);
     }
   }, []);
 
@@ -82,11 +87,6 @@ const UserDetails = () => {
   }, [fetchUserDetails, fetchRoles]);
 
   //set the selected role
-  const handleRoleChange = (e) => {
-    setSelectedRole(e.target.value);
-  };
-
-  //handle update role
   const handleUpdateRole = async () => {
     setUpdateRoleLoader(true);
 
@@ -101,14 +101,16 @@ const UserDetails = () => {
         },
       });
 
-      fetchUserDetails();
+      await fetchUserDetails();
+
       toast.success("Role updated successfully");
-    } catch (err) {
-      toast.error("Failed to update role");
+    } catch (error) {
+      handleApiError(error, "Failed to update user role.");
     } finally {
       setUpdateRoleLoader(false);
     }
   };
+
 
   //handle update the password
   const handleSavePassword = async (data) => {
@@ -142,69 +144,63 @@ const UserDetails = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 py-10">
-  <div className="mx-auto max-w-4xl px-4">
-      {loading ? (
-        <>
-          {" "}
-          <div className="flex  flex-col justify-center items-center  h-72">
-            <span>
-              <BallTriangle
-                height={100}
-                width={100}
-                radius={5}
-                color="#4fa94d"
-                ariaLabel="ball-triangle-loading"
-                wrapperStyle={{}}
-                wrapperClass=""
-                visible={true}
+      <div className="mx-auto max-w-4xl px-4">
+        {loading ? (
+          <>
+            {" "}
+            <div className="flex  flex-col justify-center items-center  h-72">
+              <span>
+                <BallTriangle
+                  height={100}
+                  width={100}
+                  radius={5}
+                  color="#4fa94d"
+                  ariaLabel="ball-triangle-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
                 />
-            </span>
-            <span className="mt-3 text-gray-600 text-lg">
-              Please wait...
-            </span>
-          </div>
-        </>
-      ) : (
-        <>
-<div className="overflow-hidden rounded-2xl">
-  <div className="flex items-center justify-between bg-none px-6 py-5 ">
-  <button
-    onClick={() => navigate(-1)}
-    className="flex items-center gap-2 rounded-md px-4 py-2 transition hover:bg-white/30 active:scale-95"
-  >
-    <ArrowLeft size={18} />
-    Back
-  </button>
+              </span>
+              <span className="mt-3 text-gray-600 text-lg">Please wait...</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="overflow-hidden rounded-2xl">
+              <div className="flex items-center justify-between bg-none px-6 py-5 ">
+                <button
+                  onClick={() => navigate(-1)}
+                  className="flex items-center gap-2 rounded-md px-4 py-2 transition hover:bg-white/30 active:scale-95"
+                >
+                  <ArrowLeft size={18} />
+                  Back
+                </button>
 
-  <h2 className="flex-1 text-center text-2xl font-bold">
-    User Details
-  </h2>
+                <h2 className="flex-1 text-center text-2xl font-bold">
+                  User Details
+                </h2>
 
-  <div className="w-24" />
-</div>
-  <div className="p-8 bg-white">
-    
-              {isHthAdmin && (
-                <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-                  The role and password of this admin cannot be changed.
-                </p>
-              )}
-              <div className="mb-8 rounded-xl border bg-gray-50 p-6">
+                <div className="w-24" />
+              </div>
+              <div className="p-8 bg-white">
+                {isHthAdmin && (
+                  <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                    The role and password of this admin cannot be changed.
+                  </p>
+                )}
+                <div className="mb-8 rounded-xl border bg-gray-50 p-6">
+                  <h3 className="mb-5 text-lg font-semibold text-gray-700">
+                    Role Management
+                  </h3>
+                  <form
+                    onSubmit={handleRoleSubmit(handleUpdateRole)}
+                    className="flex flex-col gap-4 md:flex-row md:items-center"
+                  >
+                    <div className="flex items-center gap-2">
+                      <label className="font-medium text-gray-700">Role</label>
 
-                <h3 className="mb-5 text-lg font-semibold text-gray-700">
-                Role Management
-                </h3>
-              <form
-                onSubmit={handleRoleSubmit(handleUpdateRole)}
-                className="flex flex-col gap-4 md:flex-row md:items-center"
-              >
-                <div className="flex items-center gap-2">
-                  <label className="font-medium text-gray-700">
-                    Role
-                    </label>
-
-                  <select
-                    className="
+                      <select
+                        className="
                       rounded-lg
                       border
                       border-gray-300
@@ -217,26 +213,26 @@ const UserDetails = () => {
                       focus:ring-[#1e5146]/20
                       disabled:bg-gray-100
                       "
-                    value={selectedRole}
-                    onChange={handleRoleChange}
-                    disabled={isHthAdmin}
-                  >
-                    {roles.map((role) => (
-                      <option
-                        key={role.roleId}
-                        value={role.roleName}
-                        className="uppercase"
+                        value={selectedRole}
+                        onChange={handleRoleChange}
+                        disabled={isHthAdmin}
                       >
-                        {role.roleName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                        {roles.map((role) => (
+                          <option
+                            key={role.roleId}
+                            value={role.roleName}
+                            className="uppercase"
+                          >
+                            {role.roleName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                <Buttons
-                  type="submit"
-                  disabled={updateRoleLoader || isHthAdmin}
-                  className="
+                    <Buttons
+                      type="submit"
+                      disabled={updateRoleLoader || isHthAdmin}
+                      className="
                     rounded-lg
                     bg-[#1e5146]
                     px-6
@@ -247,63 +243,63 @@ const UserDetails = () => {
                     active:scale-95
                     disabled:bg-gray-400
                     "
-                >
-                  {updateRoleLoader ? "Loading..." : "Update"}
-                </Buttons>
-              </form>
-            </div>
-              <h3 className="mb-6 text-lg font-semibold text-gray-700">
-                Account Information
+                    >
+                      {updateRoleLoader ? "Loading..." : "Update"}
+                    </Buttons>
+                  </form>
+                </div>
+                <h3 className="mb-6 text-lg font-semibold text-gray-700">
+                  Account Information
                 </h3>
-              <form
-                className="space-y-5"
-                onSubmit={handleSubmit(handleSavePassword)}
-              >
-                <InputField
-                  label="UserName"
-                  required
-                  id="username"
-                  className="w-full"
-                  type="text"
-                  message="*UserName is required"
-                  placeholder="Enter your UserName"
-                  register={register}
-                  errors={errors}
-                  readOnly
-                />
-                <InputField
-                  label="Email"
-                  required
-                  id="email"
-                  className="flex-1"
-                  type="text"
-                  message="*Email is required"
-                  placeholder="Enter your Email"
-                  register={register}
-                  errors={errors}
-                  readOnly
-                />
-                <InputField
-                  label="Password"
-                  required
-                  autoFocus={isEditingPassword}
-                  id="password"
-                  className="w-full"
-                  type="password"
-                  message="*Password is required"
-                  placeholder="Enter your Password"
-                  register={register}
-                  errors={errors}
-                  readOnly={!isEditingPassword}
-                  min={6}
-                />{" "}
-                {!isEditingPassword ? (
-                  <Buttons
-                    type="button"
-                    onClickhandler={() =>
-                      setIsEditingPassword(!isEditingPassword)
-                    }
-                    className="
+                <form
+                  className="space-y-5"
+                  onSubmit={handleSubmit(handleSavePassword)}
+                >
+                  <InputField
+                    label="UserName"
+                    required
+                    id="username"
+                    className="w-full"
+                    type="text"
+                    message="*UserName is required"
+                    placeholder="Enter your UserName"
+                    register={register}
+                    errors={errors}
+                    readOnly
+                  />
+                  <InputField
+                    label="Email"
+                    required
+                    id="email"
+                    className="flex-1"
+                    type="text"
+                    message="*Email is required"
+                    placeholder="Enter your Email"
+                    register={register}
+                    errors={errors}
+                    readOnly
+                  />
+                  <InputField
+                    label="Password"
+                    required
+                    autoFocus={isEditingPassword}
+                    id="password"
+                    className="w-full"
+                    type="password"
+                    message="*Password is required"
+                    placeholder="Enter your Password"
+                    register={register}
+                    errors={errors}
+                    readOnly={!isEditingPassword}
+                    min={6}
+                  />{" "}
+                  {!isEditingPassword ? (
+                    <Buttons
+                      type="button"
+                      onClickhandler={() =>
+                        setIsEditingPassword(!isEditingPassword)
+                      }
+                      className="
                       rounded-lg
                       bg-[#1e5146]
                       px-5
@@ -312,16 +308,16 @@ const UserDetails = () => {
                       transition
                       hover:bg-[#18453c]
                       active:scale-95"
-                    disabled= {isHthAdmin}
-                  >
-                    Click To Edit Password
-                  </Buttons>
-                ) : (
-                  <div className="flex items-center gap-2 ">
-                    <Buttons
-                      type="submit"
-                      disabled={passwordLoader || !isValid}
-                      className="
+                      disabled={isHthAdmin}
+                    >
+                      Click To Edit Password
+                    </Buttons>
+                  ) : (
+                    <div className="flex items-center gap-2 ">
+                      <Buttons
+                        type="submit"
+                        disabled={passwordLoader || !isValid}
+                        className="
                         rounded-lg
                         bg-[#1e5146]
                         px-6
@@ -331,17 +327,17 @@ const UserDetails = () => {
                         hover:bg-[#18453c]
                         active:scale-95
                         "
-                    >
-                      {passwordLoader ? "Loading..." : "Save"}
-                    </Buttons>
-                    <Buttons
-                      type="button"
-                      disabled={passwordLoader}
-                      onClickhandler={() => {
-                        resetField("password");
-                        setIsEditingPassword(false);
-                      }}
-                      className="
+                      >
+                        {passwordLoader ? "Loading..." : "Save"}
+                      </Buttons>
+                      <Buttons
+                        type="button"
+                        disabled={passwordLoader}
+                        onClickhandler={() => {
+                          resetField("password");
+                          setIsEditingPassword(false);
+                        }}
+                        className="
                         rounded-lg
                         bg-red-500
                         px-6
@@ -351,17 +347,17 @@ const UserDetails = () => {
                         hover:bg-red-600
                         active:scale-95
                         "
-                    >
-                      Cancel
-                    </Buttons>
-                  </div>
-                )}
-              </form>
-            </div>
+                      >
+                        Cancel
+                      </Buttons>
+                    </div>
+                  )}
+                </form>
+              </div>
             </div>
           </>
-      )}
-    </div>
+        )}
+      </div>
     </div>
   );
 };
