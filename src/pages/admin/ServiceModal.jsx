@@ -24,6 +24,7 @@ const ServiceModal = ({
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
@@ -105,6 +106,7 @@ const ServiceModal = ({
       handleApiError(
         error,
         isEdit ? "Failed to update the service." : "Failed to add the service.",
+        setError
       );
     } finally {
       setLoading(false);

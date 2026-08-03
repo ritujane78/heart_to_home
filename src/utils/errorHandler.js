@@ -27,7 +27,7 @@ export const handleApiError = (
         });
       }
 
-      toast.error(message);
+      // toast.error(message);
     });
 
     return;
