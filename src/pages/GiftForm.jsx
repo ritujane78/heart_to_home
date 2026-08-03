@@ -27,11 +27,11 @@ import { relationships } from '../data/defaultValues.js';
           setShowPhoneInfo(false);
         }
       };
-      if (!giftDetails.senderName && currentUser.firstName && currentUser.lastName) {
+      if (!giftDetails.senderName && currentUser?.firstName && currentUser?.lastName) {
         onChange({
           target: {
             name: "senderName",
-            value: currentUser.firstName + " " + currentUser.lastName,
+            value: currentUser?.firstName + " " + currentUser?.lastName,
           },
         });
       }
