@@ -41,6 +41,7 @@ export default function PaymentPage({
   isSaving,
   setIsSaving,
   resetGift,
+  totalNpr,
 }) {
   const submitButtonRef = useRef(null);
   const navigate = useNavigate();
@@ -125,26 +126,17 @@ export default function PaymentPage({
         },
       });
 
-      // Stripe.js client-side errors
       if (result.error) {
         toast.error(result.error.message || "Payment failed.");
         return;
       }
 
-      // Save order
-      const response = await onSaveOrder();
-
-      if (!response) {
+      if (result.paymentIntent?.status !== "succeeded") {
+        toast.error("Payment was not completed.");
         return;
       }
-
-      if (response.data.emailSent) {
-        toast.success(response.data.message);
-      } else {
-        toast(response.data.message, {
-          icon: "⚠️",
-        });
-      }
+      await savePaymentDetails(result);
+      await saveOrder();
 
       navigate("/my-orders");
       resetGift();
@@ -155,6 +147,46 @@ export default function PaymentPage({
       );
     } finally {
       setIsSaving(false);
+    }
+  };
+  const saveOrder = async () => {
+    let response;
+    try {
+      response = await onSaveOrder();
+    } catch (error) {
+      handleApiError(
+        error,
+        "Payment succeeded, but we couldn't place your order. Please contact support."
+      );
+      return;
+    }
+
+    if (!response) {
+      return;
+    }
+    if (response.data.emailSent) {
+        toast.success(response.data.message);
+    } else {
+      toast(response.data.message, {
+        icon: "⚠️",
+      });
+    }
+  }
+  const savePaymentDetails = async (result) => {
+    try {
+      await api.post("/orders/payment/secure/save-payment", {
+        paymentIntentId: result.paymentIntent.id,
+        payerName: giftDetails.senderName,
+        email: giftDetails.senderEmail,
+        total,
+        amountNpr: totalNpr,
+      });
+    } catch (error) {
+      handleApiError(
+        error,
+        "Payment was successful, but we couldn't save the payment details. Please contact support."
+      );
+      return;
     }
   };
 

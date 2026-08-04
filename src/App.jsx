@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, NavLink, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
 import { Home, Mail, Stethoscope } from "lucide-react";
 
 import logo from "./assets/images/logo.png";
@@ -27,15 +33,8 @@ import PaymentPage from "./pages/PaymentPage";
 
 import toast from "react-hot-toast";
 
-
 import { Toaster } from "react-hot-toast";
-import {
-  PlusCircle,
-  Pencil,
-  Users,
-  ClipboardList,
-  LogOut
-} from "lucide-react";
+import { PlusCircle, Pencil, Users, ClipboardList, LogOut } from "lucide-react";
 
 import {
   DEFAULT_CURRENCY,
@@ -44,24 +43,26 @@ import {
   supportedCurrencies,
 } from "./data/defaultValues.js";
 
-
 import { useEffect, useMemo, useRef, useState } from "react";
 import Order from "./pages/Order.jsx";
 import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import UserDetails from "./pages/admin/UserDetails.jsx";
-import { currencySymbols, zeroDecimalCurrencies } from "./data/defaultValues.js";
+import {
+  currencySymbols,
+  zeroDecimalCurrencies,
+} from "./data/defaultValues.js";
 import { handleApiError } from "./utils/errorHandler";
-const EXCHANGE_RATE_URL = "https://open.er-api.com/v6/latest/NPR";
+const EXCHANGE_RATE_URL = "https://api.frankfurter.dev/v2/rates?base=NPR&quotes=USD,GBP,EUR,AUD,CAD,JPY";
 
 function App() {
   const initialGift = {
-    recipientName: '',
-    recipientPhone: '',
-    relationship: 'Daughter',
-    message: '',
-    senderName: '',
-    senderEmail: ''
+    recipientName: "",
+    recipientPhone: "",
+    relationship: "Daughter",
+    message: "",
+    senderName: "",
+    senderEmail: "",
   };
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
@@ -76,75 +77,48 @@ function App() {
   const [providerNames, setProviderNames] = useState([]);
   const [disabledServices, setDisabledServices] = useState([]);
 
+  const fetchServices = async (pageNumber = 1, keyword = "") => {
+    try {
+      const response = await api.get("/services", {
+        params: {
+          page: pageNumber - 1,
+          size: 6,
+          keyword,
+        },
+      });
 
+      setServices(response.data.services.content);
+      setTotalPages(response.data.services.totalPages);
 
-  // const fetchServices = async (pageNumber = 1, keyword = "") => {
-  //   const response = await api.get("/services", {
-  //     params: {
-  //       page: pageNumber - 1,
-  //       size: 6,
-  //       keyword,
-  //     },
-  //   }); 
-
-  //   setServices(response.data.services.content);
-  //   setTotalPages(response.data.services.totalPages);
-  //     if (pageNumber === 1 && keyword === "") {
-  //     setProviderNames(response.data.providerNames);
-  //   }
-
-  // };
-const fetchServices = async (pageNumber = 1, keyword = "") => {
-  try {
-    const response = await api.get("/services", {
-      params: {
-        page: pageNumber - 1,
-        size: 6,
-        keyword,
-      },
-    });
-
-    setServices(response.data.services.content);
-    setTotalPages(response.data.services.totalPages);
-
-    if (pageNumber === 1 && keyword === "") {
-      setProviderNames(response.data.providerNames);
+      if (pageNumber === 1 && keyword === "") {
+        setProviderNames(response.data.providerNames);
+      }
+    } catch (error) {
+      handleApiError(error, "Unable to load healthcare services.");
     }
-  } catch (error) {
-    handleApiError(
-      error,
-      "Unable to load healthcare services."
-    );
-  }
-};
+  };
   useEffect(() => {
     fetchServices();
   }, []);
   const fetchProviders = async () => {
-  try {
-    const response = await api.get("/providers");
-    setServiceProviders(response.data);
-  } catch (error) {
-    handleApiError(
-      error,
-      "Unable to load providers."
-    );
-  }
-};
+    try {
+      const response = await api.get("/providers");
+      setServiceProviders(response.data);
+    } catch (error) {
+      handleApiError(error, "Unable to load providers.");
+    }
+  };
 
   useEffect(() => {
-      fetchProviders();
+    fetchProviders();
   }, []);
 
-  const [selectedCurrency, setSelectedCurrency] =
-    useState(DEFAULT_CURRENCY);
+  const [selectedCurrency, setSelectedCurrency] = useState(DEFAULT_CURRENCY);
 
-  const [exchangeRates, setExchangeRates] =
-    useState(fallbackExchangeRates);
+  const [exchangeRates, setExchangeRates] = useState(fallbackExchangeRates);
 
-  const [exchangeRateStatus, setExchangeRateStatus] =
-    useState("loading");
-    const navigate = useNavigate();
+  const [exchangeRateStatus, setExchangeRateStatus] = useState("loading");
+  const navigate = useNavigate();
 
   // Access the states by using the useMyContext hook from the ContextProvider
   const { token, setToken, currentUser, setCurrentUser, isAdmin, setIsAdmin } =
@@ -178,7 +152,7 @@ const fetchServices = async (pageNumber = 1, keyword = "") => {
     const convertedTotal = zeroDecimalCurrencies.has(selectedCurrency)
       ? selectedServices.reduce(
           (sum, service) => sum + Math.round(service.price * rate),
-          0
+          0,
         )
       : selectedServices.reduce((sum, service) => {
           const rounded = Math.round(service.price * rate * 100) / 100;
@@ -187,29 +161,35 @@ const fetchServices = async (pageNumber = 1, keyword = "") => {
 
     const fractionDigits = zeroDecimalCurrencies.has(selectedCurrency) ? 0 : 2;
 
-    return `${currencySymbols[selectedCurrency] ?? `${selectedCurrency} `}${convertedTotal.toLocaleString(undefined, {
-      minimumFractionDigits: fractionDigits,
-      maximumFractionDigits: fractionDigits,
-    })}`;
+    return `${currencySymbols[selectedCurrency] ?? `${selectedCurrency} `}${convertedTotal.toLocaleString(
+      undefined,
+      {
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits,
+      },
+    )}`;
   }, [selectedServices, selectedCurrency, exchangeRates]);
 
+  const totalNpr = useMemo(
+        () =>
+          selectedServices.reduce((sum, service) => sum + service.price, 0),
+        [selectedServices]
+  );
   const formatMoney = useMemo(
     () => (amount) =>
       formatConvertedAmount(amount, selectedCurrency, exchangeRates),
-    [selectedCurrency, exchangeRates]
+    [selectedCurrency, exchangeRates],
   );
 
-const serviceProviderNames = useMemo(() => {
-  return providerNames.join(" | ");
-}, [providerNames]);
+  const serviceProviderNames = useMemo(() => {
+    return providerNames.join(" | ");
+  }, [providerNames]);
 
   const providerMap = useMemo(
-  () =>
-    new Map(
-      serviceProviders.map((provider) => [provider.id, provider.name])
-    ),
-  []
-);
+    () =>
+      new Map(serviceProviders.map((provider) => [provider.id, provider.name])),
+    [],
+  );
 
   useEffect(() => {
     let isActive = true;
@@ -222,11 +202,27 @@ const serviceProviderNames = useMemo(() => {
 
         const data = await response.json();
 
+        console.log("Exchange rate data:", data);
+
+        // Convert the array into an object:
+        // {
+        //   AUD: 0.00935,
+        //   CAD: 0.0092,
+        //   EUR: 0.00569,
+        //   GBP: 0.00487,
+        //   JPY: 1.0378,
+        //   USD: 0.00656
+        // }
+        const ratesMap = data.reduce((acc, item) => {
+          acc[item.quote] = item.rate;
+          return acc;
+        }, {});
+
         const nextRates = supportedCurrencies.reduce((rates, currency) => {
-          rates[currency.code] = Number(
-            data.rates[currency.code] ??
-              fallbackExchangeRates[currency.code]
-          );
+          rates[currency.code] =
+            ratesMap[currency.code] ??
+            fallbackExchangeRates[currency.code];
+
           return rates;
         }, {});
 
@@ -258,7 +254,7 @@ const serviceProviderNames = useMemo(() => {
     if (isSaving) return;
 
     setIsSaving(true);
-    const exchangeRate = exchangeRates[selectedCurrency];      
+    const exchangeRate = exchangeRates[selectedCurrency];
 
     try {
       const giftOrderRequest = {
@@ -272,59 +268,45 @@ const serviceProviderNames = useMemo(() => {
 
         message: giftDetails.message,
 
-        serviceIds: selectedServices.map(service => service.id),
+        serviceIds: selectedServices.map((service) => service.id),
 
         totalPrice: total,
 
         currency: selectedCurrency,
-        
-        exchangeRate: exchangeRate
 
+        exchangeRate: exchangeRate,
       };
 
-       return await api.post(
-        "/orders",
-        giftOrderRequest,
-      );
-
-      
+      return await api.post("/orders", giftOrderRequest);
     } catch (error) {
-        handleApiError(
-          error,
-          "Unable to place your order. Please try again."
-        );
-        return null;
-      } finally {
-        setIsSaving(false);
-      }
+      handleApiError(error, "Unable to place your order. Please try again.");
+      return null;
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   function toggleService(service) {
     if (selectedIds.includes(service.id)) {
-      setSelectedIds(prev => prev.filter(id => id !== service.id));
+      setSelectedIds((prev) => prev.filter((id) => id !== service.id));
 
-      setSelectedServices(prev =>
-        prev.filter(s => s.id !== service.id)
-      );
+      setSelectedServices((prev) => prev.filter((s) => s.id !== service.id));
     } else {
-      setSelectedIds(prev => [...prev, service.id]);
+      setSelectedIds((prev) => [...prev, service.id]);
 
-      setSelectedServices(prev => [...prev, service]);
+      setSelectedServices((prev) => [...prev, service]);
     }
 
     setPaymentReady(false);
   }
   const fetchDisabledServices = async () => {
-  try {
-    const response = await api.get("/admin/disabled-services");
-    setDisabledServices(response.data);
-  } catch (error) {
-    handleApiError(
-      error,
-      "Unable to load disabled services."
-    );
-  }
-};
+    try {
+      const response = await api.get("/admin/disabled-services");
+      setDisabledServices(response.data);
+    } catch (error) {
+      handleApiError(error, "Unable to load disabled services.");
+    }
+  };
 
   useEffect(() => {
     if (token && isAdmin) {
@@ -333,11 +315,9 @@ const serviceProviderNames = useMemo(() => {
   }, [token, isAdmin]);
 
   function removeDeletedService(id) {
-    setSelectedIds(prev => prev.filter(x => x !== id));
+    setSelectedIds((prev) => prev.filter((x) => x !== id));
 
-    setSelectedServices(prev =>
-      prev.filter(service => service.id !== id)
-    );
+    setSelectedServices((prev) => prev.filter((service) => service.id !== id));
     setSelectedIds((current) => {
       const next = current.filter((serviceId) => serviceId !== id);
 
@@ -365,9 +345,7 @@ const serviceProviderNames = useMemo(() => {
     const { name, value } = e.target;
 
     const nextValue =
-      name === "recipientPhone"
-        ? value.replace(/\D/g, "")
-        : value;
+      name === "recipientPhone" ? value.replace(/\D/g, "") : value;
 
     setGiftDetails((current) => ({
       ...current,
@@ -391,17 +369,14 @@ const serviceProviderNames = useMemo(() => {
     setGiftStarted(false);
     setPaymentReady(false);
     setPaymentMethod("card");
-}
+  }
 
   const handleLogout = async () => {
     try {
       await api.post("/auth/logout");
     } catch (error) {
-    handleApiError(
-      error,
-      "Logout failed."
-    );
-  } finally {
+      handleApiError(error, "Logout failed.");
+    } finally {
       localStorage.removeItem("JWT_TOKEN");
       localStorage.removeItem("REFRESH_TOKEN");
       localStorage.removeItem("USER");
@@ -415,17 +390,17 @@ const serviceProviderNames = useMemo(() => {
     }
   };
   const adminItems = [
-  {
-    title: "All Users",
-    icon: <Users className="w-6 h-6" />,
-    path: "/admin/all-users",
-  },
-  {
-    title: "All Orders",
-    icon: <ClipboardList className="w-6 h-6" />,
-    path: "/admin/all-orders",
-  },
-];
+    {
+      title: "All Users",
+      icon: <Users className="w-6 h-6" />,
+      path: "/admin/all-users",
+    },
+    {
+      title: "All Orders",
+      icon: <ClipboardList className="w-6 h-6" />,
+      path: "/admin/all-orders",
+    },
+  ];
 
   return (
     <>
@@ -452,7 +427,10 @@ const serviceProviderNames = useMemo(() => {
               </NavLink>
             </nav>
             {token ? (
-              <div className="user-menu transition active:scale-[0.95]" ref={menuRef}>
+              <div
+                className="user-menu transition active:scale-[0.95]"
+                ref={menuRef}
+              >
                 <button
                   className="menu-btn"
                   onClick={() => setMenuOpen((prev) => !prev)}
@@ -474,14 +452,14 @@ const serviceProviderNames = useMemo(() => {
                           <span>{item.title}</span>
                         </NavLink>
                       ))}
-                      <NavLink
-                        to="/my-orders"
-                        className="dropdown-item"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        <ClipboardList className="dropdown-icon" />
-                        My Orders
-                      </NavLink>
+                    <NavLink
+                      to="/my-orders"
+                      className="dropdown-item"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <ClipboardList className="dropdown-icon" />
+                      My Orders
+                    </NavLink>
 
                     <button
                       className="dropdown-item logout-item"
@@ -489,7 +467,7 @@ const serviceProviderNames = useMemo(() => {
                         setMenuOpen(false);
                         handleLogout();
                       }}
-                    > 
+                    >
                       <LogOut size={18} />
                       Log Out
                     </button>
@@ -554,98 +532,96 @@ const serviceProviderNames = useMemo(() => {
             <Route
               path="/gift"
               element={
-                  <ProtectedRoute>
-                      <GiftForm
-                          giftFormRef={giftFormRef}
-                          giftDetails={giftDetails}
-                          selectedServices={selectedServices}
-                          total={total}
-                          paymentMethod={paymentMethod}
-                          onChange={updateGiftDetails}
-                          onSubmit={submitGift}
-                          onPaymentMethodChange={setPaymentMethod}
-                          onReset={resetGift}
-                          onSaveOrder={saveOrder}
-                      />
-                  </ProtectedRoute>
+                <ProtectedRoute>
+                  <GiftForm
+                    giftFormRef={giftFormRef}
+                    giftDetails={giftDetails}
+                    selectedServices={selectedServices}
+                    total={total}
+                    paymentMethod={paymentMethod}
+                    onChange={updateGiftDetails}
+                    onSubmit={submitGift}
+                    onPaymentMethodChange={setPaymentMethod}
+                    onReset={resetGift}
+                    onSaveOrder={saveOrder}
+                  />
+                </ProtectedRoute>
               }
-          />
-
-          <Route
-              path="/payment"
-              element={
-                  <ProtectedRoute>
-                      <PaymentPage
-                          selectedServices={selectedServices}
-                          giftDetails={giftDetails}
-                          total={total}
-                          formatMoney={formatMoney}
-                          selectedCurrency={selectedCurrency}
-                          paymentMethod={paymentMethod}
-                          onPaymentMethodChange={setPaymentMethod}
-                          onSaveOrder={saveOrder}
-                          isSaving={isSaving}
-                          setIsSaving={setIsSaving}
-                          resetGift={resetGift}
-                      />
-                  </ProtectedRoute>
-              }
-          />
+            />
 
             <Route
-              path="/contact"
-              element={<ContactPage />}
+              path="/payment"
+              element={
+                <ProtectedRoute>
+                  <PaymentPage
+                    selectedServices={selectedServices}
+                    giftDetails={giftDetails}
+                    total={total}
+                    formatMoney={formatMoney}
+                    selectedCurrency={selectedCurrency}
+                    paymentMethod={paymentMethod}
+                    onPaymentMethodChange={setPaymentMethod}
+                    onSaveOrder={saveOrder}
+                    isSaving={isSaving}
+                    setIsSaving={setIsSaving}
+                    resetGift={resetGift}
+                    totalNpr={totalNpr}
+                  />
+                </ProtectedRoute>
+              }
             />
+
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/access-denied" element={<AccessDenied />} />
 
-              <Route
-                path="/admin/all-orders"
-                element={
-                  <ProtectedRoute adminPage={true}>
-                    <AllOrders />
-                  </ProtectedRoute>
-                }
-              />
+            <Route
+              path="/admin/all-orders"
+              element={
+                <ProtectedRoute adminPage={true}>
+                  <AllOrders />
+                </ProtectedRoute>
+              }
+            />
 
-              <Route
-                path="/admin/orders/:id"
-                element={
-                  <ProtectedRoute adminPage={true}>
-                    <OrderDetails />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/all-users"
-                element={
-                  <ProtectedRoute adminPage={true}>
-                    <AllUsers />
-                  </ProtectedRoute>
-                }
-              />
-              <Route 
-                path="/admin/users/:userId" 
-                element = {
-                  <ProtectedRoute adminPage={true}>
-                    <UserDetails />
-                  </ProtectedRoute>
-                  }
-                />
-              <Route
-                path="/my-orders"
-                element={
-                  <ProtectedRoute >
-                    <Order 
-                      selectedCurrency={selectedCurrency}
-                      exchangeRates={exchangeRates}
-                    />
-                  </ProtectedRoute>
-                }
-              />
+            <Route
+              path="/admin/orders/:id"
+              element={
+                <ProtectedRoute adminPage={true}>
+                  <OrderDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/all-users"
+              element={
+                <ProtectedRoute adminPage={true}>
+                  <AllUsers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users/:userId"
+              element={
+                <ProtectedRoute adminPage={true}>
+                  <UserDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/my-orders"
+              element={
+                <ProtectedRoute>
+                  <Order
+                    selectedCurrency={selectedCurrency}
+                    exchangeRates={exchangeRates}
+                  />
+                </ProtectedRoute>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

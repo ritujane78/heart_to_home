@@ -13,6 +13,7 @@ const ProviderModal = ({ open, onClose, providers, fetchProviders }) => {
     register: registerProvider,
     handleSubmit: handleProviderSubmit,
     reset: resetProvider,
+    setError,
     formState: { errors: providerErrors, isValid: isProviderValid },
   } = useForm({
     defaultValues: {
@@ -36,7 +37,8 @@ const ProviderModal = ({ open, onClose, providers, fetchProviders }) => {
     } catch (error) {
       handleApiError(
         error,
-        "Failed to add provider."
+        "Failed to add provider.",
+        setError,
       );
     } finally {
       setProviderLoading(false);
