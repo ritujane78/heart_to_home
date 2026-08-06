@@ -7,6 +7,7 @@ import { BallTriangle } from "react-loader-spinner";
 import Buttons from "../../utils/Buttons";
 import toast from "react-hot-toast";
 import { ArrowLeft } from "lucide-react";
+import { handleApiError } from "../../utils/errorHandler";
 // import Errors from "../Errors";
 
 const UserDetails = () => {
@@ -86,6 +87,9 @@ const UserDetails = () => {
     fetchRoles();
   }, [fetchUserDetails, fetchRoles]);
 
+    const handleRoleChange = (e) => {
+      setSelectedRole(e.target.value);
+    };
   //set the selected role
   const handleUpdateRole = async () => {
     setUpdateRoleLoader(true);

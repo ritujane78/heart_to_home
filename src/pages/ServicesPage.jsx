@@ -287,7 +287,7 @@ function ServicesPage({
               className="outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 border-none"
               title="Add Services"
             >
-              <div className="w-10 h-10 rounded-full bg-[#c05242] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-[#c05242] flex items-center justify-center hover:scale-105">
                 <Plus className="text-white" size={18} />
               </div>
             </button>
@@ -297,7 +297,7 @@ function ServicesPage({
               className="outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 border-none"
               title="Add Providers"
             >
-              <div className="w-10 h-10 rounded-full bg-[#c05242] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-[#c05242] flex items-center justify-center hover:scale-105">
                 <Hospital className="text-white" size={20} />
               </div>
             </button>
@@ -307,7 +307,7 @@ function ServicesPage({
               className="outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 border-none"
               title="Restore Services"
             >
-              <div className="w-10 h-10 rounded-full bg-[#c05242] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-[#c05242] flex items-center justify-center hover:scale-105">
                 <RotateCcw className="text-white" size={18} />
               </div>
             </button>

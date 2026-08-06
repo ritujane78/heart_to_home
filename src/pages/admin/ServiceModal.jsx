@@ -217,7 +217,7 @@ const ServiceModal = ({
           />
           <Buttons
             type="submit"
-            disabled={!isValid || (mode === "add" && loading)}
+            disabled={!isValid || (mode === "add" && loading) || (mode === "edit" && loading)}
             className="bg-[#1e5146] text-white w-full py-2 rounded-md hover:scale-[1.03] transition"
           >
             {loading ? "Saving..." : mode === "edit" ? "Update" : "Add Service"}

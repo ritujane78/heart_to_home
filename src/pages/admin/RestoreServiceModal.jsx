@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import api from "../../services/api";
 import InputField from "../../components/InputField/InputField";
 import Buttons from "../../utils/Buttons";
+import { handleApiError } from "../../utils/errorHandler";
 
 const RestoreServiceModal = ({
   open,
@@ -13,7 +14,6 @@ const RestoreServiceModal = ({
   fetchServices,
   fetchDisabledServices,
 }) => {
-  // const [disabledServices, setDisabledServices] = useState([]);
   const [selectedServiceId, setSelectedServiceId] = useState("");
   const [restoring, setRestoring] = useState(false);
 
@@ -37,7 +37,7 @@ const RestoreServiceModal = ({
       onClose();
     } catch {
       toast.error("Unable to restore service.");
-      handleApiError(error, "Unable to restore the service.");
+      handleApiError("error", "Unable to restore the service.");
     } finally {
       setRestoring(false);
     }
