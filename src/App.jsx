@@ -500,7 +500,7 @@ function App() {
               element={
                 <HomeDashboard
                   selectedCount={selectedIds.length}
-                  onBrowse={() => {}}
+                  onBrowse={() => navigate("/services")}
                   onGiftNow={startGiftFlow}
                 />
               }

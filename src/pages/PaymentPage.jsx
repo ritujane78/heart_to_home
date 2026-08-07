@@ -177,14 +177,14 @@ export default function PaymentPage({
       await api.post("/orders/payment/secure/save-payment", {
         paymentIntentId: result.paymentIntent.id,
         payerName: giftDetails.senderName,
-        email: giftDetails.senderEmail,
+        userEmail: giftDetails.senderEmail,
         total,
         amountNpr: totalNpr,
       });
     } catch (error) {
       handleApiError(
         error,
-        "Payment was successful, but we couldn't save the payment details. Please contact support."
+        "Payment was successful, but we couldn't save the payment details."
       );
       return;
     }
