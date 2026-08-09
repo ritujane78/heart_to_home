@@ -121,12 +121,12 @@ const Login = () => {
 
         <div className="flex flex-col gap-2">
           <InputField
-            label="UserName"
+            label="Username"
             required
             id="username"
             type="text"
             message="*UserName is required"
-            placeholder="type your username"
+            placeholder="Username"
             register={register}
             errors={errors}
           />{" "}
@@ -136,7 +136,7 @@ const Login = () => {
             id="password"
             type="password"
             message="*Password is required"
-            placeholder="type your password"
+            placeholder="Password"
             register={register}
             errors={errors}
           />

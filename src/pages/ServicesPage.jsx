@@ -79,20 +79,20 @@ function ServicesPage({
     fetchProviders();
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key !== "Escape") return;
+  // useEffect(() => {
+  //   const handleKeyDown = (e) => {
+  //     if (e.key !== "Escape") return;
 
-      setShowGiftInfo(false);
-      setShowServiceModal(false);
-      setShowProviderModal(false);
-      setShowRestoreServicesModal(false);
-    };
+  //     setShowGiftInfo(false);
+  //     setShowServiceModal(false);
+  //     setShowProviderModal(false);
+  //     setShowRestoreServicesModal(false);
+  //   };
 
-    window.addEventListener("keydown", handleKeyDown);
+  //   window.addEventListener("keydown", handleKeyDown);
 
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  //   return () => window.removeEventListener("keydown", handleKeyDown);
+  // }, []);
 
   useEffect(() => {
     setPage(1);
@@ -196,6 +196,7 @@ function ServicesPage({
       <ServiceModal
         open={showServiceModal}
         onClose={() => setShowServiceModal(false)}
+        setShowServiceModal ={setShowServiceModal}
         mode={mode}
         service={editingService}
         providers={providers}
@@ -206,6 +207,7 @@ function ServicesPage({
       <ProviderModal
         open={showProviderModal}
         onClose={() => setShowProviderModal(false)}
+        setShowProviderModal={setShowProviderModal}
         fetchProviders={fetchProviders}
         providers={providers}
       />
@@ -215,6 +217,7 @@ function ServicesPage({
         fetchServices={fetchServices}
         fetchDisabledServices={fetchDisabledServices}
         onClose={() => setShowRestoreServicesModal(false)}
+        setShowRestoreServicesModal={setShowRestoreServicesModal}
       />
       <section className="services-layout">
         <div className="currency-toolbar">
@@ -416,11 +419,15 @@ function ServicesPage({
         {showGiftInfo && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-            onClick={() => setShowGiftInfo(false)}
+            role="presentation"
+            onMouseDown={() => setShowGiftInfo(false)}
           >
             <div
               className="relative w-full max-w-md rounded-xl bg-white shadow-2xl p-6"
-              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="gift-info-title"
+              onMouseDown={(e) => e.stopPropagation()}
             >
               <button
                 type="button"

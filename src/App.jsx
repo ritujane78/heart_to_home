@@ -565,6 +565,10 @@ function App() {
                     isSaving={isSaving}
                     setIsSaving={setIsSaving}
                     resetGift={resetGift}
+                    onServicesUpdated={(services) => {
+                      setSelectedServices(services);
+                      setSelectedIds(services.map((service) => service.id));
+                    }}
                     totalNpr={totalNpr}
                   />
                 </ProtectedRoute>

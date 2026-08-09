@@ -13,9 +13,20 @@ const RestoreServiceModal = ({
   disabledServices,
   fetchServices,
   fetchDisabledServices,
+  setShowRestoreServicesModal,
 }) => {
   const [selectedServiceId, setSelectedServiceId] = useState("");
   const [restoring, setRestoring] = useState(false);
+  useEffect(() => {
+      const handleKeyDown = (e) => {
+        if (e.key !== "Escape") return;
+        setShowRestoreServicesModal(false);
+      };
+  
+      window.addEventListener("keydown", handleKeyDown);
+  
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
 
   const handleRestore = async () => {
     if (!selectedServiceId) {

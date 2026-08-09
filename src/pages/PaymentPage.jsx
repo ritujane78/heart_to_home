@@ -1,6 +1,5 @@
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { CreditCard } from "lucide-react";
-import { useEffect, useRef } from "react";
 import { currencySymbols, zeroDecimalCurrencies } from "../data/defaultValues";
 import api from "../services/api";
 import toast from "react-hot-toast";
@@ -41,15 +40,10 @@ export default function PaymentPage({
   isSaving,
   setIsSaving,
   resetGift,
+  onServicesUpdated,
   totalNpr,
 }) {
-  const submitButtonRef = useRef(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    submitButtonRef.current?.focus();
-  }, []);
-
   const location = useLocation();
 
   if (selectedServices.length === 0 && location.state?.fromOrder !== true) {
@@ -62,15 +56,17 @@ export default function PaymentPage({
     if (!stripe || !elements || isSaving) return;
 
     // Validate selected services before payment
-    try {
-      await api.post("/orders/validate", {
-        serviceIds: selectedServices.map((s) => s.id),
-      });
-    } catch (error) {
-      handleApiError(
-        error,
-        "Some selected services are no longer available."
-      );
+    const response = await api.post("/orders/validate", {
+      serviceIds: selectedServices.map((s) => s.id),
+    });
+
+    if (!response.data.valid) {
+      onServicesUpdated(response.data.services);
+
+      toast.error(response.data.message);
+
+      navigate("/services");
+
       return;
     }
 
@@ -138,8 +134,12 @@ export default function PaymentPage({
       await savePaymentDetails(result);
       await saveOrder();
 
-      navigate("/my-orders");
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+
       resetGift();
+      navigate("/my-orders", { replace: true });
     } catch (error) {
       handleApiError(
         error,
@@ -324,7 +324,6 @@ export default function PaymentPage({
         </div>
 
         <button
-          ref={submitButtonRef}
           type="submit"
           disabled={isSaving}
           className="w-full rounded-lg primary-action px-6 py-3 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"

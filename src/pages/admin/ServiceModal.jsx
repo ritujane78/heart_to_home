@@ -17,6 +17,7 @@ const ServiceModal = ({
   fetchServices,
   currentPage,
   searchQuery,
+  setShowServiceModal,
 }) => {
   const isEdit = mode === "edit";
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,17 @@ const ServiceModal = ({
       price: "",
     },
   });
+  useEffect(() => {
+      const handleKeyDown = (e) => {
+        if (e.key !== "Escape") return;
+  
+        setShowServiceModal(false);
+      };
+  
+      window.addEventListener("keydown", handleKeyDown);
+  
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
   useEffect(() => {
     if (open && service) {
       reset({

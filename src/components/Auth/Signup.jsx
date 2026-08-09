@@ -126,12 +126,12 @@ const Signup = () => {
           </div>
 
           <InputField
-            label="UserName"
+            label="Username"
             required
             id="username"
             type="text"
             message="*UserName Is Required"
-            placeholder="Enter Your Username"
+            placeholder="Username"
             register={register}
             errors={errors}
           />
@@ -142,7 +142,7 @@ const Signup = () => {
             id="email"
             type="email"
             message="*Email Is Required"
-            placeholder="Enter Your Email"
+            placeholder="Email"
             register={register}
             errors={errors}
           />
@@ -153,7 +153,7 @@ const Signup = () => {
             id="password"
             type="password"
             message="*Password is required"
-            placeholder="Type your password"
+            placeholder="Password"
             register={register}
             errors={errors}
             min={6}

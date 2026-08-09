@@ -7,7 +7,7 @@ import api from "../../services/api";
 import { X } from "lucide-react";
 import { handleApiError } from "../../utils/errorHandler";
 
-const ProviderModal = ({ open, onClose, providers, fetchProviders }) => {
+const ProviderModal = ({ open, onClose, providers, fetchProviders, setShowProviderModal }) => {
   const [providerLoading, setProviderLoading] = useState(false);
   const {
     register: registerProvider,
@@ -20,6 +20,16 @@ const ProviderModal = ({ open, onClose, providers, fetchProviders }) => {
       name: "",
     },
   });
+  useEffect(() => {
+      const handleKeyDown = (e) => {
+        if (e.key !== "Escape") return;
+        setShowProviderModal(false);
+      };
+  
+      window.addEventListener("keydown", handleKeyDown);
+  
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
   const onProviderSubmit = async (data) => {
     try {
       setProviderLoading(true);
