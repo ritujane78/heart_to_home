@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import api from "../../services/api";
 import { useForm } from "react-hook-form";
-import InputField from "../InputField/InputField";
+import InputField from "../../utils/InputField/InputField";
 import Buttons from "../../utils/Buttons";
 import { Divider } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";

@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { X } from "lucide-react";
 
 import api from "../../services/api";
-import InputField from "../../components/InputField/InputField";
+import InputField from "../../utils/InputField/InputField";
 import Buttons from "../../utils/Buttons";
 import { handleApiError } from "../../utils/errorHandler";
 

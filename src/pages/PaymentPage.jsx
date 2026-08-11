@@ -11,6 +11,7 @@ import {
   CardCvcElement,
 } from "@stripe/react-stripe-js";
 import { handleApiError } from "../utils/errorHandler";
+import PaymentInfoRequest from "../models/PaymentInfoRequest";
 
 const elementOptions = {
   style: {
@@ -95,15 +96,16 @@ export default function PaymentPage({
         total.replace(symbol, "").replace(/,/g, "").trim()
       );
 
-      const paymentInfo = {
-        amount: Math.round(
+      const paymentInfo = new PaymentInfoRequest(
+        Math.round(
           zeroDecimalCurrencies.has(currency)
             ? amount
             : amount * 100
         ),
         currency,
-        email: giftDetails.senderEmail,
-      };
+        giftDetails.senderEmail
+      );
+
 
       // Create Payment Intent
       const { data } = await api.post(
@@ -177,7 +179,7 @@ export default function PaymentPage({
       await api.post("/orders/payment/secure/save-payment", {
         paymentIntentId: result.paymentIntent.id,
         payerName: giftDetails.senderName,
-        userEmail: giftDetails.senderEmail,
+        userEmail: result.paymentIntent.receipt_email || giftDetails.senderEmail,
         total,
         amountNpr: totalNpr,
       });

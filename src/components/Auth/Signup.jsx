@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import Divider from "@mui/material/Divider";
 import Buttons from "../../utils/Buttons";
-import InputField from "../InputField/InputField";
+import InputField from "../../utils/InputField/InputField";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useMyContext } from "../../store/ContextApi";

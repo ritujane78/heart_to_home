@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import InputField from "../../components/InputField/InputField";
+import InputField from "../../utils/InputField/InputField";
 import { useForm } from "react-hook-form";
 import Buttons from "../../utils/Buttons";
 import toast from "react-hot-toast";

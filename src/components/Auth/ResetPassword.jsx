@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import api from "../../services/api";
 import { useForm } from "react-hook-form";
 import { Divider } from "@mui/material";
-import InputField from "../InputField/InputField";
+import InputField from "../../utils/InputField/InputField";
 import Buttons from "../../utils/Buttons";
 
 const ResetPassword = () => {

@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider";
 import toast from "react-hot-toast";
 
 import api from "../../services/api.jsx";
-import InputField from "../InputField/InputField.jsx";
+import InputField from "../../utils/InputField/InputField.jsx";
 import Buttons from "../../utils/Buttons.jsx";
 import { useMyContext } from "../../store/ContextApi.jsx";
 import { handleApiError } from "../../utils/errorHandler";
