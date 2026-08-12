@@ -6,6 +6,8 @@
   border: 1px solid #dfe1d7;
   border-radius: 8px;
   box-shadow: 0 12px 36px rgba(29, 38, 50, 0.08);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .tab {
@@ -14,17 +16,23 @@
   justify-content: center;
   gap: 10px;
   min-height: 40px;
+  min-width: 0;
+  flex: 1 1 0;
   padding: 0 14px;
   border: 0;
   border-radius: 6px;
   color: #4d5a67;
   background: transparent;
   font-weight: 700;
+  text-decoration: none;
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .tab svg {
   width: 18px;
   height: 18px;
+  flex-shrink: 0;
 }
 
 .primary-action,
@@ -94,19 +102,26 @@
 @media (max-width: 920px) {
   .tabs {
     width: 100%;
-    overflow-x: auto;
-  }     
+    overflow-x: hidden;
+  }
 
   .tab {
-    flex: 1 0 auto;
+    flex: 1 1 0;
+    min-width: 0;
     font-size: smaller;
   }
 }
 
 @media (max-width: 620px) {
   .tab {
-    padding: 0 10px;
-    font-size: smaller;
+    padding: 0 6px;
+    gap: 5px;
+    font-size: 0.75rem;
+  }
+
+  .tab svg {
+    width: 16px;
+    height: 16px;
   }
 
   .primary-action,

@@ -249,7 +249,7 @@ function ServicesPage({
         <div className="section-heading">
           <div className="heading-content">
             <p className="eyebrow">Browse Services</p>
-            <h2>Select health services to gift</h2>
+            <h2>Select services to gift</h2>
           </div>
 
           <div className="button-wrapper">

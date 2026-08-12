@@ -69,56 +69,72 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
     });
   };
 
+  if (loading) {
   return (
-    <div className="min-h-screen bg-gray-100 py-10">
+    <div className="min-h-screen py-10">
       <div className="mx-auto max-w-6xl px-4">
-        <div className="mb-8 flex flex-col items-center gap-3">
-          <div className="flex items-center gap-3 px-6 py-3 ">
-            <div>
-              <h2 className="text-2xl font-bold text-[#1e5146]">
-                👋 {formattedFirstName}!
-              </h2>
-            </div>
-          </div>
+        <div className="flex h-96 flex-col items-center justify-center rounded-xl shadow">
+          <BallTriangle
+            height={100}
+            width={100}
+            radius={5}
+            color="#1e5146"
+            ariaLabel="ball-triangle-loading"
+            visible={true}
+          />
+          <span className="mt-3 text-lg text-gray-600">
+            Please wait...
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-          <h2 className="text-3xl font-bold text-gray-800">Your Orders</h2>
+return (
+  <div className="min-h-screen bg-gray-100 py-10">
+    <div className="mx-auto max-w-6xl px-4">
+
+      {/* Header - appears AFTER loading */}
+      <div className="mb-8 flex flex-col items-center gap-3">
+
+        <div className="flex items-center gap-3 px-6 py-3">
+          <h2 className="text-2xl font-bold text-[#1e5146]">
+            👋 {formattedFirstName}!
+          </h2>
         </div>
 
-        {loading ? (
-          <div className="flex flex-col justify-center items-center h-96 bg-white rounded-xl shadow">
-            <BallTriangle
-              height={100}
-              width={100}
-              radius={5}
-              color="#1e5146"
-              ariaLabel="ball-triangle-loading"
-              visible={true}
-            />
-            <span className="mt-3 text-gray-600 text-lg">Please wait...</span>
-          </div>
-        ) : orders.length === 0 ? (
-          <div className="rounded-xl bg-white p-12 text-center shadow">
-            <Package className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-            <p className="text-lg text-gray-500">
-              No orders, yet! Buy healthcare services for your loved ones{" "}
-              <NavLink
-                to="/services"
-                className="text-[#1e5146] font-semibold hover:underline"
-              >
-                here
-              </NavLink>
-              .
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-8">
-            {paginatedOrders.map((order, index) => {
-              const serialNumber = (page - 1) * ordersPerPage + index + 1;
+        <h2 className="text-3xl font-bold text-gray-800">
+          Your Orders
+        </h2>
 
+      </div>
+
+      {/* Orders content */}
+      {orders.length === 0 ? (
+        <div className="rounded-xl bg-white p-12 text-center shadow">
+          <Package className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+
+          <p className="text-lg text-gray-500">
+            No orders, yet! Buy healthcare services for your loved ones{" "}
+            <NavLink
+              to="/services"
+              className="font-semibold text-[#1e5146] hover:underline"
+            >
+              here
+            </NavLink>
+            .
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {paginatedOrders.map((order, index) => {
+            const serialNumber =
+              (page - 1) * ordersPerPage + index + 1;
               return (
                 <div
                   key={order.id}
-                  className="overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-lg"
+                  className="overflow-hidden w-[85%] m-auto rounded-2xl bg-white shadow transition hover:shadow-lg"
                 >
                   {/* Header */}
                   <div
@@ -144,7 +160,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
                   </div>
 
                   {/* Order Details */}
-                  <div className="grid gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid flex items-center justify-center gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3">
                     <div className="flex gap-3">
                       <User className="mt-1 text-[#1e5146]" size={18} />
                       <div>

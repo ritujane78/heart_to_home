@@ -21,15 +21,8 @@ body {
 .development-banner {
   grid-column: 1 / -1;
   display: flex;
-  /* gap: 14px; */
-  /* align-items: center; */
-  /* justify-content: center; */
   padding: 20px 50px 0px;
   color: #24313f;
-  /* background: #fff6df; */
-  /* border: 1px solid #ead7a8; */
-  /* border-radius: 8px; */
-  /* margin-bottom: 2rem; */
 }
 
 .development-banner svg {
@@ -145,48 +138,60 @@ main {
   display: flex;
   flex-direction: column;
 }
-.tab {
- text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  border: none;
-  background: transparent;
-  color: #6b7280;
-  border-radius: 9999px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-
 .tab.active,
 .signup-tab.active,
 .login-tab.active {
   font-weight: 600;
   box-shadow: 0 4px 12px #1f6f5cb8;
 }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+  padding: 18px clamp(18px, 4vw, 56px);
+
+  background: rgba(247, 247, 242, 0.92);
+  border-bottom: 1px solid #deded5;
+  backdrop-filter: blur(14px);
+}
+
 .nav-section {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 18px;
 }
 
-.auth-action {
+.auth-buttons {
   display: flex;
+  flex-direction: row;
   align-items: center;
+  gap: 10px;
 }
 
-.signup-tab, .login-tab {
+.login-tab,
+.signup-tab {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
+
+  width: auto;
   min-width: 110px;
+
   padding: 10px 18px;
+  margin: 0;
+
   border-radius: 6px;
   font-weight: 800;
-  color: #000;
+  text-align: center;
+  text-decoration: none;
+  flex: 0 0 auto;
 }
 .signup-tab {
   background: #eed00e;
@@ -268,7 +273,6 @@ main {
 .dropdown-item:hover, 
 .dropdown-item.active {
   background: #dff0e9;
-  /* transform: scale(1.05); */
 }
 
 .logout-item {
@@ -278,20 +282,6 @@ main {
 }
 .logout-item:hover{
   background: #c05242 !important;
-}
-
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 18px clamp(18px, 4vw, 56px);
-  background: rgba(247, 247, 242, 0.92);
-  border-bottom: 1px solid #deded5;
-  backdrop-filter: blur(14px);
 }
 
 .brand {
@@ -326,7 +316,7 @@ main {
 }
 
 .eyebrow {
-  margin: 0 0 10px;
+  margin: 10px 0 0 0;
   color: #c05242  ;
   font-size: 0.78rem;
   font-weight: 800;
@@ -348,7 +338,6 @@ main {
 }
 .section-heading h1 {
   margin-bottom: 0;
-  /* font-family: "Bebas Neue", sans-serif; */
   letter-spacing: 0.3rem;
   font-size: 3rem;
 }
@@ -363,7 +352,6 @@ main {
 .home-grid,
 .services-layout,
 .contact-page {
-  /* width: min(1180px, 100%); */
   margin: 0 auto;
 }
 .transparent-grid,
@@ -412,77 +400,145 @@ footer span{
   letter-spacing: 0.3rem;
 }
 
-@media (max-width: 920px) {
-  .topbar,
-  .section-heading {
-    align-items: stretch;
-    flex-direction: column;
-  }
-  .section-heading h2 {
-    font-size: medium;
-  }
+@media (max-width: 1120px) {
   .topbar {
-    flex-direction: column;
-    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 18px;
   }
 
-  .auth-action {
+  .brand {
     width: 100%;
+    justify-content: flex-start;
   }
-  .tab {
-    flex: 1;
-  }
-   .nav-section {
+
+  .nav-section {
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
   }
 
-  .user-menu {
-    order: -1;      
-    align-self: flex-end; 
-    /* margin-bottom: 0.75rem; */
+  .tabs {
+    flex: 1;
+    min-width: 0;
+    gap: 4px;
+    padding: 4px;
+    overflow: hidden;
   }
 
-  .dropdown-menu {
-    right: 0;
-    left: auto;
+  .tab {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 8px;
+    gap: 5px;
+    font-size: 0.78rem;
   }
+
+  .tab svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
   .auth-buttons {
     display: flex;
-    width: 100%;
-    gap: 10px;
-    order: -1;
-    margin-bottom: 0.75rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
   }
 
   .login-tab,
   .signup-tab {
-    flex: 1;
-    width: auto;
-    margin: 0;
-    text-align: center;
+    min-width: 80px;
+    padding: 9px 10px;
+    font-size: 0.8rem;
   }
-  .tabs {
-    width: 100%;
-    overflow-x: auto;
+
+  .section-heading {
+    align-items: stretch;
+    flex-direction: column;
   }
 }
-
 @media (max-width: 620px) {
-  main {
-    padding: 20px 14px 34px;
+  .section-heading h2{
+    font-size: medium;
   }
-
   .topbar {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 10px;
     padding: 14px;
   }
 
-  .brand span {
-    font-size: 1rem;
-    font-family: "Bebas Neue", sans-serif;
+  .brand {
+    width: auto;
+    justify-content: center;
   }
-  .section-heading h2 {
-    font-size: medium;
+
+  .nav-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  /* 1. Menu button at the top */
+  .user-menu {
+    order: 1;
+    align-self: flex-end;
+    width: auto;
+  }
+
+  .menu-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* 2. Login / Signup above the navigation */
+  .auth-buttons {
+    order: 2;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .login-tab,
+  .signup-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+  }
+
+  /* 3. Navigation */
+  .tabs {
+    order: 3;
+    width: 100%;
+    flex: none;
+
+    display: flex;
+    gap: 3px;
+    padding: 4px;
+
+    overflow: hidden;
+  }
+
+  .tab {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 4px;
+    gap: 3px;
+    font-size: 0.7rem;
+  }
+
+  .tab svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
   }
 }
