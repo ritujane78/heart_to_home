@@ -206,15 +206,6 @@ function App() {
 
         console.log("Exchange rate data:", data);
 
-        // Convert the array into an object:
-        // {
-        //   AUD: 0.00935,
-        //   CAD: 0.0092,
-        //   EUR: 0.00569,
-        //   GBP: 0.00487,
-        //   JPY: 1.0378,
-        //   USD: 0.00656
-        // }
         const ratesMap = data.reduce((acc, item) => {
           acc[item.quote] = item.rate;
           return acc;
@@ -339,7 +330,6 @@ function App() {
 
     navigate("/gift");
 
-    // setGiftStarted(true);
     setPaymentReady(false);
   }
 
@@ -428,7 +418,8 @@ function App() {
                 <TabButton icon={<Mail />} label="Contact Us" />
               </NavLink>
             </nav>
-            {token ? (
+            
+            {token && (
               <div
                 className="user-menu transition active:scale-[0.95]"
                 ref={menuRef}
@@ -476,8 +467,9 @@ function App() {
                   </div>
                 )}
               </div>
-            ) : (
-              <>
+            )}
+            </div>
+            {!token && (
                 <div className="auth-buttons">
                   <NavLink to="/login" className="login-tab">
                     Log In
@@ -487,9 +479,7 @@ function App() {
                     Sign Up
                   </NavLink>
                 </div>
-              </>
             )}
-          </div>
         </header>
 
         <DevelopmentBanner />

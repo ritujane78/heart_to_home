@@ -164,8 +164,9 @@ main {
 .nav-section {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: end;
   gap: 18px;
+  margin-left: auto;
 }
 
 .auth-buttons {
@@ -463,82 +464,47 @@ footer span{
   }
 }
 @media (max-width: 620px) {
-  .section-heading h2{
-    font-size: larger;
-  }
   .topbar {
     flex-direction: column;
-    flex-wrap: nowrap;
-    align-items: stretch;
     gap: 10px;
-    padding: 14px;
+    padding: 1px;
   }
 
   .brand {
-    width: auto;
     justify-content: center;
   }
 
-  .nav-section {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  /* 1. Menu button at the top */
-  .user-menu {
-    order: 1;
-    align-self: flex-end;
-    width: auto;
-  }
-
-  .menu-btn {
-    width: 40px;
-    height: 40px;
-  }
-
-  /* 2. Login / Signup above the navigation */
   .auth-buttons {
-    order: 2;
+    order: 1;
     width: 100%;
     display: flex;
-    flex-direction: row;
     gap: 8px;
   }
 
   .login-tab,
   .signup-tab {
-    flex: 1 1 0;
+    flex: 1;
     min-width: 0;
-    width: auto;
   }
 
-  /* 3. Navigation */
-  .tabs {
-    order: 3;
+  .nav-section {
+    order: 2;
     width: 100%;
-    flex: none;
+    margin-left: 0;
 
     display: flex;
-    gap: 3px;
-    padding: 4px;
+    flex-direction: row; /* keep the navbar and menu on the same row */
 
-    overflow: hidden;
+    align-items: center;
+    gap: 8px;
   }
 
-  .tab {
-    flex: 1 1 0;
+  .tabs {
+    flex: 1;
     min-width: 0;
-    padding: 0 4px;
-    gap: 3px;
-    font-size: 0.7rem;
   }
 
-  .tab svg {
-    width: 15px;
-    height: 15px;
-    flex-shrink: 0;
+  .user-menu {
+    flex-shrink: 0; /* prevent the menu button from wrapping */
   }
 }
