@@ -116,7 +116,7 @@ export default function AdminOrders() {
           Back
         </button>
 
-        <h2 className="flex-1 text-center text-2xl font-bold">
+        <h2 className=" text-center text-xs sm:text-2xl font-bold">
           Gift Order #{order.id}
         </h2>
 
@@ -125,38 +125,41 @@ export default function AdminOrders() {
       </div>
 
       {/* White card */}
-      <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h4 className="font-semibold mb-3">Recipient</h4>
+      <div className=" bg-white rounded-xl shadow-md p-12 border border-gray-200">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {/* Recipient */}
+          <div className="text-center md:text-left">
+            <h4 className="mb-3 font-bold">Recipient</h4>
 
-            <p className="flex items-center gap-2 mb-2">
+            <p className="mb-2 flex items-center justify-center gap-2 md:justify-start">
               <User size={16} />
               {order.recipientName}
             </p>
 
-            <p className="flex items-center gap-2 mb-2">
+            <p className="mb-2 flex items-center justify-center gap-2 md:justify-start">
               <Phone size={16} />
               {order.recipientPhone}
             </p>
 
-            <p className="flex items-center gap-2">
+            <p className="flex items-center justify-center gap-2 md:justify-start">
               <Heart size={16} />
               {order.relationship}
             </p>
           </div>
 
-          <div>
-            <h4 className="font-semibold mb-3">Sender</h4>
+          {/* Sender */}
+          <div className="text-center md:text-left">
+            <h4 className="mb-3 font-bold">Sender</h4>
 
             <p className="mb-2">{order.senderName}</p>
             <p className="mb-2">{order.senderEmail}</p>
           </div>
 
-          <div>
-            <h4 className="font-semibold mb-3">Payment</h4>
+          {/* Payment */}
+          <div className="text-center md:text-left">
+            <h4 className="mb-3 font-bold">Payment</h4>
 
-            <p className="flex items-center gap-2 mb-2">
+            <p className="mb-2 flex items-center justify-center gap-2 md:justify-start">
               <CreditCard size={16} />
               {order.totalPrice}
             </p>
@@ -169,19 +172,20 @@ export default function AdminOrders() {
           </div>
         </div>
 
-        <div className="mt-8">
-          <h4 className="font-semibold mb-2">Services</h4>
+        {/* Services */}
+        <div className="mt-8 text-center md:text-left">
+          <h4 className="mb-2 font-bold">Services</h4>
 
-          <ul className="list-disc list-inside space-y-1">
+          <ul className="list-inside list-disc space-y-1">
             {order.services.map((service) => (
               <li key={service.id}>{service.title}</li>
             ))}
           </ul>
-        </div>
+        </div>  
 
         <div className="mt-8 flex flex-col items-center gap-4 border-t pt-6">
           <div className="flex items-center gap-4">
-            <label className="font-semibold">Status</label>
+            <label className="font-bold">Status</label>
 
             <select
               className="border rounded-md px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"

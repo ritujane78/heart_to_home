@@ -13,8 +13,7 @@ import {
 import { NavLink } from "react-router-dom";
 import { BallTriangle } from "react-loader-spinner";
 import moment from "moment";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
+import TablePagination from "@mui/material/TablePagination";
 import { useMyContext } from "../store/ContextApi";
 import { formatGreetingName } from "../utils/nameUtils";
 import toast from "react-hot-toast";
@@ -24,7 +23,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
   const { currentUser } = useMyContext();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const ordersPerPage = 3;
 
   const formattedFirstName = formatGreetingName(currentUser?.firstName);
@@ -55,11 +54,10 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
       currency: sCurrency,
     }).format(convertedAmount);
   };
-  const totalPages = Math.ceil(orders.length / ordersPerPage);
 
   const paginatedOrders = orders.slice(
-    (page - 1) * ordersPerPage,
     page * ordersPerPage,
+    page * ordersPerPage + ordersPerPage,
   );
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -130,11 +128,11 @@ return (
         <div className="space-y-8">
           {paginatedOrders.map((order, index) => {
             const serialNumber =
-              (page - 1) * ordersPerPage + index + 1;
+              page * ordersPerPage + index + 1;
               return (
                 <div
                   key={order.id}
-                  className="overflow-hidden w-[85%] m-auto rounded-2xl bg-white shadow transition hover:shadow-lg"
+                  className="overflow-hidden mb-5 w-[85%] sm:w-auto m-auto rounded-2xl bg-white shadow transition hover:shadow-lg"
                 >
                   {/* Header */}
                   <div
@@ -252,17 +250,22 @@ return (
                 </div>
               );
             })}
-            <div className="flex justify-end mt-8">
-              <Stack spacing={2}>
-                <Pagination
-                  count={totalPages}
-                  page={page}
-                  onChange={handlePageChange}
-                  shape="rounded"
-                  siblingCount={1}
-                  boundaryCount={1}
-                />
-              </Stack>
+            <div className="mt-8 flex justify-end rounded-b-xl md:w-auto w-[85%]">
+              <TablePagination
+                component="div"
+                count={orders.length}
+                page={page}
+                onPageChange={(event, newPage) => {
+                  setPage(newPage);
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  });
+                }}
+                rowsPerPage={ordersPerPage}
+                rowsPerPageOptions={[]}
+                labelRowsPerPage=""
+              />
             </div>
           </div>
         )}

@@ -72,6 +72,7 @@ function App() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [services, setServices] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalServices, setTotalServices] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [serviceProviders, setServiceProviders] = useState([]);
   const [providerNames, setProviderNames] = useState([]);
@@ -89,6 +90,7 @@ function App() {
 
       setServices(response.data.services.content);
       setTotalPages(response.data.services.totalPages);
+      setTotalServices(response.data.services.totalElements);
 
       if (pageNumber === 1 && keyword === "") {
         setProviderNames(response.data.providerNames);
@@ -517,6 +519,7 @@ function App() {
                   fetchDisabledServices={fetchDisabledServices}
                   services={services}
                   totalPages={totalPages}
+                  totalServices={totalServices}
                   fetchServices={fetchServices}
                   onServiceDeleted={removeDeletedService}
                   total={total}

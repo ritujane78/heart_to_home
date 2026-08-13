@@ -18,12 +18,13 @@ import GiftForm from "./GiftForm.jsx";
 import { useMyContext } from "../store/ContextApi";
 import toast from "react-hot-toast";
 import api from "../services/api";
-import Pagination from "@mui/material/Pagination";
+import TablePagination from "@mui/material/TablePagination";
 import ProviderModal from "./admin/ProviderModal.jsx";
 import RestoreServiceModal from "./admin/RestoreServiceModal.jsx";
 import ServiceModal from "./admin/ServiceModal.jsx";
 import { scrollToTop } from "../utils/ScrollToTop.js"; 
 import { handleApiError } from "../utils/errorHandler.js";
+import { useSearchParams } from "react-router-dom";
 
 function ServicesPage({
   selectedIds,
@@ -39,13 +40,17 @@ function ServicesPage({
   services,
   fetchServices,
   totalPages,
+  totalServices,
   onServiceDeleted,
   disabledServices,
   fetchDisabledServices,
 }) {
   const { token, isAdmin } = useMyContext();
   const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [page, setPage] = useState(
+    Number(searchParams.get("p")) || 1,
+  );
   const [showGiftInfo, setShowGiftInfo] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showServiceModal, setShowServiceModal] = useState(false);
@@ -63,6 +68,18 @@ function ServicesPage({
     providerId: "",
   });
 
+  useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (e.key !== "Escape") return;
+    
+          setShowGiftInfo(false);
+        };
+    
+        window.addEventListener("keydown", handleKeyDown);
+    
+        return () => window.removeEventListener("keydown", handleKeyDown);
+      }, []);
+
   const fetchProviders = async () => {
     try {
       const response = await api.get("/providers");
@@ -79,24 +96,20 @@ function ServicesPage({
     fetchProviders();
   }, []);
 
-  // useEffect(() => {
-  //   const handleKeyDown = (e) => {
-  //     if (e.key !== "Escape") return;
-
-  //     setShowGiftInfo(false);
-  //     setShowServiceModal(false);
-  //     setShowProviderModal(false);
-  //     setShowRestoreServicesModal(false);
-  //   };
-
-  //   window.addEventListener("keydown", handleKeyDown);
-
-  //   return () => window.removeEventListener("keydown", handleKeyDown);
-  // }, []);
-
   useEffect(() => {
     setPage(1);
+    setSearchParams((params) => {
+      params.set("p", "1");
+      return params;
+    });
   }, [searchQuery]);
+  useEffect(() => {
+    const urlPage = Number(searchParams.get("p")) || 1;
+
+    if (urlPage !== page) {
+      setPage(urlPage);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetchServices(page, searchQuery);
@@ -114,8 +127,15 @@ function ServicesPage({
     );
   }, [services, searchQuery]);
 
-  const handlePageChange = (_, value) => {
-    setPage(value);
+  const handlePageChange = (event, newPage) => {
+    const pageNumber = newPage + 1;
+
+    setPage(pageNumber);
+
+    setSearchParams((params) => {
+      params.set("p", pageNumber.toString());
+      return params;
+    });
   };
 
   useEffect(() => {
@@ -391,13 +411,15 @@ function ServicesPage({
             <strong>No services found</strong>
           </div>
         )}
-        <div className="flex justify-end mt-8">
-          <Pagination
-            page={page}
-            count={totalPages}
-            // color="red"
-            shape="rounded"
-            onChange={handlePageChange}
+        <div className="mt-8 flex justify-end overflow-hidden rounded-xl">
+          <TablePagination
+            component="div"
+            count={totalServices}
+            page={page - 1}
+            onPageChange={handlePageChange}
+            rowsPerPage={6}
+            rowsPerPageOptions={[]}
+            labelRowsPerPage=""
           />
         </div>
         <div className="provider-banner mt-5">
