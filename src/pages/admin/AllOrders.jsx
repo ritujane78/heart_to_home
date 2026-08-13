@@ -1,16 +1,23 @@
 import { useState, useEffect } from "react";
-import { Link, Routes, Route, useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import api from "../../services/api";
 
 import moment from "moment";
 import { DataGrid } from "@mui/x-data-grid";
 import toast from "react-hot-toast";
-import { BallTriangle } from "react-loader-spinner";
 import CustomColumnMenu from "../../components/CustomColumnMenu";
 import { MdOutlineEmail } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
 import { Package } from "lucide-react";
 import { handleApiError } from "../../utils/errorHandler";
+import Loading from "../../components/Loading";
 
 const AllOrders = () => {
   const navigate = useNavigate();
@@ -36,52 +43,49 @@ const AllOrders = () => {
       setSelectedStatuses(statuses);
     } catch (err) {
       console.error(err);
-      handleApiError(
-            error,
-            "Unable to fetch orders."
-          );
+      handleApiError(error, "Unable to fetch orders.");
     } finally {
       setLoading(false);
     }
   };
 
-const [filterModel, setFilterModel] = useState(() => {
-  const field = searchParams.get("field");
-  const operator = searchParams.get("op");
-  const value = searchParams.get("value");
+  const [filterModel, setFilterModel] = useState(() => {
+    const field = searchParams.get("field");
+    const operator = searchParams.get("op");
+    const value = searchParams.get("value");
 
-  if (!field || !operator || value == null) {
-    return { items: [] };
-  }
-
-  return {
-    items: [
-      {
-        field,
-        operator,
-        value,
-      },
-    ],
-  };
-});
-
-const handleFilterModelChange = (newModel) => {
-  setFilterModel(newModel);
-
-  const params = new URLSearchParams();
-
-  if (newModel.items.length > 0) {
-    const { field, operator, value } = newModel.items[0];
-
-    if (value) {
-      params.set("field", field);
-      params.set("op", operator);
-      params.set("value", value);
+    if (!field || !operator || value == null) {
+      return { items: [] };
     }
-  }
 
-  setSearchParams(params, { replace: true });
-};
+    return {
+      items: [
+        {
+          field,
+          operator,
+          value,
+        },
+      ],
+    };
+  });
+
+  const handleFilterModelChange = (newModel) => {
+    setFilterModel(newModel);
+
+    const params = new URLSearchParams();
+
+    if (newModel.items.length > 0) {
+      const { field, operator, value } = newModel.items[0];
+
+      if (value) {
+        params.set("field", field);
+        params.set("op", operator);
+        params.set("value", value);
+      }
+    }
+
+    setSearchParams(params, { replace: true });
+  };
   const columns = [
     {
       field: "id",
@@ -170,6 +174,13 @@ const handleFilterModelChange = (newModel) => {
     status: order.orderStatus.replaceAll("_", " "),
     orderedAt: moment(order.orderedAt).format("MMMM DD, YYYY"),
   }));
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-6xl px-4">
+        <Loading />
+      </div>
+    );
+  }
   return (
     <div className="py-4">
       <div className="py-4">
@@ -178,81 +189,58 @@ const handleFilterModelChange = (newModel) => {
         </h2>
       </div>
       <div className="overflow-x-auto w-full max-w-300 mx-auto pb-6">
-        {loading ? (
-          <>
-            <div className="flex flex-col justify-center items-center h-72">
-              <span>
-                <BallTriangle
-                  height={100}
-                  width={100}
-                  radius={5}
-                  color="#4fa94d"
-                  ariaLabel="ball-triangle-loading"
-                  wrapperStyle={{}}
-                  wrapperClass=""
-                  visible={true}
-                />
-              </span>
-              <span className="mt-3 text-gray-600 text-lg">Please wait...</span>
-            </div>
-          </>
+        {rows.length > 0 ? (
+          <DataGrid
+            className="transparent-grid w-full max-w-7xl mx-auto shadow-lg shadow-gray-300 rounded-xl"
+            rows={rows}
+            columns={columns}
+            sx={{
+              "& .MuiDataGrid-row": {
+                cursor: "pointer",
+                transition: "background-color .2s ease",
+              },
+
+              "& .MuiDataGrid-row:hover": {
+                backgroundColor: "#e5e7eb !important",
+              },
+
+              "& .MuiDataGrid-row:focus, & .MuiDataGrid-row:focus-within": {
+                outline: "none",
+              },
+
+              "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
+                outline: "none",
+              },
+
+              "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within":
+                {
+                  outline: "none",
+                },
+            }}
+            onRowClick={(params) =>
+              navigate(`/admin/orders/${params.id}${location.search}`)
+            }
+            slots={{
+              columnMenu: CustomColumnMenu,
+            }}
+            filterModel={filterModel}
+            onFilterModelChange={handleFilterModelChange}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+            disableRowSelectionOnClick
+            pageSizeOptions={[10]}
+            disableColumnResize
+          />
         ) : (
-          <>
-            {" "}
-            {rows.length > 0 ? (
-            <DataGrid
-              className="transparent-grid w-full max-w-7xl mx-auto shadow-lg shadow-gray-300 rounded-xl"
-              rows={rows}
-              columns={columns}
-              sx={{
-                "& .MuiDataGrid-row": {
-                  cursor: "pointer",
-                  transition: "background-color .2s ease",
-                },
-
-                "& .MuiDataGrid-row:hover": {
-                  backgroundColor: "#e5e7eb !important",
-                },
-
-                "& .MuiDataGrid-row:focus, & .MuiDataGrid-row:focus-within": {
-                  outline: "none",
-                },
-
-                "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
-                  outline: "none",
-                },
-
-                "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within":
-                  {
-                    outline: "none",
-                  },
-              }}
-              onRowClick={(params) => navigate(`/admin/orders/${params.id}${location.search}`)}
-              slots={{
-                columnMenu: CustomColumnMenu,
-              }}
-              filterModel={filterModel}
-              onFilterModelChange={handleFilterModelChange}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 10,
-                  },
-                },
-              }}
-              disableRowSelectionOnClick
-              pageSizeOptions={[10]}
-              disableColumnResize
-            />
-            ) : (
-  <div className="rounded-xl bg-white p-12 text-center shadow">
+          <div className="rounded-xl bg-white p-12 text-center shadow">
             <Package className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-            <p className="text-lg text-gray-500">
-              No orders, yet!
-            </p>
+            <p className="text-lg text-gray-500">No orders, yet!</p>
           </div>
-)}
-          </>
         )}
       </div>
     </div>

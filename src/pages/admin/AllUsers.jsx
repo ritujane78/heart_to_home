@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import api from "../../services/api";
 import { DataGrid } from "@mui/x-data-grid";
 import toast from "react-hot-toast";
-import { BallTriangle } from "react-loader-spinner";
 // import Errors from "../Errors.js";
 import moment from "moment";
 import { useNavigate, Routes, Route } from "react-router-dom";
@@ -11,6 +10,7 @@ import { MdDateRange } from "react-icons/md";
 import { FileX } from "lucide-react";
 import CustomColumnMenu from "../../components/CustomColumnMenu";
 import { handleApiError } from "../../utils/errorHandler";
+import Loading from "../../components/Loading";
 
 //Material ui data grid has used for the table
 //initialize the columns for the tables and (field) value is used to show data in a specific column dynamically
@@ -116,6 +116,13 @@ const AllUsers = () => {
       user: item,
     };
   });
+  if(loading){
+    return (
+      <div className="mx-auto max-w-6xl px-4">
+        <Loading />
+      </div>
+    );
+  }
   return (
     <div className="p-4">
       <div className="py-4">
@@ -124,27 +131,6 @@ const AllUsers = () => {
         </h2>
       </div>
       <div className="overflow-x-auto w-full mx-auto pb-6">
-        {loading ? (
-          <>
-            <div className="flex flex-col justify-center items-center h-72">
-              <span>
-                <BallTriangle
-                  height={100}
-                  width={100}
-                  radius={5}
-                  color="#4fa94d"
-                  ariaLabel="ball-triangle-loading"
-                  wrapperStyle={{}}
-                  wrapperClass=""
-                  visible={true}
-                  />
-              </span>
-              <span className="mt-3 text-gray-600 text-lg">Please wait...</span>
-            </div>
-          </>
-        ) : (
-          <>
-            {" "}
             <DataGrid
               className="transparent-grid w-full max-w-6xl mx-auto shadow-lg shadow-gray-300 rounded-xl"
               rows={rows}
@@ -190,8 +176,6 @@ const AllUsers = () => {
                 },
               }}
             />
-          </>
-        )}
       </div>
     </div>
   );

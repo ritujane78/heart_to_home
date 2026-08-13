@@ -8,15 +8,15 @@ import {
   CreditCard,
   ArrowLeft,
 } from "lucide-react";
-import "./UpdateOrderStatus.css";
+import "../../styles/pages/UpdateOrderStatus.css";
 import api from "../../services/api";
 import moment from "moment";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { BallTriangle } from "react-loader-spinner";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { handleApiError } from "../../utils/errorHandler";
+import Loading from "../../components/Loading";
 
 const STATUS_OPTIONS = [
   "IN_PROCESS",
@@ -94,8 +94,8 @@ export default function AdminOrders() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-72">
-        <BallTriangle height={100} width={100} color="#4fa94d" visible />
+      <div className="mx-auto max-w-6xl px-4">
+        <Loading />
       </div>
     );
   }

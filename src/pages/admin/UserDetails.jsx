@@ -3,11 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { useForm } from "react-hook-form";
 import InputField from "../../utils/InputField/InputField";
-import { BallTriangle } from "react-loader-spinner";
 import Buttons from "../../utils/Buttons";
 import toast from "react-hot-toast";
 import { ArrowLeft } from "lucide-react";
 import { handleApiError } from "../../utils/errorHandler";
+import Loading from "../../components/Loading";
 // import Errors from "../Errors";
 
 const UserDetails = () => {
@@ -146,30 +146,16 @@ const UserDetails = () => {
     user?.userName?.toLowerCase() === "hth_admin" &&
     user?.role?.roleName === "ROLE_ADMIN";
 
+    if(loading){
+      return (
+        <div className="mx-auto max-w-6xl px-4">
+          <Loading />
+        </div>
+      );
+    }
   return (
     <div className="min-h-screen bg-gray-100 py-10">
       <div className="mx-auto max-w-4xl px-4">
-        {loading ? (
-          <>
-            {" "}
-            <div className="flex  flex-col justify-center items-center  h-72">
-              <span>
-                <BallTriangle
-                  height={100}
-                  width={100}
-                  radius={5}
-                  color="#4fa94d"
-                  ariaLabel="ball-triangle-loading"
-                  wrapperStyle={{}}
-                  wrapperClass=""
-                  visible={true}
-                />
-              </span>
-              <span className="mt-3 text-gray-600 text-lg">Please wait...</span>
-            </div>
-          </>
-        ) : (
-          <>
             <div className="overflow-hidden rounded-2xl">
               <div className="flex items-center justify-between bg-none px-6 py-5 ">
                 <button
@@ -359,8 +345,6 @@ const UserDetails = () => {
                 </form>
               </div>
             </div>
-          </>
-        )}
       </div>
     </div>
   );

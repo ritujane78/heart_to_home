@@ -11,7 +11,7 @@ import {
   Heart,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { BallTriangle } from "react-loader-spinner";
+import Loading from "../components/Loading";
 import moment from "moment";
 import TablePagination from "@mui/material/TablePagination";
 import { useMyContext } from "../store/ContextApi";
@@ -69,22 +69,8 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
 
   if (loading) {
   return (
-    <div className="min-h-screen py-10">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="flex h-96 flex-col items-center justify-center rounded-xl shadow">
-          <BallTriangle
-            height={100}
-            width={100}
-            radius={5}
-            color="#1e5146"
-            ariaLabel="ball-triangle-loading"
-            visible={true}
-          />
-          <span className="mt-3 text-lg text-gray-600">
-            Please wait...
-          </span>
-        </div>
-      </div>
+    <div className="mx-auto max-w-6xl px-4">
+      <Loading />
     </div>
   );
 }
