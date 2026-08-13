@@ -90,6 +90,7 @@ const AllOrders = () => {
     {
       field: "id",
       headerName: "Order #",
+      minWidth: 70,
       flex: 0.6,
       align: "center",
       headerAlign: "center",
@@ -100,6 +101,7 @@ const AllOrders = () => {
     {
       field: "senderEmail",
       headerName: "Sender Email",
+      minWidth: 200,
       flex: 1.4,
       align: "center",
       headerAlign: "center",
@@ -122,6 +124,7 @@ const AllOrders = () => {
     {
       field: "status",
       headerName: "Status",
+      minWidth: 150,
       flex: 0.8,
       align: "center",
       headerAlign: "center",
@@ -150,6 +153,7 @@ const AllOrders = () => {
     {
       field: "orderedAt",
       headerName: "Ordered",
+      minWidth: 220,
       flex: 1,
       align: "center",
       headerAlign: "center",
@@ -188,10 +192,10 @@ const AllOrders = () => {
           All Orders
         </h2>
       </div>
-      <div className="overflow-x-auto w-full max-w-300 mx-auto pb-6">
+      <div className="overflow-x-auto w-full mx-auto pb-6">
         {rows.length > 0 ? (
           <DataGrid
-            className="transparent-grid w-full max-w-7xl mx-auto shadow-lg shadow-gray-300 rounded-xl"
+            className="transparent-grid w-full max-w-6xl mx-auto shadow-lg shadow-gray-300 rounded-xl"
             rows={rows}
             columns={columns}
             sx={{

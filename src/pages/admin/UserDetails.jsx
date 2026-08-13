@@ -157,16 +157,16 @@ const UserDetails = () => {
     <div className="min-h-screen bg-gray-100 py-10">
       <div className="mx-auto max-w-4xl px-4">
             <div className="overflow-hidden rounded-2xl">
-              <div className="flex items-center justify-between bg-none px-6 py-5 ">
+              <div className="flex justify-between bg-none px-6 py-5 ">
                 <button
                   onClick={() => navigate(-1)}
-                  className="flex items-center gap-2 rounded-md px-4 py-2 transition hover:bg-white/30 active:scale-95"
+                  className="flex items-center gap-1 rounded-md px-4 py-2 transition hover:bg-white/30 active:scale-95"
                 >
                   <ArrowLeft size={18} />
                   Back
                 </button>
 
-                <h2 className="flex-1 text-center text-2xl font-bold">
+                <h2 className="flex-1 text-center text-xs sm:text-2xl font-bold">
                   User Details
                 </h2>
 
