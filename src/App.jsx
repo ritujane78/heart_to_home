@@ -99,9 +99,9 @@ function App() {
       handleApiError(error, "Unable to load healthcare services.");
     }
   };
-  useEffect(() => {
-    fetchServices();
-  }, []);
+  // useEffect(() => {
+  //   fetchServices();
+  // }, []);
   const fetchProviders = async () => {
     try {
       const response = await api.get("/providers");

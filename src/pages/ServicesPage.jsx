@@ -22,7 +22,7 @@ import TablePagination from "@mui/material/TablePagination";
 import ProviderModal from "./admin/ProviderModal.jsx";
 import RestoreServiceModal from "./admin/RestoreServiceModal.jsx";
 import ServiceModal from "./admin/ServiceModal.jsx";
-import { scrollToTop } from "../utils/ScrollToTop.js"; 
+import { scrollToTop } from "../utils/ScrollToTop.js";
 import { handleApiError } from "../utils/errorHandler.js";
 import { useSearchParams } from "react-router-dom";
 
@@ -48,9 +48,6 @@ function ServicesPage({
   const { token, isAdmin } = useMyContext();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(
-    Number(searchParams.get("p")) || 1,
-  );
   const [showGiftInfo, setShowGiftInfo] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showServiceModal, setShowServiceModal] = useState(false);
@@ -69,49 +66,50 @@ function ServicesPage({
   });
 
   useEffect(() => {
-        const handleKeyDown = (e) => {
-          if (e.key !== "Escape") return;
-    
-          setShowGiftInfo(false);
-        };
-    
-        window.addEventListener("keydown", handleKeyDown);
-    
-        return () => window.removeEventListener("keydown", handleKeyDown);
-      }, []);
+    const handleKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+
+      setShowGiftInfo(false);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const fetchProviders = async () => {
     try {
       const response = await api.get("/providers");
       setProviders(response.data);
     } catch (error) {
-      handleApiError(
-        error,
-        "Unable to load providers."
-      );
+      handleApiError(error, "Unable to load providers.");
     }
   };
 
   useEffect(() => {
     fetchProviders();
   }, []);
+  const pageParam = searchParams.get("p");
+
+  let page = pageParam === null ? 1 : Number(pageParam);
+
+  const isValidPage = Number.isInteger(page) && page > 0;
 
   useEffect(() => {
-    setPage(1);
-    setSearchParams((params) => {
-      params.set("p", "1");
-      return params;
-    });
-  }, [searchQuery]);
-  useEffect(() => {
-    const urlPage = Number(searchParams.get("p")) || 1;
-
-    if (urlPage !== page) {
-      setPage(urlPage);
+    if (!searchParams.has("p")) {
+      setSearchParams({ p: "1" }, { replace: true });
     }
-  }, [searchParams]);
+  }, []);
+  useEffect(() => {
+    if (searchQuery === "") return;
+
+    setSearchParams({ p: "1" }, { replace: true });
+  }, [searchQuery]);
 
   useEffect(() => {
+    if (!isValidPage) {
+      return;
+    }
     fetchServices(page, searchQuery);
   }, [page, searchQuery]);
 
@@ -130,7 +128,7 @@ function ServicesPage({
   const handlePageChange = (event, newPage) => {
     const pageNumber = newPage + 1;
 
-    setPage(pageNumber);
+    page = pageNumber;
 
     setSearchParams((params) => {
       params.set("p", pageNumber.toString());
@@ -155,10 +153,7 @@ function ServicesPage({
       setPage(1);
     } catch (err) {
       toast.error("Failed to delete service");
-      handleApiError(
-              error,
-              "Unable to delete the service."
-            );
+      handleApiError(error, "Unable to delete the service.");
     }
   };
   const handleEditChange = (e) => {
@@ -204,10 +199,7 @@ function ServicesPage({
       await fetchServices(page, searchQuery);
     } catch (err) {
       toast.error("Failed to update service");
-      handleApiError(
-        error,
-        "Unable to update the service."
-      );
+      handleApiError(error, "Unable to update the service.");
     }
   };
 
@@ -216,7 +208,7 @@ function ServicesPage({
       <ServiceModal
         open={showServiceModal}
         onClose={() => setShowServiceModal(false)}
-        setShowServiceModal ={setShowServiceModal}
+        setShowServiceModal={setShowServiceModal}
         mode={mode}
         service={editingService}
         providers={providers}
@@ -411,6 +403,7 @@ function ServicesPage({
             <strong>No services found</strong>
           </div>
         )}
+        {isValidPage && (
         <div className="mt-8 flex justify-end overflow-hidden rounded-xl">
           <TablePagination
             component="div"
@@ -422,22 +415,21 @@ function ServicesPage({
             labelRowsPerPage=""
           />
         </div>
+        )}
         <div className="provider-banner mt-5">
-  <BriefcaseMedical className="provider-icon" aria-hidden="true" />
+          <BriefcaseMedical className="provider-icon" aria-hidden="true" />
 
-  <span className="provider-label">
-    Associate Partners:
-  </span>
+          <span className="provider-label">Associate Partners:</span>
 
-  {serviceProviderNames ? (
-    <span className="provider-value">{serviceProviderNames}</span>
-  ) : (
-    <span className="no-provider">
-      <CircleOff size={16} />
-      No partner available
-    </span> 
-  )}
-</div>
+          {serviceProviderNames ? (
+            <span className="provider-value">{serviceProviderNames}</span>
+          ) : (
+            <span className="no-provider">
+              <CircleOff size={16} />
+              No partner available
+            </span>
+          )}
+        </div>
         {showGiftInfo && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"

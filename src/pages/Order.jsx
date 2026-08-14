@@ -10,7 +10,7 @@ import {
   LeafyGreen,
   Heart,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useSearchParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import moment from "moment";
 import TablePagination from "@mui/material/TablePagination";
@@ -18,13 +18,36 @@ import { useMyContext } from "../store/ContextApi";
 import { formatGreetingName } from "../utils/nameUtils";
 import toast from "react-hot-toast";
 import { handleApiError } from "../utils/errorHandler";
+import { scrollToTop } from "../utils/ScrollToTop";
 
 function MyOrdersPage({ exchangeRates, selectedCurrency }) {
   const { currentUser } = useMyContext();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0);
-  const ordersPerPage = 3;
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [page, setPage] = useState(() => {
+    const pageFromUrl = Number(searchParams.get("p"));
+
+    return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
+  });
+  const ordersPerPage = 6;
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
+  const pageDoesNotExist =
+    orders.length > 0 && (page < 0 || page >= totalPages);
+  useEffect(() => {
+    if (!searchParams.get("p")) {
+      setSearchParams({ p: "1" }, { replace: true });
+    }
+  }, []);
+  useEffect(() => {
+    const pageFromUrl = Number(searchParams.get("p"));
+
+    if (pageFromUrl > 0) {
+      setPage(pageFromUrl - 1);
+    }
+  }, [searchParams]);
 
   const formattedFirstName = formatGreetingName(currentUser?.firstName);
 
@@ -54,67 +77,78 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
       currency: sCurrency,
     }).format(convertedAmount);
   };
-
   const paginatedOrders = orders.slice(
     page * ordersPerPage,
     page * ordersPerPage + ordersPerPage,
   );
-  const handlePageChange = (event, value) => {
-    setPage(value);
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+
+    const params = new URLSearchParams(searchParams);
+
+    params.set("p", newPage + 1);
+
+    setSearchParams(params, {
+      replace: true,
     });
+
+    scrollToTop();
   };
 
   if (loading) {
-  return (
-    <div className="mx-auto max-w-6xl px-4">
-      <Loading />
-    </div>
-  );
-}
-
-return (
-  <div className="min-h-screen bg-gray-100 py-10">
-    <div className="mx-auto max-w-6xl px-4">
-
-      {/* Header - appears AFTER loading */}
-      <div className="mb-8 flex flex-col items-center gap-3">
-
-        <div className="flex items-center gap-3 px-6 py-3">
-          <h2 className="text-2xl font-bold text-[#1e5146]">
-            👋 {formattedFirstName}!
-          </h2>
-        </div>
-
-        <h2 className="text-3xl font-bold text-gray-800">
-          Your Orders
-        </h2>
-
+    return (
+      <div className="mx-auto max-w-6xl px-4">
+        <Loading />
       </div>
+    );
+  }
 
-      {/* Orders content */}
-      {orders.length === 0 ? (
-        <div className="rounded-xl bg-white p-12 text-center shadow">
-          <Package className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+  return (
+    <div className="min-h-screen bg-gray-100 py-10">
+      <div className="mx-auto max-w-6xl px-4">
+        {/* Header - appears AFTER loading */}
+        <div className="flex flex-col items-center gap-3">
+          <div className="flex items-center gap-3 px-6 py-3">
+            <h2 className="text-2xl font-bold text-[#1e5146]">
+              👋 {formattedFirstName}!
+            </h2>
+          </div>
 
-          <p className="text-lg text-gray-500">
-            No orders, yet! Buy healthcare services for your loved ones{" "}
-            <NavLink
-              to="/services"
-              className="font-semibold text-[#1e5146] hover:underline"
-            >
-              here
-            </NavLink>
-            .
-          </p>
+          <h2 className="text-3xl font-bold text-gray-800">Your Orders</h2>
         </div>
-      ) : (
-        <div className="space-y-8">
-          {paginatedOrders.map((order, index) => {
-            const serialNumber =
-              page * ordersPerPage + index + 1;
+
+        {/* Orders content */}
+        {orders.length === 0 ? (
+          <div className="rounded-xl bg-white p-12 text-center shadow">
+            <Package className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+
+            <p className="text-lg text-gray-500">
+              No orders, yet! Buy healthcare services for your loved ones{" "}
+              <NavLink
+                to="/services"
+                className="font-semibold text-[#1e5146] hover:underline"
+              >
+                here
+              </NavLink>
+              .
+            </p>
+          </div>
+        ) : pageDoesNotExist ? (
+          <div className="rounded-xl bg-white p-12 text-center shadow">
+            <Package className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+
+            <h3 className="mb-2 text-2xl font-semibold text-gray-700">
+              Page not found
+            </h3>
+
+            <p className="text-gray-500">
+              The requested page doesn't exist.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {paginatedOrders.map((order, index) => {
+              const serialNumber = page * ordersPerPage + index + 1;
               return (
                 <div
                   key={order.id}
@@ -132,11 +166,11 @@ return (
                             : "bg-lime-500"
                     } px-6 py-4 text-white`}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1">
                       <Package size={22} />
-                      {/* <h3 className="text-xl font-semibold">
-                      Order #{order.id}
-                    </h3> */}
+                      <h3 className="text-xl font-semibold relative top-1">
+                        {serialNumber}
+                      </h3>
                     </div>
                     <span className="rounded-full bg-white/20 px-4 py-1 text-sm font-semibold backdrop-blur-sm">
                       {order.orderStatus}
@@ -236,23 +270,19 @@ return (
                 </div>
               );
             })}
-            <div className="mt-8 flex justify-end rounded-b-xl md:w-auto w-[85%]">
-              <TablePagination
-                component="div"
-                count={orders.length}
-                page={page}
-                onPageChange={(event, newPage) => {
-                  setPage(newPage);
-                  window.scrollTo({
-                    top: 0,
-                    behavior: "smooth",
-                  });
-                }}
-                rowsPerPage={ordersPerPage}
-                rowsPerPageOptions={[]}
-                labelRowsPerPage=""
-              />
-            </div>
+            {!pageDoesNotExist && (
+              <div className="mt-8 flex justify-end rounded-b-xl md:w-auto w-[85%]">
+                <TablePagination
+                  component="div"
+                  count={orders.length}
+                  page={page}
+                  onPageChange={handlePageChange}
+                  rowsPerPage={ordersPerPage}
+                  rowsPerPageOptions={[]}
+                  labelRowsPerPage=""
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
