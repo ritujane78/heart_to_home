@@ -24,7 +24,7 @@ import RestoreServiceModal from "./admin/RestoreServiceModal.jsx";
 import ServiceModal from "./admin/ServiceModal.jsx";
 import { scrollToTop } from "../utils/ScrollToTop.js";
 import { handleApiError } from "../utils/errorHandler.js";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 function ServicesPage({
   selectedIds,
@@ -64,6 +64,7 @@ function ServicesPage({
     price: "",
     providerId: "",
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -81,8 +82,8 @@ function ServicesPage({
     try {
       const response = await api.get("/providers");
       setProviders(response.data);
-    } catch (error) {
-      handleApiError(error, "Unable to load providers.");
+    } catch (err) {
+      handleApiError(err, "Unable to load providers.");
     }
   };
 
@@ -105,13 +106,22 @@ function ServicesPage({
 
     setSearchParams({ p: "1" }, { replace: true });
   }, [searchQuery]);
-
   useEffect(() => {
-    if (!isValidPage) {
-      return;
-    }
-    fetchServices(page, searchQuery);
-  }, [page, searchQuery]);
+    const loadServices = async () => {
+      if (!isValidPage) {
+        navigate("/not-found", { replace: true });
+        return;
+      }
+
+      const result = await fetchServices(page, searchQuery);
+
+      if (result && page > result.totalPages) {
+        navigate("/not-found", { replace: true });
+      }
+    };
+
+    loadServices();
+  }, [page, searchQuery, navigate]);
 
   const filteredServices = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -128,7 +138,7 @@ function ServicesPage({
   const handlePageChange = (event, newPage) => {
     const pageNumber = newPage + 1;
 
-    page = pageNumber;
+    // page = pageNumber;
 
     setSearchParams((params) => {
       params.set("p", pageNumber.toString());
@@ -150,11 +160,11 @@ function ServicesPage({
       toast.success("Service deleted successfully");
 
       fetchServices(page, searchQuery);
-      
+
       setSearchParams({ p: "1" }, { replace: true });
     } catch (err) {
       toast.error("Failed to delete service");
-      handleApiError(error, "Unable to delete the service.");
+      handleApiError(err, "Unable to delete the service.");
     }
   };
   const handleEditChange = (e) => {
@@ -200,7 +210,7 @@ function ServicesPage({
       await fetchServices(page, searchQuery);
     } catch (err) {
       toast.error("Failed to update service");
-      handleApiError(error, "Unable to update the service.");
+      handleApiError(err, "Unable to update the service.");
     }
   };
 
@@ -404,7 +414,6 @@ function ServicesPage({
             <strong>No services found</strong>
           </div>
         )}
-        {isValidPage && filteredServices.length > 0 && (
         <div className="mt-8 flex justify-end overflow-hidden rounded-xl">
           <TablePagination
             component="div"
@@ -416,7 +425,6 @@ function ServicesPage({
             labelRowsPerPage=""
           />
         </div>
-        )}
         <div className="provider-banner mt-5">
           <BriefcaseMedical className="provider-icon" aria-hidden="true" />
 

@@ -26,6 +26,39 @@ const AllOrders = () => {
   const [selectedStatuses, setSelectedStatuses] = useState({});
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const pageParam = searchParams.get("p");
+
+  let page = pageParam === null ? 1 : Number(pageParam);
+
+  const isValidPage = Number.isInteger(page) && page > 0;
+
+  const totalPages = Math.ceil(orders.length / 10);
+
+  const pageExists = totalPages === 0 || page <= totalPages;
+
+  useEffect(() => {
+    if (!loading && (!isValidPage || !pageExists)) {
+      navigate("/not-found", { replace: true });
+    }
+  }, [loading, isValidPage, pageExists, navigate]);
+
+  useEffect(() => {
+    if (!searchParams.has("p")) {
+      setSearchParams(
+        (params) => {
+          params.set("p", "1");
+          return params;
+        },
+        { replace: true },
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isValidPage) {
+      navigate("/not-found", { replace: true });
+    }
+  }, [isValidPage, navigate]);
 
   useEffect(() => {
     fetchOrders();
@@ -72,7 +105,11 @@ const AllOrders = () => {
   const handleFilterModelChange = (newModel) => {
     setFilterModel(newModel);
 
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(searchParams);
+
+    params.delete("field");
+    params.delete("op");
+    params.delete("value");
 
     if (newModel.items.length > 0) {
       const { field, operator, value } = newModel.items[0];
@@ -220,6 +257,17 @@ const AllOrders = () => {
                 {
                   outline: "none",
                 },
+            }}
+            pagination
+            paginationModel={{
+              page: page - 1,
+              pageSize: 10,
+            }}
+            onPaginationModelChange={(model) => {
+              setSearchParams((params) => {
+                params.set("p", String(model.page + 1));
+                return params;
+              });
             }}
             onRowClick={(params) =>
               navigate(`/admin/orders/${params.id}${location.search}`)

@@ -46,9 +46,9 @@ const RestoreServiceModal = ({
       await fetchServices();
       fetchDisabledServices();
       onClose();
-    } catch {
+    } catch(err) {
       toast.error("Unable to restore service.");
-      handleApiError("error", "Unable to restore the service.");
+      handleApiError(err, "Unable to restore the service.");
     } finally {
       setRestoring(false);
     }

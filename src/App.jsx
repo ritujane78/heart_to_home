@@ -53,7 +53,8 @@ import {
   zeroDecimalCurrencies,
 } from "./data/defaultValues.js";
 import { handleApiError } from "./utils/errorHandler";
-const EXCHANGE_RATE_URL = "https://api.frankfurter.dev/v2/rates?base=NPR&quotes=USD,GBP,EUR,AUD,CAD,JPY";
+const EXCHANGE_RATE_URL =
+  "https://api.frankfurter.dev/v2/rates?base=NPR&quotes=USD,GBP,EUR,AUD,CAD,JPY";
 
 function App() {
   const initialGift = {
@@ -92,16 +93,17 @@ function App() {
       setTotalPages(response.data.services.totalPages);
       setTotalServices(response.data.services.totalElements);
 
-      if (pageNumber === 1 && keyword === "") {
+      if (keyword === "") {
         setProviderNames(response.data.providerNames);
       }
+      
+      return response.data.services;
     } catch (error) {
       handleApiError(error, "Unable to load healthcare services.");
+
+      return null;
     }
   };
-  // useEffect(() => {
-  //   fetchServices();
-  // }, []);
   const fetchProviders = async () => {
     try {
       const response = await api.get("/providers");
@@ -173,9 +175,8 @@ function App() {
   }, [selectedServices, selectedCurrency, exchangeRates]);
 
   const totalNpr = useMemo(
-        () =>
-          selectedServices.reduce((sum, service) => sum + service.price, 0),
-        [selectedServices]
+    () => selectedServices.reduce((sum, service) => sum + service.price, 0),
+    [selectedServices],
   );
   const formatMoney = useMemo(
     () => (amount) =>
@@ -213,8 +214,7 @@ function App() {
 
         const nextRates = supportedCurrencies.reduce((rates, currency) => {
           rates[currency.code] =
-            ratesMap[currency.code] ??
-            fallbackExchangeRates[currency.code];
+            ratesMap[currency.code] ?? fallbackExchangeRates[currency.code];
 
           return rates;
         }, {});
@@ -418,7 +418,7 @@ function App() {
                 <TabButton icon={<Mail />} label="Contact Us" />
               </NavLink>
             </nav>
-            
+
             {token && (
               <div
                 className="user-menu transition active:scale-[0.95]"
@@ -468,18 +468,18 @@ function App() {
                 )}
               </div>
             )}
-            </div>
-            {!token && (
-                <div className="auth-buttons">
-                  <NavLink to="/login" className="login-tab">
-                    Log In
-                  </NavLink>
+          </div>
+          {!token && (
+            <div className="auth-buttons">
+              <NavLink to="/login" className="login-tab">
+                Log In
+              </NavLink>
 
-                  <NavLink to="/signup" className="signup-tab">
-                    Sign Up
-                  </NavLink>
-                </div>
-            )}
+              <NavLink to="/signup" className="signup-tab">
+                Sign Up
+              </NavLink>
+            </div>
+          )}
         </header>
 
         <DevelopmentBanner />
