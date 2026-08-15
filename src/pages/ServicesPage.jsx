@@ -150,7 +150,8 @@ function ServicesPage({
       toast.success("Service deleted successfully");
 
       fetchServices(page, searchQuery);
-      setPage(1);
+      
+      setSearchParams({ p: "1" }, { replace: true });
     } catch (err) {
       toast.error("Failed to delete service");
       handleApiError(error, "Unable to delete the service.");
@@ -403,7 +404,7 @@ function ServicesPage({
             <strong>No services found</strong>
           </div>
         )}
-        {isValidPage && (
+        {isValidPage && filteredServices.length > 0 && (
         <div className="mt-8 flex justify-end overflow-hidden rounded-xl">
           <TablePagination
             component="div"

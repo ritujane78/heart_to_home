@@ -29,13 +29,20 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
   const [page, setPage] = useState(() => {
     const pageFromUrl = Number(searchParams.get("p"));
 
-    return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
+    return Number.isInteger(pageFromUrl) && pageFromUrl > 0
+      ? pageFromUrl - 1
+      : 0;
   });
   const ordersPerPage = 6;
   const totalPages = Math.ceil(orders.length / ordersPerPage);
+  const pageParam = searchParams.get("p");
+  const pageFromUrl = Number(pageParam);
 
   const pageDoesNotExist =
-    orders.length > 0 && (page < 0 || page >= totalPages);
+    orders.length > 0 &&
+    (!Number.isInteger(pageFromUrl) ||
+      pageFromUrl < 1 ||
+      pageFromUrl > totalPages);
   useEffect(() => {
     if (!searchParams.get("p")) {
       setSearchParams({ p: "1" }, { replace: true });
@@ -44,7 +51,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
   useEffect(() => {
     const pageFromUrl = Number(searchParams.get("p"));
 
-    if (pageFromUrl > 0) {
+    if (Number.isInteger(pageFromUrl) && pageFromUrl > 0) {
       setPage(pageFromUrl - 1);
     }
   }, [searchParams]);
@@ -141,9 +148,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
               Page not found
             </h3>
 
-            <p className="text-gray-500">
-              The requested page doesn't exist.
-            </p>
+            <p className="text-gray-500">The requested page doesn't exist.</p>
           </div>
         ) : (
           <div className="space-y-8">
