@@ -13,8 +13,8 @@ const NotFound = () => {
             Something's missing.
           </p>
           <p className="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">
-            Sorry, we can't find that page. You'll find lots to explore on the
-            services page.{" "}
+            Sorry, we can't find that page. You'll find lots to explore on
+            other pages.{" "}
           </p>
           <Link
             to="/"

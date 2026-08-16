@@ -1,16 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import {
-  Package,
-  Calendar,
-  MapPin,
-  Phone,
-  User,
-  CreditCard,
-  LeafyGreen,
-  Heart,
-} from "lucide-react";
-import { NavLink, useSearchParams } from "react-router-dom";
+import {  Package,  Calendar,  MapPin,  Phone,  User,  CreditCard,  LeafyGreen,  Heart,} from "lucide-react";
+import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import moment from "moment";
 import TablePagination from "@mui/material/TablePagination";
@@ -25,7 +16,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const navigate = useNavigate();
   const [page, setPage] = useState(() => {
     const pageFromUrl = Number(searchParams.get("p"));
 
@@ -35,14 +26,27 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
   });
   const ordersPerPage = 6;
   const totalPages = Math.ceil(orders.length / ordersPerPage);
-  const pageParam = searchParams.get("p");
-  const pageFromUrl = Number(pageParam);
+  useEffect(() => {
+  if (loading || orders.length === 0) {
+    return;
+  }
 
-  const pageDoesNotExist =
-    orders.length > 0 &&
-    (!Number.isInteger(pageFromUrl) ||
-      pageFromUrl < 1 ||
-      pageFromUrl > totalPages);
+  const pageParam = searchParams.get("p");
+  const pageNumber = Number(pageParam);
+
+  const isValidPage =
+    Number.isInteger(pageNumber) &&
+    pageNumber >= 1 &&
+    pageNumber <= totalPages;
+
+  if (!isValidPage) {
+    navigate("/not-found", { replace: true });
+    return;
+  }
+
+  setPage(pageNumber - 1);
+}, [loading, orders, totalPages, searchParams]);
+
   useEffect(() => {
     if (!searchParams.get("p")) {
       setSearchParams({ p: "1" }, { replace: true });
@@ -140,18 +144,19 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
               .
             </p>
           </div>
-        ) : pageDoesNotExist ? (
-          <div className="rounded-xl bg-white p-12 text-center shadow">
-            <Package className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-
-            <h3 className="mb-2 text-2xl font-semibold text-gray-700">
-              Page not found
-            </h3>
-
-            <p className="text-gray-500">The requested page doesn't exist.</p>
-          </div>
         ) : (
           <div className="space-y-8">
+            <div className="mt-8 flex justify-end rounded-b-xl md:w-auto w-[85%]">
+                <TablePagination
+                  component="div"
+                  count={orders.length}
+                  page={page}
+                  onPageChange={handlePageChange}
+                  rowsPerPage={ordersPerPage}
+                  rowsPerPageOptions={[]}
+                  labelRowsPerPage=""
+                />
+              </div>
             {paginatedOrders.map((order, index) => {
               const serialNumber = page * ordersPerPage + index + 1;
               return (
@@ -275,7 +280,6 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
                 </div>
               );
             })}
-            {!pageDoesNotExist && (
               <div className="mt-8 flex justify-end rounded-b-xl md:w-auto w-[85%]">
                 <TablePagination
                   component="div"
@@ -287,7 +291,6 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
                   labelRowsPerPage=""
                 />
               </div>
-            )}
           </div>
         )}
       </div>
