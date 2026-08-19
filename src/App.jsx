@@ -53,8 +53,6 @@ import {
   zeroDecimalCurrencies,
 } from "./data/defaultValues.js";
 import { handleApiError } from "./utils/errorHandler";
-const EXCHANGE_RATE_URL =
-  "https://api.frankfurter.dev/v2/rates?base=NPR&quotes=USD,GBP,EUR,AUD,CAD,JPY";
 
 function App() {
   const initialGift = {
@@ -88,16 +86,23 @@ function App() {
           keyword,
         },
       });
+          const data = response.data;
 
-      setServices(response.data.services.content);
-      setTotalPages(response.data.services.totalPages);
-      setTotalServices(response.data.services.totalElements);
+      setServices(data.services.content);
+      setTotalPages(data.services.totalPages);
+      setTotalServices(data.services.totalElements);
+      setExchangeRates(data.exchangeRates);
 
       if (keyword === "") {
         setProviderNames(response.data.providerNames);
       }
+      return {
+      totalPages: data.services.totalPages,
+      totalServices: data.services.totalElements,
+    };
+
       
-      return response.data.services;
+      // return response.data.services;
     } catch (error) {
       handleApiError(error, "Unable to load healthcare services.");
 
@@ -174,10 +179,6 @@ function App() {
     )}`;
   }, [selectedServices, selectedCurrency, exchangeRates]);
 
-  const totalNpr = useMemo(
-    () => selectedServices.reduce((sum, service) => sum + service.price, 0),
-    [selectedServices],
-  );
   const formatMoney = useMemo(
     () => (amount) =>
       formatConvertedAmount(amount, selectedCurrency, exchangeRates),
@@ -193,91 +194,6 @@ function App() {
       new Map(serviceProviders.map((provider) => [provider.id, provider.name])),
     [],
   );
-
-  useEffect(() => {
-    let isActive = true;
-
-    async function loadRates() {
-      try {
-        const response = await fetch(EXCHANGE_RATE_URL);
-
-        if (!response.ok) throw new Error();
-
-        const data = await response.json();
-
-        console.log("Exchange rate data:", data);
-
-        const ratesMap = data.reduce((acc, item) => {
-          acc[item.quote] = item.rate;
-          return acc;
-        }, {});
-
-        const nextRates = supportedCurrencies.reduce((rates, currency) => {
-          rates[currency.code] =
-            ratesMap[currency.code] ?? fallbackExchangeRates[currency.code];
-
-          return rates;
-        }, {});
-
-        if (isActive) {
-          setExchangeRates({
-            ...fallbackExchangeRates,
-            ...nextRates,
-            NPR: 1,
-          });
-
-          setExchangeRateStatus("live");
-        }
-      } catch {
-        if (isActive) {
-          setExchangeRates(fallbackExchangeRates);
-          setExchangeRateStatus("fallback");
-        }
-      }
-    }
-
-    loadRates();
-
-    return () => {
-      // setIsActive(false);
-      isActive = false;
-    };
-  }, []);
-  const saveOrder = async () => {
-    if (isSaving) return;
-
-    setIsSaving(true);
-    const exchangeRate = exchangeRates[selectedCurrency];
-
-    try {
-      const giftOrderRequest = {
-        recipientName: giftDetails.recipientName,
-        recipientPhone: giftDetails.recipientPhone,
-
-        relationship: giftDetails.relationship,
-
-        senderName: giftDetails.senderName,
-        senderEmail: giftDetails.senderEmail,
-
-        message: giftDetails.message,
-
-        serviceIds: selectedServices.map((service) => service.id),
-
-        totalPrice: total,
-
-        currency: selectedCurrency,
-
-        exchangeRate: exchangeRate,
-      };
-
-      return await api.post("/orders", giftOrderRequest);
-    } catch (error) {
-      handleApiError(error, "Unable to place your order. Please try again.");
-      return null;
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   function toggleService(service) {
     if (selectedIds.includes(service.id)) {
@@ -359,7 +275,6 @@ function App() {
 
     setGiftDetails(initialGift);
     setGiftStarted(false);
-    setPaymentReady(false);
     setPaymentMethod("card");
   }
 
@@ -536,7 +451,6 @@ function App() {
                     onSubmit={submitGift}
                     onPaymentMethodChange={setPaymentMethod}
                     onReset={resetGift}
-                    onSaveOrder={saveOrder}
                   />
                 </ProtectedRoute>
               }
@@ -554,7 +468,6 @@ function App() {
                     selectedCurrency={selectedCurrency}
                     paymentMethod={paymentMethod}
                     onPaymentMethodChange={setPaymentMethod}
-                    onSaveOrder={saveOrder}
                     isSaving={isSaving}
                     setIsSaving={setIsSaving}
                     resetGift={resetGift}
@@ -562,7 +475,6 @@ function App() {
                       setSelectedServices(services);
                       setSelectedIds(services.map((service) => service.id));
                     }}
-                    totalNpr={totalNpr}
                   />
                 </ProtectedRoute>
               }

@@ -174,6 +174,7 @@ const AllOrders = () => {
           CANCELED: "bg-red-500",
           "IN PROCESS": "bg-yellow-500 text-black",
           "READY FOR CLINIC": "bg-lime-500",
+          "PENDING": "bg-yellow-800 text-black",
         };
 
         return (

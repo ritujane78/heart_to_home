@@ -115,7 +115,17 @@ function ServicesPage({
 
       const result = await fetchServices(page, searchQuery);
 
-      if (result && page > result.totalPages) {
+      if (!result) {
+        return;
+      }
+
+      // No services at all is a valid state.
+      if (result.totalServices === 0) {
+        return;
+      }
+
+      // Services exist, but requested page doesn't exist.
+      if (page > result.totalPages) {
         navigate("/not-found", { replace: true });
       }
     };

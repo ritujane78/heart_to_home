@@ -37,12 +37,10 @@ export default function PaymentPage({
   formatMoney,
   paymentMethod,
   onPaymentMethodChange,
-  onSaveOrder,
   isSaving,
   setIsSaving,
   resetGift,
   onServicesUpdated,
-  totalNpr,
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,23 +51,29 @@ export default function PaymentPage({
   const stripe = useStripe();
   const elements = useElements();
 
+  const waitForPaymentOrderStatus = async (paymentIntentId) => {
+    for (let i = 0; i < 10; i++) {
+      const response = await api.get(
+        `/orders/payments/${paymentIntentId}/payment-status`,
+      );
+
+      const status = response.data.paymentOrderStatus;
+
+      if (status === "ORDER_SAVED") {
+        return status;
+      }
+
+      if (status === "ORDER_SAVE_FAILED") {
+        return status;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    return "PENDING";
+  };
   const checkout = async () => {
     if (!stripe || !elements || isSaving) return;
-
-    // Validate selected services before payment
-    const response = await api.post("/orders/validate", {
-      serviceIds: selectedServices.map((s) => s.id),
-    });
-
-    if (!response.data.valid) {
-      onServicesUpdated(response.data.services);
-
-      toast.error(response.data.message);
-
-      navigate("/services");
-
-      return;
-    }
 
     const cardNumberElement = elements.getElement(CardNumberElement);
 
@@ -83,7 +87,7 @@ export default function PaymentPage({
     try {
       // Determine currency and amount
       const currencyEntry = Object.entries(currencySymbols).find(([, symbol]) =>
-        total.startsWith(symbol)
+        total.startsWith(symbol),
       );
 
       if (!currencyEntry) {
@@ -92,38 +96,34 @@ export default function PaymentPage({
 
       const [currency, symbol] = currencyEntry;
 
-      const amount = parseFloat(
-        total.replace(symbol, "").replace(/,/g, "").trim()
-      );
+      const { data } = await api.post("/orders/checkout", {
+        recipientName: giftDetails.recipientName,
 
-      const paymentInfo = new PaymentInfoRequest(
-        Math.round(
-          zeroDecimalCurrencies.has(currency)
-            ? amount
-            : amount * 100
-        ),
-        currency,
-        giftDetails.senderEmail
-      );
+        recipientPhone: giftDetails.recipientPhone,
 
+        relationship: giftDetails.relationship,
 
-      // Create Payment Intent
-      const { data } = await api.post(
-        "/orders/payment/secure/payment-intent",
-        paymentInfo
-      );
+        senderName: giftDetails.senderName,
 
-      // Confirm payment with Stripe
-      const result = await stripe.confirmCardPayment(data.client_secret, {
+        senderEmail: giftDetails.senderEmail,
+
+        message: giftDetails.message,
+
+        serviceIds: selectedServices.map((s) => s.id),
+        currency: currency,
+      });
+
+      const result = await stripe.confirmCardPayment(data.clientSecret, {
         payment_method: {
           card: cardNumberElement,
+
           billing_details: {
             name: giftDetails.senderName,
+
             email: giftDetails.senderEmail,
           },
         },
       });
-
       if (result.error) {
         toast.error(result.error.message || "Payment failed.");
         return;
@@ -133,62 +133,39 @@ export default function PaymentPage({
         toast.error("Payment was not completed.");
         return;
       }
-      await savePaymentDetails(result);
-      await saveOrder();
 
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
       }
+        if (result.paymentIntent?.status === "succeeded") {
+            const orderStatus = await waitForPaymentOrderStatus(
+              result.paymentIntent.id,
+            );
 
-      resetGift();
-      navigate("/my-orders", { replace: true });
-    } catch (error) {
-      handleApiError(
-        error,
-        "Something went wrong during checkout."
-      );
-    } finally {
-      setIsSaving(false);
-    }
-  };
-  const saveOrder = async () => {
-    let response;
-    try {
-      response = await onSaveOrder();
-    } catch (error) {
-      handleApiError(
-        error,
-        "Payment succeeded, but we couldn't place your order. Please contact support."
-      );
-      return;
-    }
+            if (orderStatus === "ORDER_SAVED") {
+              toast.success(
+                "Your payment was successful.",
+              );
+              resetGift();
 
-    if (!response) {
-      return;
-    }
-    if (response.data.emailSent) {
-        toast.success(response.data.message);
-    } else {
-      toast(response.data.message, {
-        icon: "⚠️",
-      });
-    }
-  }
-  const savePaymentDetails = async (result) => {
-    try {
-      await api.post("/orders/payment/secure/save-payment", {
-        paymentIntentId: result.paymentIntent.id,
-        payerName: giftDetails.senderName,
-        userEmail: result.paymentIntent.receipt_email || giftDetails.senderEmail,
-        total,
-        amountNpr: totalNpr,
-      });
+              navigate("/my-orders", {
+                replace: true,
+              });
+              return;
+            }
+
+            if (orderStatus === "ORDER_SAVE_FAILED") {
+              toast.error(
+                "Payment successful, but we couldn't save your order. Please contact the Heart to Home support team.",
+              );
+
+              return;
+            }
+
+            setIsSaving(false);
+          }
     } catch (error) {
-      handleApiError(
-        error,
-        "Payment was successful, but we couldn't save the payment details."
-      );
-      return;
+      handleApiError(error, "Something went wrong during checkout.");
     }
   };
 

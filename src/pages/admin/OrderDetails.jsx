@@ -19,6 +19,7 @@ import { handleApiError } from "../../utils/errorHandler";
 import Loading from "../../components/Loading";
 
 const STATUS_OPTIONS = [
+  "PENDING",
   "IN_PROCESS",
   "READY_FOR_CLINIC",
   "DELIVERED",

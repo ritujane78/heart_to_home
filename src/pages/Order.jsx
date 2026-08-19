@@ -69,6 +69,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
   const fetchOrders = async () => {
     try {
       const response = await api.get(`/orders/my-orders`);
+      
       setOrders(response.data);
     } catch (error) {
       handleApiError(
@@ -173,7 +174,9 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
                           ? "bg-red-500"
                           : order.orderStatus === "IN_PROCESS"
                             ? "bg-yellow-500"
-                            : "bg-lime-500"
+                            : order.orderStatus === "PENDING"
+                            ? "bg-yellow-800"
+                            :"bg-lime-500"
                     } px-6 py-4 text-white`}
                   >
                     <div className="flex items-center gap-1">
@@ -226,7 +229,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
                       <div>
                         <p className="text-sm text-gray-500">Total</p>
                         <p className="text-lg font-bold text-green-600">
-                          {order.totalPrice}
+                          {formatMoney(order.totalPrice, order.currency, 1)}
                         </p>
                       </div>
                     </div>
