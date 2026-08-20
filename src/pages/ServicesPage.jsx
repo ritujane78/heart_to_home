@@ -25,6 +25,7 @@ import ServiceModal from "./admin/ServiceModal.jsx";
 import { scrollToTop } from "../utils/ScrollToTop.js";
 import { handleApiError } from "../utils/errorHandler.js";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 
 function ServicesPage({
   selectedIds,
@@ -46,6 +47,7 @@ function ServicesPage({
   fetchDisabledServices,
 }) {
   const { token, isAdmin } = useMyContext();
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [showGiftInfo, setShowGiftInfo] = useState(false);
@@ -108,28 +110,32 @@ function ServicesPage({
   }, [searchQuery]);
   useEffect(() => {
     const loadServices = async () => {
-      if (!isValidPage) {
-        navigate("/not-found", { replace: true });
-        return;
-      }
+      setLoading(true);
+      try {
+        if (!isValidPage) {
+          navigate("/not-found", { replace: true });
+          return;
+        }
 
-      const result = await fetchServices(page, searchQuery);
+        const result = await fetchServices(page, searchQuery);
 
-      if (!result) {
-        return;
-      }
+        if (!result) {
+          return;
+        }
 
-      // No services at all is a valid state.
-      if (result.totalServices === 0) {
-        return;
-      }
+        // No services at all is a valid state.
+        if (result.totalServices === 0) {
+          return;
+        }
 
-      // Services exist, but requested page doesn't exist.
-      if (page > result.totalPages) {
-        navigate("/not-found", { replace: true });
+        // Services exist, but requested page doesn't exist.
+        if (page > result.totalPages) {
+          navigate("/not-found", { replace: true });
+        }
+      } finally {
+        setLoading(false);
       }
     };
-
     loadServices();
   }, [page, searchQuery, navigate]);
 
@@ -223,6 +229,13 @@ function ServicesPage({
       handleApiError(err, "Unable to update the service.");
     }
   };
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-6xl px-4">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <>

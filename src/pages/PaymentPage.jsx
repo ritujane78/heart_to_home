@@ -12,6 +12,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { handleApiError } from "../utils/errorHandler";
 import PaymentInfoRequest from "../models/PaymentInfoRequest";
+import { useState } from "react";
 
 const elementOptions = {
   style: {
@@ -37,13 +38,12 @@ export default function PaymentPage({
   formatMoney,
   paymentMethod,
   onPaymentMethodChange,
-  isSaving,
-  setIsSaving,
   resetGift,
   onServicesUpdated,
 }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isSaving, setIsSaving] = useState(false);
 
   if (selectedServices.length === 0 && location.state?.fromOrder !== true) {
     return <Navigate to="/services" replace />;
@@ -74,15 +74,15 @@ export default function PaymentPage({
   };
   const checkout = async () => {
     if (!stripe || !elements || isSaving) return;
-
+    
     const cardNumberElement = elements.getElement(CardNumberElement);
-
+    
     if (!cardNumberElement) {
       toast.error("Please enter your card details.");
       return;
     }
-
     setIsSaving(true);
+
 
     try {
       // Determine currency and amount
@@ -110,6 +110,7 @@ export default function PaymentPage({
         message: giftDetails.message,
 
         serviceIds: selectedServices.map((s) => s.id),
+
         currency: currency,
       });
 
@@ -137,35 +138,33 @@ export default function PaymentPage({
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
       }
-        if (result.paymentIntent?.status === "succeeded") {
-            const orderStatus = await waitForPaymentOrderStatus(
-              result.paymentIntent.id,
-            );
+      if (result.paymentIntent?.status === "succeeded") {
+        const orderStatus = await waitForPaymentOrderStatus(
+          result.paymentIntent.id,
+        );
 
-            if (orderStatus === "ORDER_SAVED") {
-              toast.success(
-                "Your payment was successful.",
-              );
-              resetGift();
+        if (orderStatus === "ORDER_SAVED") {
+          toast.success("Order placed successfuly.");
+          resetGift();
 
-              navigate("/my-orders", {
-                replace: true,
-              });
-              return;
-            }
+          navigate("/my-orders", {
+            replace: true,
+          });
+          return;
+        }
 
-            if (orderStatus === "ORDER_SAVE_FAILED") {
-              toast.error(
-                "Payment successful, but we couldn't save your order. Please contact the Heart to Home support team.",
-              );
+        if (orderStatus === "ORDER_SAVE_FAILED") {
+          toast.error(
+            "Payment successful, but we couldn't save your order. Please contact the Heart to Home support team.",
+          );
 
-              return;
-            }
-
-            setIsSaving(false);
-          }
+          return;
+        }
+      }
     } catch (error) {
       handleApiError(error, "Something went wrong during checkout.");
+    } finally {
+      setIsSaving(false);
     }
   };
 

@@ -27,6 +27,9 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
   const ordersPerPage = 6;
   const totalPages = Math.ceil(orders.length / ordersPerPage);
   useEffect(() => {
+    scrollToTop();
+  }, [page]);
+  useEffect(() => {
   if (loading || orders.length === 0) {
     return;
   }
@@ -104,7 +107,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
       replace: true,
     });
 
-    scrollToTop();
+    // scrollToTop();
   };
 
   if (loading) {

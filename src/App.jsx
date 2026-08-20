@@ -72,7 +72,6 @@ function App() {
   const [services, setServices] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [totalServices, setTotalServices] = useState(0);
-  const [isSaving, setIsSaving] = useState(false);
   const [serviceProviders, setServiceProviders] = useState([]);
   const [providerNames, setProviderNames] = useState([]);
   const [disabledServices, setDisabledServices] = useState([]);
@@ -100,9 +99,6 @@ function App() {
       totalPages: data.services.totalPages,
       totalServices: data.services.totalElements,
     };
-
-      
-      // return response.data.services;
     } catch (error) {
       handleApiError(error, "Unable to load healthcare services.");
 
@@ -468,8 +464,6 @@ function App() {
                     selectedCurrency={selectedCurrency}
                     paymentMethod={paymentMethod}
                     onPaymentMethodChange={setPaymentMethod}
-                    isSaving={isSaving}
-                    setIsSaving={setIsSaving}
                     resetGift={resetGift}
                     onServicesUpdated={(services) => {
                       setSelectedServices(services);
