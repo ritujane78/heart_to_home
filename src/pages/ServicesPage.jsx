@@ -32,6 +32,7 @@ function ServicesPage({
   selectedServices,
   serviceProviderNames,
   total,
+  exchangeRates,
   selectedCurrency,
   currencies,
   formatMoney,
@@ -422,15 +423,15 @@ function ServicesPage({
               <div className="service-card-top">
                 <span>{service.code}</span>
                 <strong className="flex items-center justify-center min-w-[50px]">
-  {exchangeRateStatus === "loading" ? (
-    <span
-      className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-[#1F6F5C]"
-      aria-label="Loading amount"
-    />
-  ) : (
-    formatMoney(service.price)
-  )}
-</strong>
+                  {exchangeRates[selectedCurrency] == null ? (
+                    <span
+                      className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-[#1F6F5C]"
+                      aria-label="Loading amount"
+                    />
+                  ) : (
+                    formatMoney(service.price)
+                  )}
+                </strong>
               </div>
 
               <h2 className="line-clamp-2">{service.title}</h2>
