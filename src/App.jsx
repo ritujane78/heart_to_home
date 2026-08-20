@@ -38,7 +38,6 @@ import { PlusCircle, Pencil, Users, ClipboardList, LogOut } from "lucide-react";
 
 import {
   DEFAULT_CURRENCY,
-  fallbackExchangeRates,
   formatConvertedAmount,
   supportedCurrencies,
 } from "./data/defaultValues.js";
@@ -85,20 +84,20 @@ function App() {
           keyword,
         },
       });
-          const data = response.data;
+      const data = response.data;
 
       setServices(data.services.content);
       setTotalPages(data.services.totalPages);
       setTotalServices(data.services.totalElements);
-      setExchangeRates(data.exchangeRates);
+      // setExchangeRates(data.exchangeRates);
 
       if (keyword === "") {
         setProviderNames(response.data.providerNames);
       }
       return {
-      totalPages: data.services.totalPages,
-      totalServices: data.services.totalElements,
-    };
+        totalPages: data.services.totalPages,
+        totalServices: data.services.totalElements,
+      };
     } catch (error) {
       handleApiError(error, "Unable to load healthcare services.");
 
@@ -120,10 +119,79 @@ function App() {
 
   const [selectedCurrency, setSelectedCurrency] = useState(DEFAULT_CURRENCY);
 
-  const [exchangeRates, setExchangeRates] = useState(fallbackExchangeRates);
+  const [exchangeRates, setExchangeRates] = useState({});
 
-  const [exchangeRateStatus, setExchangeRateStatus] = useState("loading");
+  const [exchangeRateStatus, setExchangeRateStatus] = useState("idle");
   const navigate = useNavigate();
+  useEffect(() => {
+  const loadDefaultExchangeRate = async () => {
+    try {
+      setExchangeRateStatus("loading");
+
+      const response = await api.get("/exchange-rates", {
+        params: {
+          currency: DEFAULT_CURRENCY,
+        },
+      });
+
+      const {
+        currency,
+        rate,
+        fallback,
+      } = response.data;
+
+      setExchangeRates({
+        [currency]: Number(rate),
+      });
+
+      setExchangeRateStatus(
+        fallback ? "fallback" : "success"
+      );
+    } catch (error) {
+      setExchangeRateStatus("error");
+
+      handleApiError(
+        error,
+        "Unable to retrieve the exchange rate."
+      );
+    }
+  };
+
+  loadDefaultExchangeRate();
+}, []);
+  const handleCurrencyChange = async (currency) => {
+    setExchangeRateStatus("loading");
+
+    try {
+      const response = await api.get("/exchange-rates", {
+        params: {
+          currency,
+        },
+      });
+
+      const { currency: returnedCurrency, rate, fallback } = response.data;
+
+      setExchangeRates((prev) => ({
+        ...prev,
+        [returnedCurrency]: Number(rate),
+      }));
+
+      setSelectedCurrency(returnedCurrency);
+
+      setExchangeRateStatus(fallback ? "fallback" : "success");
+
+
+      if (fallback) {
+        toast("Using the fallback exchange rate.", {
+          icon: "⚠️",
+        });
+      }
+    } catch (error) {
+      setExchangeRateStatus("error");
+
+      handleApiError(error, "Unable to retrieve the exchange rate.");
+    }
+  };
 
   // Access the states by using the useMyContext hook from the ContextProvider
   const { token, setToken, currentUser, setCurrentUser, isAdmin, setIsAdmin } =
@@ -149,31 +217,40 @@ function App() {
   const [selectedServices, setSelectedServices] = useState([]);
 
   const total = useMemo(() => {
-    const rate =
-      exchangeRates[selectedCurrency] ??
-      fallbackExchangeRates[selectedCurrency] ??
-      1;
 
-    const convertedTotal = zeroDecimalCurrencies.has(selectedCurrency)
-      ? selectedServices.reduce(
-          (sum, service) => sum + Math.round(service.price * rate),
-          0,
-        )
-      : selectedServices.reduce((sum, service) => {
-          const rounded = Math.round(service.price * rate * 100) / 100;
-          return sum + rounded;
-        }, 0);
+  const rate = exchangeRates[selectedCurrency];
 
-    const fractionDigits = zeroDecimalCurrencies.has(selectedCurrency) ? 0 : 2;
+  if (rate == null) {
+    return `${currencySymbols[selectedCurrency] ?? `${selectedCurrency} `}0`;
+  }
 
-    return `${currencySymbols[selectedCurrency] ?? `${selectedCurrency} `}${convertedTotal.toLocaleString(
-      undefined,
-      {
-        minimumFractionDigits: fractionDigits,
-        maximumFractionDigits: fractionDigits,
-      },
-    )}`;
-  }, [selectedServices, selectedCurrency, exchangeRates]);
+  const convertedTotal = zeroDecimalCurrencies.has(selectedCurrency)
+    ? selectedServices.reduce(
+        (sum, service) =>
+          sum + Math.round(service.price * rate),
+        0,
+      )
+    : selectedServices.reduce((sum, service) => {
+        const rounded =
+          Math.round(service.price * rate * 100) / 100;
+
+        return sum + rounded;
+      }, 0);
+
+  const fractionDigits =
+    zeroDecimalCurrencies.has(selectedCurrency)
+      ? 0
+      : 2;
+
+  return `${
+    currencySymbols[selectedCurrency] ??
+    `${selectedCurrency} `
+  }${convertedTotal.toLocaleString(undefined, {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  })}`;
+
+}, [selectedServices, selectedCurrency, exchangeRates]);
 
   const formatMoney = useMemo(
     () => (amount) =>
@@ -428,7 +505,8 @@ function App() {
                   currencies={supportedCurrencies}
                   formatMoney={formatMoney}
                   onToggle={toggleService}
-                  onCurrencyChange={setSelectedCurrency}
+                  onCurrencyChange={handleCurrencyChange}
+                  exchangeRateStatus={exchangeRateStatus}
                   onGiftNow={startGiftFlow}
                 />
               }

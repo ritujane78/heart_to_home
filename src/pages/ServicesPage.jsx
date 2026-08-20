@@ -45,6 +45,7 @@ function ServicesPage({
   onServiceDeleted,
   disabledServices,
   fetchDisabledServices,
+  exchangeRateStatus,
 }) {
   const { token, isAdmin } = useMyContext();
   const [loading, setLoading] = useState(true);
@@ -281,6 +282,7 @@ function ServicesPage({
             <select
               className="currency-select"
               id="currency-select"
+              disabled={exchangeRateStatus === "loading"}
               value={selectedCurrency}
               onChange={(event) => onCurrencyChange(event.target.value)}
             >
@@ -419,7 +421,16 @@ function ServicesPage({
 
               <div className="service-card-top">
                 <span>{service.code}</span>
-                <strong>{formatMoney(service.price)}</strong>
+                <strong className="flex items-center justify-center min-w-[50px]">
+  {exchangeRateStatus === "loading" ? (
+    <span
+      className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-[#1F6F5C]"
+      aria-label="Loading amount"
+    />
+  ) : (
+    formatMoney(service.price)
+  )}
+</strong>
               </div>
 
               <h2 className="line-clamp-2">{service.title}</h2>

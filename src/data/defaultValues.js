@@ -11,14 +11,14 @@ export const supportedCurrencies = [
   { code: 'JPY', label: 'JPY - Japanese Yen' }
 ];
 
-export const fallbackExchangeRates = {
-  USD: 0.0073,
-  GBP: 0.0055,
-  EUR: 0.0063,
-  AUD: 0.011,
-  CAD: 0.01,
-  JPY: 1.05
-};
+// export const fallbackExchangeRates = {
+//   USD: 0.0073,
+//   GBP: 0.0055,
+//   EUR: 0.0063,
+//   AUD: 0.011,
+//   CAD: 0.01,
+//   JPY: 1.05
+// };
 
 export const currencySymbols = {
   USD: '$',
@@ -32,7 +32,11 @@ export const currencySymbols = {
 export const zeroDecimalCurrencies = new Set(['JPY']);
 
 export function formatConvertedAmount(amountNpr, currencyCode, exchangeRates) {
-  const rate = exchangeRates[currencyCode] ?? fallbackExchangeRates[currencyCode] ?? 1;
+  const rate = exchangeRates[currencyCode];
+
+  if (rate == null) {
+    return `${currencySymbols[currencyCode] ?? `${currencyCode} `}—`;
+  }
   const amount = amountNpr * rate;
   const fractionDigits = zeroDecimalCurrencies.has(currencyCode) ? 0 : 2;
 
