@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import {  Package,  Calendar,  MapPin,  Phone,  User,  CreditCard,  LeafyGreen,  Heart,} from "lucide-react";
+import {
+  Package,
+  Calendar,
+  MapPin,
+  Phone,
+  User,
+  CreditCard,
+  LeafyGreen,
+  Heart,
+} from "lucide-react";
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import moment from "moment";
 import TablePagination from "@mui/material/TablePagination";
 import { useMyContext } from "../store/ContextApi";
 import { formatGreetingName } from "../utils/nameUtils";
-import toast from "react-hot-toast";
 import { handleApiError } from "../utils/errorHandler";
 import { scrollToTop } from "../utils/ScrollToTop";
+import { formatMoney } from "../utils/currencyUtils";
 
 function MyOrdersPage({ exchangeRates, selectedCurrency }) {
   const { currentUser } = useMyContext();
@@ -30,25 +39,25 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
     scrollToTop();
   }, [page]);
   useEffect(() => {
-  if (loading || orders.length === 0) {
-    return;
-  }
+    if (loading || orders.length === 0) {
+      return;
+    }
 
-  const pageParam = searchParams.get("p");
-  const pageNumber = Number(pageParam);
+    const pageParam = searchParams.get("p");
+    const pageNumber = Number(pageParam);
 
-  const isValidPage =
-    Number.isInteger(pageNumber) &&
-    pageNumber >= 1 &&
-    pageNumber <= totalPages;
+    const isValidPage =
+      Number.isInteger(pageNumber) &&
+      pageNumber >= 1 &&
+      pageNumber <= totalPages;
 
-  if (!isValidPage) {
-    navigate("/not-found", { replace: true });
-    return;
-  }
+    if (!isValidPage) {
+      navigate("/not-found", { replace: true });
+      return;
+    }
 
-  setPage(pageNumber - 1);
-}, [loading, orders, totalPages, searchParams]);
+    setPage(pageNumber - 1);
+  }, [loading, orders, totalPages, searchParams]);
 
   useEffect(() => {
     if (!searchParams.get("p")) {
@@ -72,7 +81,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
   const fetchOrders = async () => {
     try {
       const response = await api.get(`/orders/my-orders`);
-      
+
       setOrders(response.data);
     } catch (error) {
       handleApiError(
@@ -84,14 +93,14 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
     }
   };
 
-  const formatMoney = (amount, sCurrency, exchangeRate = 1) => {
-    const convertedAmount = amount * exchangeRate;
+  // const formatMoney = (amount, sCurrency, exchangeRate = 1) => {
+  //   const convertedAmount = amount * exchangeRate;
 
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: sCurrency,
-    }).format(convertedAmount);
-  };
+  //   return new Intl.NumberFormat("en-US", {
+  //     style: "currency",
+  //     currency: sCurrency,
+  //   }).format(convertedAmount);
+  // };
   const paginatedOrders = orders.slice(
     page * ordersPerPage,
     page * ordersPerPage + ordersPerPage,
@@ -151,16 +160,16 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
         ) : (
           <div className="space-y-8">
             <div className="mt-8 flex justify-end rounded-b-xl md:w-auto w-[85%]">
-                <TablePagination
-                  component="div"
-                  count={orders.length}
-                  page={page}
-                  onPageChange={handlePageChange}
-                  rowsPerPage={ordersPerPage}
-                  rowsPerPageOptions={[]}
-                  labelRowsPerPage=""
-                />
-              </div>
+              <TablePagination
+                component="div"
+                count={orders.length}
+                page={page}
+                onPageChange={handlePageChange}
+                rowsPerPage={ordersPerPage}
+                rowsPerPageOptions={[]}
+                labelRowsPerPage=""
+              />
+            </div>
             {paginatedOrders.map((order, index) => {
               const serialNumber = page * ordersPerPage + index + 1;
               return (
@@ -178,8 +187,8 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
                           : order.orderStatus === "IN_PROCESS"
                             ? "bg-yellow-500"
                             : order.orderStatus === "PENDING"
-                            ? "bg-yellow-800"
-                            :"bg-lime-500"
+                              ? "bg-yellow-800"
+                              : "bg-lime-500"
                     } px-6 py-4 text-white`}
                   >
                     <div className="flex items-center gap-1">
@@ -286,17 +295,17 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
                 </div>
               );
             })}
-              <div className="mt-8 flex justify-end rounded-b-xl md:w-auto w-[85%]">
-                <TablePagination
-                  component="div"
-                  count={orders.length}
-                  page={page}
-                  onPageChange={handlePageChange}
-                  rowsPerPage={ordersPerPage}
-                  rowsPerPageOptions={[]}
-                  labelRowsPerPage=""
-                />
-              </div>
+            <div className="mt-8 flex justify-end rounded-b-xl md:w-auto w-[85%]">
+              <TablePagination
+                component="div"
+                count={orders.length}
+                page={page}
+                onPageChange={handlePageChange}
+                rowsPerPage={ordersPerPage}
+                rowsPerPageOptions={[]}
+                labelRowsPerPage=""
+              />
+            </div>
           </div>
         )}
       </div>

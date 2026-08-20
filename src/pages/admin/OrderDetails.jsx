@@ -25,6 +25,7 @@ const STATUS_OPTIONS = [
   "DELIVERED",
   "CANCELED",
 ];
+import { formatMoney } from "../../utils/currencyUtils";
 
 export default function AdminOrders() {
   const navigate = useNavigate();
@@ -162,7 +163,7 @@ export default function AdminOrders() {
 
             <p className="mb-2 flex items-center justify-center gap-2 md:justify-start">
               <CreditCard size={16} />
-              {order.totalPrice}
+              {formatMoney(order.totalPrice, order.currency, 1)}
             </p>
 
             <p>

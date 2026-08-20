@@ -234,8 +234,6 @@ function App() {
 
       setSelectedServices((prev) => [...prev, service]);
     }
-
-    setPaymentReady(false);
   }
   const fetchDisabledServices = async () => {
     try {
@@ -259,15 +257,10 @@ function App() {
     setSelectedIds((current) => {
       const next = current.filter((serviceId) => serviceId !== id);
 
-      if (next.length === 0) {
-        setGiftStarted(false);
-      }
       fetchDisabledServices();
 
       return next;
     });
-
-    setPaymentReady(false);
   }
 
   function startGiftFlow() {
@@ -275,7 +268,6 @@ function App() {
 
     navigate("/gift");
 
-    setPaymentReady(false);
   }
 
   function updateGiftDetails(e) {
@@ -292,7 +284,6 @@ function App() {
 
   function submitGift(e) {
     e.preventDefault();
-    // setPaymentReady(true);
     navigate("/payment", {
       state: { fromOrder: true },
     });
@@ -303,7 +294,6 @@ function App() {
     setSelectedServices([]);
 
     setGiftDetails(initialGift);
-    setGiftStarted(false);
     setPaymentMethod("card");
   }
 
@@ -529,7 +519,8 @@ function App() {
               path="/admin/orders/:id"
               element={
                 <ProtectedRoute adminPage={true}>
-                  <OrderDetails />
+                  <OrderDetails
+                  />
                 </ProtectedRoute>
               }
             />
