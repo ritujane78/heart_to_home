@@ -29,7 +29,7 @@ import PaymentPage from "./pages/PaymentPage";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import { Users, ClipboardList, LogOut } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Order from "./pages/Order.jsx";
 import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
@@ -64,7 +64,7 @@ function App() {
   const giftFormRef = useRef(null);
   const menuRef = useRef(null);
 
-  const fetchServices = async (pageNumber = 1, keyword = "") => {
+  const fetchServices = useCallback(async (pageNumber = 1, keyword = "") => {
     try {
       const response = await api.get("/services", {
         params: {
@@ -73,6 +73,7 @@ function App() {
           keyword,
         },
       });
+
       const data = response.data;
 
       setServices(data.services.content);
@@ -80,8 +81,9 @@ function App() {
       setTotalServices(data.services.totalElements);
 
       if (keyword === "") {
-        setProviderNames(response.data.providerNames);
+        setProviderNames(data.providerNames);
       }
+
       if (data.exchangeRates) {
         setExchangeRates((prev) => ({
           ...prev,
@@ -97,16 +99,17 @@ function App() {
           setExchangeRateStatus("success");
         }
       }
+
       return {
         totalPages: data.services.totalPages,
         totalServices: data.services.totalElements,
       };
     } catch (error) {
       handleApiError(error, "Unable to load healthcare services.");
-
       return null;
     }
-  };
+  }, []);
+
   const fetchProviders = async () => {
     try {
       const response = await api.get("/providers");

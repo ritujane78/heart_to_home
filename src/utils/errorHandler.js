@@ -3,14 +3,20 @@ import toast from "react-hot-toast";
 export const handleApiError = (
   error,
   fallbackMessage = "Something went wrong.",
-  setError
+  setError,
 ) => {
   console.error(error);
 
+  const showError = (message) => {
+    toast.error(message, {
+      id: `api-error-${message}`,
+    });
+  };
+
   // Network error
   if (!error.response) {
-    toast.error(
-      "Unable to connect. Please check your internet connection and try again."
+    showError(
+      "Unable to connect. Please check your internet connection and try again.",
     );
     return;
   }
@@ -26,8 +32,6 @@ export const handleApiError = (
           message,
         });
       }
-
-      // toast.error(message);
     });
 
     return;
@@ -35,33 +39,33 @@ export const handleApiError = (
 
   switch (status) {
     case 400:
-      toast.error(data?.message || fallbackMessage);
+      showError(data?.message || fallbackMessage);
       break;
 
     case 401:
-      toast.error(data?.message || "Invalid username or password.");
+      showError(data?.message || "Invalid username or password.");
       break;
 
     case 403:
-      toast.error(data?.message || "You are not authorized.");
+      showError(data?.message || "You are not authorized.");
       break;
 
     case 404:
-      toast.error(data?.message || "Requested resource not found.");
+      showError(data?.message || "Requested resource not found.");
       break;
 
     case 409:
-      toast.error(data?.message || "Duplicate record.");
+      showError(data?.message || "Duplicate record.");
       break;
 
     case 500:
-      toast.error(
+      showError(
         data?.message ||
-          "Something went wrong on our end. Please try again later."
+          "Something went wrong on our end. Please try again later.",
       );
       break;
 
     default:
-      toast.error(data?.message || fallbackMessage);
+      showError(data?.message || fallbackMessage);
   }
 };

@@ -111,35 +111,43 @@ function ServicesPage({
     setSearchParams({ p: "1" }, { replace: true });
   }, [searchQuery]);
   useEffect(() => {
-    const loadServices = async () => {
-      setLoading(true);
-      try {
-        if (!isValidPage) {
-          navigate("/not-found", { replace: true });
-          return;
-        }
+    let cancelled = false;
 
+    const loadServices = async () => {
+      if (!isValidPage) {
+        navigate("/not-found", { replace: true });
+        return;
+      }
+
+      setLoading(true);
+
+      try {
         const result = await fetchServices(page, searchQuery);
 
-        if (!result) {
+        if (cancelled || !result) {
           return;
         }
 
-        // No services at all is a valid state.
         if (result.totalServices === 0) {
           return;
         }
 
-        // Services exist, but requested page doesn't exist.
         if (page > result.totalPages) {
           navigate("/not-found", { replace: true });
         }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
+
     loadServices();
-  }, [page, searchQuery, navigate]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [page, searchQuery, navigate, fetchServices]);
 
   const filteredServices = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
