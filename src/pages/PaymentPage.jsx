@@ -1,6 +1,6 @@
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { CreditCard } from "lucide-react";
-import { currencySymbols, zeroDecimalCurrencies } from "../data/defaultValues";
+import { currencySymbols } from "../utils/currencyUtils";
 import api from "../services/api";
 import toast from "react-hot-toast";
 import {
@@ -11,8 +11,8 @@ import {
   CardCvcElement,
 } from "@stripe/react-stripe-js";
 import { handleApiError } from "../utils/errorHandler";
-import PaymentInfoRequest from "../models/PaymentInfoRequest";
 import { useState } from "react";
+import sorry from "../assets/images/sorry.png";
 
 const elementOptions = {
   style: {
@@ -36,14 +36,13 @@ export default function PaymentPage({
   giftDetails,
   total,
   formatMoney,
-  paymentMethod,
-  onPaymentMethodChange,
   resetGift,
-  onServicesUpdated,
 }) {
+  const [checkoutId] = useState(() => crypto.randomUUID());
   const navigate = useNavigate();
   const location = useLocation();
   const [isSaving, setIsSaving] = useState(false);
+  const [paymentError, setPaymentError] = useState("");
 
   if (selectedServices.length === 0 && location.state?.fromOrder !== true) {
     return <Navigate to="/services" replace />;
@@ -74,15 +73,15 @@ export default function PaymentPage({
   };
   const checkout = async () => {
     if (!stripe || !elements || isSaving) return;
-    
+
     const cardNumberElement = elements.getElement(CardNumberElement);
-    
+
     if (!cardNumberElement) {
       toast.error("Please enter your card details.");
       return;
     }
+    setPaymentError("");
     setIsSaving(true);
-
 
     try {
       // Determine currency and amount
@@ -97,6 +96,8 @@ export default function PaymentPage({
       const [currency, symbol] = currencyEntry;
 
       const { data } = await api.post("/orders/checkout", {
+        checkoutId,
+
         recipientName: giftDetails.recipientName,
 
         recipientPhone: giftDetails.recipientPhone,
@@ -113,6 +114,14 @@ export default function PaymentPage({
 
         currency: currency,
       });
+      if (data.alreadyCompleted) {
+        // Don't call Stripe again.
+        // The payment is already done.
+        toast.success("Order placed successfuly.");
+        resetGift();
+        navigate("/my-orders");
+        return;
+      }
 
       const result = await stripe.confirmCardPayment(data.clientSecret, {
         payment_method: {
@@ -151,11 +160,9 @@ export default function PaymentPage({
             replace: true,
           });
           return;
-        }
-
-        if (orderStatus === "ORDER_SAVE_FAILED") {
-          toast.error(
-            "Payment successful, but we couldn't save your order. Please contact the Heart to Home support team.",
+        } else {
+          setPaymentError(
+            "Payment was successful, but we couldn't confirm your order. Please contact the Heart to Home support team.",
           );
 
           return;
@@ -254,7 +261,7 @@ export default function PaymentPage({
         }}
       >
         {/* Payment Options */}
-        <div className="mb-8 flex justify-center">
+        <div className="mb-2 flex justify-center">
           <div className="w-full max-w-3xl rounded-xl border border-gray-200 bg-white shadow-sm">
             <div className="border-b px-4 py-3">
               <h3 className="text-lg font-semibold text-gray-900">
@@ -301,6 +308,17 @@ export default function PaymentPage({
           </div>
         </div>
 
+        {paymentError && (
+          <div className="flex flex-col items-center text-center">
+            <img
+              src={sorry}
+              alt="sorry"
+              className="h-24 w-24 object-contain"
+            />
+
+            <p className="mb-3 text-sm font-medium text-red-600">{paymentError}</p>
+          </div>
+        )}
         <button
           type="submit"
           disabled={isSaving}

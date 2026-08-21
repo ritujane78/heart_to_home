@@ -28,32 +28,23 @@ import GiftForm from "./pages/GiftForm";
 import PaymentPage from "./pages/PaymentPage";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
-import { PlusCircle, Pencil, Users, ClipboardList, LogOut } from "lucide-react";
-import {
-  DEFAULT_CURRENCY,
-  formatConvertedAmount,
-  supportedCurrencies,
-} from "./data/defaultValues.js";
+import { Users, ClipboardList, LogOut } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Order from "./pages/Order.jsx";
 import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import UserDetails from "./pages/admin/UserDetails.jsx";
+import { handleApiError } from "./utils/errorHandler";
 import {
+  formatConvertedAmount,
+  DEFAULT_CURRENCY,
+  supportedCurrencies,
   currencySymbols,
   zeroDecimalCurrencies,
-} from "./data/defaultValues.js";
-import { handleApiError } from "./utils/errorHandler";
+} from "./utils/currencyUtils.js";
+import { initialGift } from "./data/defaultValues.js";
 
 function App() {
-  const initialGift = {
-    recipientName: "",
-    recipientPhone: "",
-    relationship: "Daughter",
-    message: "",
-    senderName: "",
-    senderEmail: "",
-  };
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [giftDetails, setGiftDetails] = useState(initialGift);
@@ -267,7 +258,6 @@ function App() {
     if (selectedIds.length === 0) return;
 
     navigate("/gift");
-
   }
 
   function updateGiftDetails(e) {
@@ -519,8 +509,7 @@ function App() {
               path="/admin/orders/:id"
               element={
                 <ProtectedRoute adminPage={true}>
-                  <OrderDetails
-                  />
+                  <OrderDetails />
                 </ProtectedRoute>
               }
             />
