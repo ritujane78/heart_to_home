@@ -277,9 +277,7 @@ function App() {
 
   function submitGift(e) {
     e.preventDefault();
-    navigate("/payment", {
-      state: { fromOrder: true },
-    });
+    navigate("/payment");
   }
 
   function resetGift() {

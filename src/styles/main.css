@@ -401,7 +401,7 @@ footer span{
   letter-spacing: 0.3rem;
 }
 
-@media (max-width: 1120px) {
+/* @media (max-width: 1120px) {
   .topbar {
     flex-wrap: wrap;
     gap: 12px;
@@ -461,6 +461,55 @@ footer span{
   .section-heading {
     align-items: stretch;
     flex-direction: column;
+  }
+} */
+@media (max-width: 1120px) {
+  .topbar {
+    flex-direction: column;
+    gap: 10px;
+    padding: 1px;
+  }
+
+  .brand {
+    justify-content: center;
+  }
+
+  .auth-buttons {
+    order: 1;
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+
+  .login-tab,
+  .signup-tab {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .nav-section {
+    order: 2;
+    width: 100%;
+    margin-left: 0;
+
+    display: flex;
+    flex-direction: row; /* keep the navbar and menu on the same row */
+
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tabs {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .user-menu {
+    flex-shrink: 0; /* prevent the menu button from wrapping */
+  }
+  .section-heading h2,
+  .trust-section h2{
+    font-size: 1.2rem;
   }
 }
 @media (max-width: 620px) {

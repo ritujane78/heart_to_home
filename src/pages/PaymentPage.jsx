@@ -1,4 +1,4 @@
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { CreditCard } from "lucide-react";
 import { currencySymbols } from "../utils/currencyUtils";
 import api from "../services/api";
@@ -40,11 +40,10 @@ export default function PaymentPage({
 }) {
   const [checkoutId] = useState(() => crypto.randomUUID());
   const navigate = useNavigate();
-  const location = useLocation();
   const [isSaving, setIsSaving] = useState(false);
   const [paymentError, setPaymentError] = useState("");
 
-  if (selectedServices.length === 0 && location.state?.fromOrder !== true) {
+  if (selectedServices.length === 0) {
     return <Navigate to="/services" replace />;
   }
   const stripe = useStripe();
