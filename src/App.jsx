@@ -28,7 +28,7 @@ import GiftForm from "./pages/GiftForm";
 import PaymentPage from "./pages/PaymentPage";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
-import { Users, ClipboardList, LogOut } from "lucide-react";
+import { Users, ClipboardList, LogOut} from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Order from "./pages/Order.jsx";
 import ResetPassword from "./components/Auth/ResetPassword.jsx";
@@ -43,6 +43,7 @@ import {
   zeroDecimalCurrencies,
 } from "./utils/currencyUtils.js";
 import { initialGift } from "./data/defaultValues.js";
+import Footer from "./components/Footer.jsx";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -545,11 +546,7 @@ function App() {
           </Routes>
         </main>
 
-        <footer>
-          <p>&copy; All Rights Reserved by</p>
-          <img src={logo} alt="Heart to Home" />
-          <span>Heart To Home</span>
-        </footer>
+        <Footer />
       </div>
     </>
   );
