@@ -7,7 +7,7 @@ const Footer = () => {
       <p>&copy; All Rights Reserved by</p>
 
       <div className="relative flex items-center justify-center">
-        <div className="absolute h-5 w-5 rounded-full bg-red-500/30 blur-xl animate-pulse" />
+        <div className="absolute h-5 w-5 rounded-full bg-red-500/5 blur-xl animate-pulse" />
 
         <Heart
           className="h-5 w-5 fill-red-500 text-red-500 animate-heartbeat"
