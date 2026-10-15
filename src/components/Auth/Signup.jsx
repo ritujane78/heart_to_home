@@ -68,14 +68,28 @@ const Signup = () => {
       reset();
       navigate("/login");
     } catch (error) {
-      handleApiError(
-        error,
-        "Unable to create your account. Please try again.",
-        setError,
-      );
+      const responseData = error.response?.data;
+
+      // Handle compromised password response
+      if (
+        responseData?.message?.toLowerCase().includes("password") &&
+        responseData?.status === 400
+      ) {
+        setError("password", {
+          type: "server",
+          message: responseData.message,
+        });
+      } else {
+        handleApiError(
+          error,
+          "Unable to create your account. Please try again.",
+          setError,
+        );
+      }
     } finally {
       setLoading(false);
     }
+
   };
 
   //if there is token  exist navigate to the user to the home page if he tried to access the login page
