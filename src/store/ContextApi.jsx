@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
 import { useEffect } from "react";
-import api from "../services/api";
+import api, { refreshAccessToken } from "../services/api";
 import toast from "react-hot-toast";
+import { jwtDecode } from "jwt-decode";
 
 const ContextApi = createContext();
 
@@ -49,6 +50,56 @@ const isAdminStored = JSON.parse(localStorage.getItem("IS_ADMIN") || "false");
     if (token) {
       fetchUser();
     }
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) return undefined;
+
+    let cancelled = false;
+    let refreshTimeout;
+
+    const clearSession = () => {
+      localStorage.removeItem("JWT_TOKEN");
+      localStorage.removeItem("REFRESH_TOKEN");
+      localStorage.removeItem("USER");
+      localStorage.removeItem("IS_ADMIN");
+      setToken(null);
+      setCurrentUser(null);
+      setIsAdmin(false);
+    };
+
+    const scheduleRefresh = (delay) => {
+      refreshTimeout = window.setTimeout(async () => {
+        try {
+          const accessToken = await refreshAccessToken();
+          if (!cancelled) setToken(accessToken);
+        } catch (error) {
+          if (error.response?.status === 401) {
+            if (!cancelled) clearSession();
+            return;
+          }
+
+          // Keep the session alive through temporary network or server errors.
+          if (!cancelled) scheduleRefresh(15_000);
+        }
+      }, delay);
+    };
+
+    let refreshDelay = 14 * 60 * 1000;
+    try {
+      const { exp } = jwtDecode(token);
+      if (exp) refreshDelay = Math.max(0, exp * 1000 - Date.now() - 60_000);
+    } catch {
+      // A malformed/expired access token should trigger a refresh immediately.
+      refreshDelay = 0;
+    }
+
+    scheduleRefresh(refreshDelay);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(refreshTimeout);
+    };
   }, [token]);
 
   //through context provider you are sending all the datas so that we access at anywhere in your application

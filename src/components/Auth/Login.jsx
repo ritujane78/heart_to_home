@@ -35,7 +35,7 @@ const Login = () => {
     mode: "onTouched",
   });
 
-  const handleSuccessfulLogin = (accessToken, refreshToken, decodedToken) => {
+  const handleSuccessfulLogin = (accessToken, decodedToken) => {
     const firstName = decodedToken.firstName;
     const lastName = decodedToken.lastName;
 
@@ -52,7 +52,7 @@ const Login = () => {
     };
 
     localStorage.setItem("JWT_TOKEN", accessToken);
-    localStorage.setItem("REFRESH_TOKEN", refreshToken);
+    localStorage.removeItem("REFRESH_TOKEN");
     localStorage.setItem("USER", JSON.stringify(user));
 
     setToken(accessToken);
@@ -79,18 +79,15 @@ const Login = () => {
 
       if (
         response.status === 200 &&
-        response.data.jwtToken &&
-        response.data.refreshToken
+        response.data.jwtToken
       ) {
         setJwtToken(response.data.jwtToken);
         const accessToken = response.data.jwtToken;
-        const refreshToken = response.data.refreshToken;
-
         setJwtToken(accessToken);
 
         const decodedToken = jwtDecode(accessToken);
 
-        handleSuccessfulLogin(accessToken, refreshToken, decodedToken);
+        handleSuccessfulLogin(accessToken, decodedToken);
       } else {
         toast.error(
           "Login failed. Please check your credentials and try again.",
