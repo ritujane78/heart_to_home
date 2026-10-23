@@ -6,7 +6,6 @@ import './styles/components.css';
 import './styles/pages/home.css';
 import './styles/pages/services.css';
 import './styles/pages/gift-form.css';
-import './styles/pages/contact.css';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import { ContextProvider } from "./store/ContextApi";
 import { BrowserRouter } from "react-router-dom";
