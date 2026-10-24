@@ -44,6 +44,7 @@ import {
 } from "./utils/currencyUtils.js";
 import { initialGift } from "./data/defaultValues.js";
 import Footer from "./components/Footer.jsx";
+import Messages from "./pages/admin/Messages.jsx";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -318,6 +319,11 @@ function App() {
       icon: <ClipboardList className="w-6 h-6" />,
       path: "/admin/all-orders",
     },
+    {
+      title: "Messages",
+      icon: <Mail className="w-6 h-6" />,
+      path: "/admin/messages",
+    },
   ];
 
   return (
@@ -520,6 +526,14 @@ function App() {
               element={
                 <ProtectedRoute adminPage={true}>
                   <AllUsers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/messages"
+              element={
+                <ProtectedRoute adminPage={true}>
+                  <Messages />
                 </ProtectedRoute>
               }
             />
