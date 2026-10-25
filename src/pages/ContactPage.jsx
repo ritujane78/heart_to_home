@@ -24,10 +24,13 @@ function ContactPage() {
 
     const contactData = {
       name: formData.get("name"),
-      email: formData.get("email"),
+      email: formData.get("email"), 
       mobileNumber: formData.get("mobileNumber"),
       message: formData.get("message"),
-      countryCode: formData.get("countryCode").replace("+", "").padStart(3, "0"),
+      countryCode: formData
+        .get("countryCode")
+        .replace("+", "")
+        .padStart(3, "0"),
     };
 
     try {
@@ -35,7 +38,7 @@ function ContactPage() {
 
       setActionData({ success: true });
       form.reset();
-      toast.success("Your message has been submitted successfully.")
+      toast.success("Your message has been submitted successfully.");
     } catch (error) {
       const responseData = error.response?.data;
 
@@ -52,17 +55,16 @@ function ContactPage() {
           success: false,
           errors: {
             general:
-            responseData?.message ||
-            responseData?.errorMessage ||
-            "Failed to submit your message. Please try again.",
+              responseData?.message ||
+              responseData?.errorMessage ||
+              "Failed to submit your message. Please try again.",
           },
         });
-        toast.error(responseData.message)
+        toast.error(responseData.message);
       }
     } finally {
       setIsSubmitting(false);
     }
-
   }
 
   return (
@@ -102,8 +104,8 @@ function ContactPage() {
           </div>
 
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#65707b] sm:text-base sm:leading-7">
-            Share your thoughts, questions, or suggestions. Your feedback
-            helps us make Heart to Home better for everyone.
+            Share your thoughts, questions, or suggestions. Your feedback helps
+            us make Heart to Home better for everyone.
           </p>
         </div>
 
@@ -180,52 +182,71 @@ function ContactPage() {
                   </p>
                 )}
               </div>
-<div className="min-w-0">
-  <label htmlFor="mobileNumber" className={labelStyle}>
-    Mobile Number
-  </label>
+              <div className="min-w-0">
+                <label htmlFor="mobileNumber" className={labelStyle}>
+                  Mobile Number
+                </label>
+                <div className="flex w-full min-w-0 gap-2">
+                  <div className="relative">
+                    <select
+                      id="countryCode"
+                      name="countryCode"
+                      defaultValue="+977"
+                      aria-label="Country code"
+                      className={`${textFieldStyle} !w-[85px] !min-w-[85px] !max-w-[85px] shrink-0 px-1`}
+                      required
+                    >
+                      <option value="+977">🇳🇵 +977</option>
+                      <option value="+44">🇬🇧 +44</option>
+                      <option value="+1">🇺🇸 +1</option>
+                      <option value="+91">🇮🇳 +91</option>
+                      <option value="+61">🇦🇺 +61</option>
+                      <option value="+971">🇦🇪 +971</option>
+                      <option value="+81">🇯🇵 +81</option>
+                      <option value="+49">🇩🇪 +49</option>
+                      <option value="+33">🇫🇷 +33</option>
+                      <option value="+86">🇨🇳 +86</option>
+                    </select>
 
-  <div className="flex w-full min-w-0 gap-2">
-    <select
-      id="countryCode"
-      name="countryCode"
-      defaultValue="+977"
-      aria-label="Country code"
-      className={`${textFieldStyle} !w-[85px] !min-w-[85px] !max-w-[85px] shrink-0 px-1`}
-      required
-    >
-      <option value="+977">🇳🇵 +977</option>
-      <option value="+44">🇬🇧 +44</option>
-      <option value="+1">🇺🇸 +1</option>
-      <option value="+91">🇮🇳 +91</option>
-      <option value="+61">🇦🇺 +61</option>
-      <option value="+971">🇦🇪 +971</option>
-      <option value="+81">🇯🇵 +81</option>
-      <option value="+49">🇩🇪 +49</option>
-      <option value="+33">🇫🇷 +33</option>
-      <option value="+86">🇨🇳 +86</option>
-    </select>
+                    {actionData?.errors?.countryCode && (
+                      <p className="absolute left-0 top-full mt-1 whitespace-nowrap text-sm text-red-500">
+                        {actionData.errors.countryCode}
+                      </p>
+                    )}
+                  </div>
 
-    <input
-      id="mobileNumber"
-      name="mobileNumber"
-      type="tel"
-      inputMode="numeric"
-      placeholder="Your Mobile Number"
-      className={`${textFieldStyle} !w-0 min-w-0 flex-1`}
-      required
-      pattern="[0-9]{10}"
-      title="Mobile number must be exactly 10 digits"
-      autoComplete="tel-national"
-    />
-  </div>
+                  <input
+                    id="mobileNumber"
+                    name="mobileNumber"
+                    type="tel"
+                    inputMode="numeric"
+                    placeholder="Your Mobile Number"
+                    className={`${textFieldStyle} !w-0 min-w-0 flex-1`}
+                    required
+                    pattern="[0-9]{10}"
+                    title="Mobile number must be exactly 10 digits"
+                    autoComplete="tel-national"
+                  />
+                </div>
 
-  {actionData?.errors?.mobileNumber && (
-    <p className="mt-1 text-sm text-red-500">
-      {actionData.errors.mobileNumber}
-    </p>
-  )}
-</div>
+                {actionData?.errors?.mobileNumber && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {actionData.errors.mobileNumber}
+                  </p>
+                )}
+
+                {actionData?.errors?.mobileNumber && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {actionData.errors.mobileNumber}
+                  </p>
+                )}
+
+                {actionData?.errors?.mobileNumber && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {actionData.errors.mobileNumber}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Message */}

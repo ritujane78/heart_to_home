@@ -191,7 +191,7 @@ export default function Messages() {
     <div className="p-4">
       <div className="py-4">
         <h2 className="text-center text-2xl font-bold text-slate-800 uppercase">
-          Admin Contact Messages
+          Contact Messages
         </h2>
       </div>
 
