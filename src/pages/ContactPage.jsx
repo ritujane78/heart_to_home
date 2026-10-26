@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [actionData, setActionData] = useState(null);
+  const [message, setMessage] = useState("");
 
   const labelStyle =
     "mb-2 block text-sm font-semibold text-primary dark:text-light sm:text-base";
@@ -24,7 +25,7 @@ function ContactPage() {
 
     const contactData = {
       name: formData.get("name"),
-      email: formData.get("email"), 
+      email: formData.get("email"),
       mobileNumber: formData.get("mobileNumber"),
       message: formData.get("message"),
       countryCode: formData
@@ -35,9 +36,9 @@ function ContactPage() {
 
     try {
       await api.post("/contacts", contactData);
-
       setActionData({ success: true });
       form.reset();
+      setMessage("");
       toast.success("Your message has been submitted successfully.");
     } catch (error) {
       const responseData = error.response?.data;
@@ -250,6 +251,7 @@ function ContactPage() {
             </div>
 
             {/* Message */}
+
             <div className="min-w-0">
               <label htmlFor="message" className={labelStyle}>
                 Message
@@ -264,7 +266,12 @@ function ContactPage() {
                 required
                 minLength={5}
                 maxLength={500}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
               />
+              <span className="mt-1 block text-right text-xs text-gray-500">
+                {message.length}/500
+              </span>
 
               {actionData?.errors?.message && (
                 <p className="mt-1 text-sm text-red-500">

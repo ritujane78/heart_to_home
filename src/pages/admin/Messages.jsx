@@ -95,13 +95,13 @@ export const messageColumns = (handleCloseMessage) => [
     cellClassName: "text-slate-700 font-normal",
     renderHeader: () => <span>Message</span>,
     renderCell: (params) => (
-      <div
-        className="w-full whitespace-normal break-words py-2"
-        title={params.row.message}
-      >
-        {params.row.message}
-      </div>
-    ),
+  <div
+    className="w-full min-w-0 max-h-24 overflow-y-auto overflow-x-hidden whitespace-pre-wrap break-words py-2"
+    title={params.row.message}
+  >
+    {params.row.message}
+  </div>
+),
   },
   {
     field: "action",
