@@ -66,7 +66,16 @@ function App() {
   const giftFormRef = useRef(null);
   const menuRef = useRef(null);
 
+  const abortControllerRef = useRef(null);
+
   const fetchServices = useCallback(async (pageNumber = 1, keyword = "") => {
+    // Abort the previous request
+    abortControllerRef.current?.abort();
+
+    // Create a new controller
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     try {
       const response = await api.get("/services", {
         params: {
@@ -74,6 +83,7 @@ function App() {
           size: 6,
           keyword,
         },
+        signal: controller.signal,
       });
 
       const data = response.data;
@@ -107,6 +117,10 @@ function App() {
         totalServices: data.services.totalElements,
       };
     } catch (error) {
+      if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
+        return null;
+      }
+
       handleApiError(error, "Unable to load healthcare services.");
       return null;
     }
@@ -296,10 +310,10 @@ function App() {
     } catch (error) {
       handleApiError(error, "Logout failed.");
     } finally {
-      localStorage.removeItem("JWT_TOKEN");
-      localStorage.removeItem("REFRESH_TOKEN");
-      localStorage.removeItem("USER");
-      localStorage.removeItem("IS_ADMIN");
+      localStorage.removeItem("GM_JWT_TOKEN");
+      localStorage.removeItem("GM_REFRESH_TOKEN");
+      localStorage.removeItem("GM_USER");
+      localStorage.removeItem("GM_IS_ADMIN");
 
       setToken(null);
       setCurrentUser(null);

@@ -18,10 +18,10 @@ let refreshPromise;
 let csrfHeaderToken;
 
 const clearLocalSession = () => {
-  localStorage.removeItem("JWT_TOKEN");
-  localStorage.removeItem("REFRESH_TOKEN");
-  localStorage.removeItem("USER");
-  localStorage.removeItem("IS_ADMIN");
+  localStorage.removeItem("GM_JWT_TOKEN");
+  localStorage.removeItem("GM_REFRESH_TOKEN");
+  localStorage.removeItem("GM_USER");
+  localStorage.removeItem("GM_IS_ADMIN");
 };
 
 const ensureCsrfCookie = async () => {
@@ -45,7 +45,7 @@ const refreshAccessToken = () => {
     refreshPromise = api
       .post("/auth/public/refresh-token", null, { _skipAuthRefresh: true })
       .then(({ data }) => {
-        localStorage.setItem("JWT_TOKEN", data.accessToken);
+        localStorage.setItem("GM_JWT_TOKEN", data.accessToken);
         api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
         return data.accessToken;
       })
@@ -64,7 +64,7 @@ api.interceptors.request.use(async (config) => {
     config.headers["X-XSRF-TOKEN"] = csrfHeaderToken;
   }
 
-  const token = localStorage.getItem("JWT_TOKEN");
+  const token = localStorage.getItem("GM_JWT_TOKEN");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

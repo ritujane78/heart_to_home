@@ -1,10 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Gift,
-  MapPin,
   Trash2,
   SearchX,
-  Inbox,
   CircleOff,
   BriefcaseMedical,
   Info,
@@ -41,16 +39,18 @@ function ServicesPage({
   onGiftNow,
   services,
   fetchServices,
-  totalPages,
   totalServices,
   onServiceDeleted,
   disabledServices,
   fetchDisabledServices,
   exchangeRateStatus,
 }) {
-  const { token, isAdmin } = useMyContext();
+  const { token, isAdmin, currentUser } = useMyContext();
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const hasLoadedServices = useRef(false);
+  const previousSearchQuery = useRef(searchQuery);
   const [searchParams, setSearchParams] = useSearchParams();
   const [showGiftInfo, setShowGiftInfo] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -106,10 +106,24 @@ function ServicesPage({
     }
   }, []);
   useEffect(() => {
-    if (searchQuery === "") return;
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 1000);
 
-    setSearchParams({ p: "1" }, { replace: true });
+    return () => window.clearTimeout(timeoutId);
   }, [searchQuery]);
+
+  useEffect(() => {
+    if (previousSearchQuery.current === searchQuery) return;
+
+    previousSearchQuery.current = searchQuery;
+    setSearchParams((params) => {
+      if (params.get("p") === "1") return params;
+      params.set("p", "1");
+      return params;
+    }, { replace: true });
+  }, [searchQuery, setSearchParams]);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -119,10 +133,13 @@ function ServicesPage({
         return;
       }
 
-      setLoading(true);
+      // Wait for the user to pause typing before requesting the new search.
+      if (searchQuery !== debouncedSearchQuery) return;
+
+      if (!hasLoadedServices.current) setLoading(true);
 
       try {
-        const result = await fetchServices(page, searchQuery);
+        const result = await fetchServices(page, debouncedSearchQuery);
 
         if (cancelled || !result) {
           return;
@@ -137,6 +154,7 @@ function ServicesPage({
         }
       } finally {
         if (!cancelled) {
+          hasLoadedServices.current = true;
           setLoading(false);
         }
       }
@@ -147,7 +165,7 @@ function ServicesPage({
     return () => {
       cancelled = true;
     };
-  }, [page, searchQuery, navigate, fetchServices]);
+  }, [page, searchQuery, debouncedSearchQuery, navigate, fetchServices]);
 
   const filteredServices = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -340,7 +358,7 @@ function ServicesPage({
             </div>
           </div>
         </div>
-        {isAdmin && (
+        {isAdmin && currentUser.username !== "hth_admin" && (
           <div className="flex items-end justify-end gap-8 mt-3 py-5">
             <button
               onClick={handleAddClick}
@@ -392,7 +410,7 @@ function ServicesPage({
               }`}
               onClick={() => onToggle(service)}
             >
-              {isAdmin && (
+              {isAdmin && currentUser.username !== "hth_admin" && (
                 <div
                   className="absolute bottom-3 left-3 flex gap-2 z-20"
                   onClick={(e) => e.stopPropagation()}

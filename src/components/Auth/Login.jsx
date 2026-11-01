@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import Divider from "@mui/material/Divider";
 import toast from "react-hot-toast";
 
 import api from "../../services/api.jsx";
@@ -51,9 +50,9 @@ const Login = () => {
       roles,
     };
 
-    localStorage.setItem("JWT_TOKEN", accessToken);
-    localStorage.removeItem("REFRESH_TOKEN");
-    localStorage.setItem("USER", JSON.stringify(user));
+    localStorage.setItem("GM_JWT_TOKEN", accessToken);
+    localStorage.removeItem("GM_REFRESH_TOKEN");
+    localStorage.setItem("GM_USER", JSON.stringify(user));
 
     setToken(accessToken);
     setIsAdmin(roles.includes("ROLE_ADMIN"));

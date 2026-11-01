@@ -8,9 +8,9 @@ const ContextApi = createContext();
 
 export const ContextProvider = ({ children }) => {
   //find the token in the localstorage
-  const getToken = localStorage.getItem("JWT_TOKEN");
+  const getToken = localStorage.getItem("GM_JWT_TOKEN");
   //find is the user status from the localstorage
-const isAdminStored = JSON.parse(localStorage.getItem("IS_ADMIN") || "false");
+const isAdminStored = JSON.parse(localStorage.getItem("GM_IS_ADMIN") || "false");
 
   //store the token
   const [token, setToken] = useState(getToken);
@@ -23,7 +23,7 @@ const isAdminStored = JSON.parse(localStorage.getItem("IS_ADMIN") || "false");
   const [isAdmin, setIsAdmin] = useState(isAdminStored);
 
   const fetchUser = async () => {
-    const user = JSON.parse(localStorage.getItem("USER"));
+    const user = JSON.parse(localStorage.getItem("GM_USER"));
 
     if (user?.username) {
       try {
@@ -31,10 +31,10 @@ const isAdminStored = JSON.parse(localStorage.getItem("IS_ADMIN") || "false");
         const roles = data.roles;
 
         if (roles.includes("ROLE_ADMIN")) {
-          localStorage.setItem("IS_ADMIN", JSON.stringify(true));
+          localStorage.setItem("GM_IS_ADMIN", JSON.stringify(true));
           setIsAdmin(true);
         } else {
-          localStorage.removeItem("IS_ADMIN");
+          localStorage.removeItem("GM_IS_ADMIN");
           setIsAdmin(false);
         }
         setCurrentUser(data);
@@ -59,10 +59,10 @@ const isAdminStored = JSON.parse(localStorage.getItem("IS_ADMIN") || "false");
     let refreshTimeout;
 
     const clearSession = () => {
-      localStorage.removeItem("JWT_TOKEN");
-      localStorage.removeItem("REFRESH_TOKEN");
-      localStorage.removeItem("USER");
-      localStorage.removeItem("IS_ADMIN");
+      localStorage.removeItem("GM_JWT_TOKEN");
+      localStorage.removeItem("GM_REFRESH_TOKEN");
+      localStorage.removeItem("GM_USER");
+      localStorage.removeItem("GM_IS_ADMIN");
       setToken(null);
       setCurrentUser(null);
       setIsAdmin(false);
