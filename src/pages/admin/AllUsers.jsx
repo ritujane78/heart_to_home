@@ -102,7 +102,7 @@ const AllUsers = () => {
   }, []);
 
   const rows = users.map((item) => {
-    const formattedDate = moment(item.createdDate).format(
+    const formattedDate = moment(item.createdAt).format(
       "MMMM DD, YYYY"
     );
 
