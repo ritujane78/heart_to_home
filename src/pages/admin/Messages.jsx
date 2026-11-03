@@ -22,7 +22,7 @@ export const messageColumns = (handleCloseMessage) => [
   renderHeader: () => <span>Created At</span>,
   renderCell: (params) => {
     const formattedDate = params.row.createdAt
-      ? moment(params.row.created_at).format("MMMM DD, YYYY")
+      ? moment(params.row.createdAt).format("MMMM DD, YYYY")
       : "";
 
     return (
