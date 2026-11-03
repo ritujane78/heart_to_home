@@ -1,3 +1,4 @@
+import { useState, useRef } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { CreditCard } from "lucide-react";
 import { currencySymbols } from "../utils/currencyUtils";
@@ -11,7 +12,6 @@ import {
   CardCvcElement,
 } from "@stripe/react-stripe-js";
 import { handleApiError } from "../utils/errorHandler";
-import { useState } from "react";
 import sorry from "../assets/images/sorry.png";
 
 const elementOptions = {
@@ -42,8 +42,9 @@ export default function PaymentPage({
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
   const [paymentError, setPaymentError] = useState("");
+  const paymentCompleted = useRef(false);
 
-  if (selectedServices.length === 0) {
+  if (selectedServices.length === 0 && !paymentCompleted.current) {
     return <Navigate to="/services" replace />;
   }
   const stripe = useStripe();
@@ -152,14 +153,18 @@ export default function PaymentPage({
         );
 
         if (orderStatus === "ORDER_SAVED") {
-          toast.success("Order placed successfuly.");
-          resetGift();
+          paymentCompleted.current = true;
+
+          toast.success("Order placed successfully.");
 
           navigate("/my-orders", {
             replace: true,
           });
+
+          resetGift();
+
           return;
-        } else {
+        }else {
           setPaymentError(
             "Payment was successful, but we couldn't confirm your order. Please contact the Heart to Home support team.",
           );
