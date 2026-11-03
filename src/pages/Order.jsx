@@ -92,15 +92,6 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
       setLoading(false);
     }
   };
-
-  // const formatMoney = (amount, sCurrency, exchangeRate = 1) => {
-  //   const convertedAmount = amount * exchangeRate;
-
-  //   return new Intl.NumberFormat("en-US", {
-  //     style: "currency",
-  //     currency: sCurrency,
-  //   }).format(convertedAmount);
-  // };
   const paginatedOrders = orders.slice(
     page * ordersPerPage,
     page * ordersPerPage + ordersPerPage,
@@ -171,7 +162,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
               />
             </div>
             {paginatedOrders.map((order, index) => {
-              const serialNumber = page * ordersPerPage + index + 1;
+              const serialNumber = orders.length - (page * ordersPerPage + index);
               return (
                 <div
                   key={order.id}
