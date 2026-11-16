@@ -116,11 +116,14 @@ function ServicesPage({
     if (previousSearchQuery.current === searchQuery) return;
 
     previousSearchQuery.current = searchQuery;
-    setSearchParams((params) => {
-      if (params.get("p") === "1") return params;
-      params.set("p", "1");
-      return params;
-    }, { replace: true });
+    setSearchParams(
+      (params) => {
+        if (params.get("p") === "1") return params;
+        params.set("p", "1");
+        return params;
+      },
+      { replace: true },
+    );
   }, [searchQuery, setSearchParams]);
 
   useEffect(() => {
@@ -293,24 +296,32 @@ function ServicesPage({
         setShowRestoreServicesModal={setShowRestoreServicesModal}
       />
       <section className="services-layout">
-        <div className="currency-toolbar">
-          <label className="service-search" htmlFor="service-search">
+        <div className="currency-toolbar mb-[18px] flex items-end justify-between gap-4 max-md:flex-col max-md:items-stretch">
+          <label className="grid w-full gap-2" htmlFor="service-search">
             <input
               id="service-search"
               type="search"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
               placeholder="Search by service title"
+              className="
+                  min-h-10 w-full
+                  shadow-[0_6px_16px_rgba(31,111,92,0.12),0_2px_6px_rgba(31,111,92,0.08)]
+                  transition-shadow duration-200
+                  focus:outline-none
+                  focus:placeholder-transparent
+                  focus:shadow-[0_8px_24px_rgba(31,111,92,0.28),0_3px_10px_rgba(31,111,92,0.18)]
+                "
             />
           </label>
 
           <label htmlFor="currency-select">
             <select
-              className="currency-select"
               id="currency-select"
               disabled={exchangeRateStatus === "loading"}
               value={selectedCurrency}
               onChange={(event) => onCurrencyChange(event.target.value)}
+              className="min-h-[50px] cursor-pointer rounded-md bg-white px-[10px] py-[6px] text-sm shadow-[0_6px_16px_rgba(31,111,92,0.12),0_2px_6px_rgba(31,111,92,0.08)] outline-none"
             >
               {currencies.map((currency) => (
                 <option value={currency.code} key={currency.code}>
@@ -400,7 +411,7 @@ function ServicesPage({
             <p>{selectedServices.map((service) => service.code).join(", ")}</p>
           </aside>
         )}
-        <div className="service-grid">
+        <div className="service-grid cursor-pointer">
           {filteredServices.map((service) => (
             <div
               key={service.id}

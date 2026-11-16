@@ -49,78 +49,7 @@
   gap: 6px;
   color: #888;
 }
-.currency-toolbar {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: end;
-  margin-bottom: 18px;
-}
 
-.service-search {
-  display: grid;
-  gap: 8px;
-  width: 100%;
-}
-
-/* Remove the default focus outline */
-.service-search input:focus,
-.service-search input:active {
-  outline: none;
-  box-shadow: none;
-}
-
-/* Hide the placeholder when focused */
-.service-search input:focus::placeholder,
-.service-search input:active::placeholder {
-  color: transparent;
-  opacity: 0;
-}
-
-.service-search span {
-  color: #163b34;
-  font-weight: 800;
-}
-
-.service-search input {
-  min-height: 40px;
-  box-shadow:
-    0 6px 16px rgba(31, 111, 92, 0.12),
-    0 2px 6px rgba(31, 111, 92, 0.08);
-}
-.service-search input::placeholder{
-  color: #163b34;
-}
-
-.currency-select {
-  min-height: 50px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  box-shadow:
-    0 6px 16px rgba(31, 111, 92, 0.12),
-    0 2px 6px rgba(31, 111, 92, 0.08);
-}
-
-/* Remove outline */
-.currency-select:hover,
-.currency-select:focus,
-.currency-select:active {
-  outline: none;
-}
-
-
-/* Selected option */
-.currency-select option:checked {
-  color: #163b34;
-  border: 1px solid #163b34;
-}
-.currency-select option:hover,
-.currency-select option:focus {
-  background: #1f6f5c !important;
-  background-color: #1f6f5c !important;
-  color: #fff !important;
-}
 .service-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -329,39 +258,12 @@
   .selection-summary p {
     width: 100%;
   }
-  .currency-toolbar {
-    justify-content: space-between;
-  }
-
-  .currency-select {
-    background-color: #fff;
-    outline: none;
-    font-size: 0.85rem; /* or 13px */
-    padding: 6px 10px;
-  }
-  .service-search input::placeholder {
-    font-size: 16px;
-    color: #163b34;
-  }
-  .service-search input:focus,
-  .service-search input:active {
-    outline: none;
-    box-shadow: none;
-  }
-  .service-search input:focus::placeholder,
-  .service-search input:active::placeholder {
-    color: transparent;
-    opacity: 0;
-  }
   .service-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 620px) {
-  .service-search input::placeholder {
-    font-size: 13px;
-  }
+@media (max-width: 620px) { 
   .service-grid {
     grid-template-columns: 1fr;
   }
