@@ -1,7 +1,7 @@
 .tabs {
   display: flex;
   gap: 8px;
-  padding: 6px;
+  padding: 6px 6px 6px 6px;
   background: #ffffff;
   border: 1px solid #dfe1d7;
   border-radius: 8px;
@@ -113,10 +113,17 @@
 }
 
 @media (max-width: 620px) {
+  .tabs {
+    margin-left: 5px;
+  }
   .tab {
     padding: 0 6px;
     gap: 5px;
     font-size: 0.75rem;
+  }
+   .tab:last-child {
+    padding-right: 15px;
+    padding-left: 15px;
   }
 
   .tab svg {

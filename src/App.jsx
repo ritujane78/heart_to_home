@@ -28,7 +28,8 @@ import GiftForm from "./pages/GiftForm";
 import PaymentPage from "./pages/PaymentPage";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
-import { Users, ClipboardList, LogOut} from "lucide-react";
+import { Users, ClipboardList, LogOut } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Order from "./pages/Order.jsx";
 import ResetPassword from "./components/Auth/ResetPassword.jsx";
@@ -45,6 +46,7 @@ import {
 import { initialGift } from "./data/defaultValues.js";
 import Footer from "./components/Footer.jsx";
 import Messages from "./pages/admin/Messages.jsx";
+import NamasteIcon from "./components/NamasteIcon.jsx";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -371,10 +373,23 @@ function App() {
                 ref={menuRef}
               >
                 <button
-                  className="menu-btn"
+                  type="button"
                   onClick={() => setMenuOpen((prev) => !prev)}
+                  aria-label="Open user menu"
+                  aria-expanded={menuOpen}
+                  className="flex items-center rounded-full px-3 py-2 bg-transparent"
                 >
-                  ☰
+                  <span className="relative inline-flex items-center">
+                    <NamasteIcon />
+
+                    <ChevronDown
+                      size={15}
+                      strokeWidth={3}
+                      className={`absolute -bottom-1 -right-2 text-[#061f19]
+                        transition-transform duration-200
+                        ${menuOpen ? "rotate-180" : ""}`}
+                    />
+                  </span>
                 </button>
 
                 {menuOpen && (

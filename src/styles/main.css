@@ -167,7 +167,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: end;
-  gap: 18px;
+  /* gap: 18px; */
   margin-left: auto;
 }
 
@@ -233,7 +233,7 @@ main {
 
 .dropdown-menu {
   position: absolute;
-  top: 48px;
+  top: 62px;
   right: 0;
   width: 170px;
   background: white;
@@ -498,7 +498,6 @@ footer span{
     flex-direction: row; /* keep the navbar and menu on the same row */
 
     align-items: center;
-    gap: 8px;
   }
 
   .tabs {
@@ -547,7 +546,7 @@ footer span{
     flex-direction: row; /* keep the navbar and menu on the same row */
 
     align-items: center;
-    gap: 8px;
+
   }
 
   .tabs {
