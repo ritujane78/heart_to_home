@@ -13,7 +13,7 @@ function NamasteIcon() {
       strokeLinejoin="round"
       role="img"
       aria-label="Namaste hands"
-      className="text-[#1f6f5c] transition-colors duration-200 hover:text-[#073b2e]"
+      className="text-[#1f6f5c] transition-colors duration-200 hover:text-[#073b2e] hover:scale-110"
     >
       {/* Left hand */}
       <path d="
