@@ -6,7 +6,6 @@ import {
   CircleOff,
   BriefcaseMedical,
   Info,
-  X,
   Pencil,
   Plus,
   Hospital,
@@ -23,6 +22,7 @@ import { scrollToTop } from "../utils/ScrollToTop.js";
 import { handleApiError } from "../utils/errorHandler.js";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
+import GiftButtonInfo from "../components/GiftButtonInfo.jsx";
 
 function ServicesPage({
   selectedIds,
@@ -213,14 +213,14 @@ function ServicesPage({
       handleApiError(err, "Unable to delete the service.");
     }
   };
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
+  // const handleEditChange = (e) => {
+  //   const { name, value } = e.target;
 
-    setEditingService((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  //   setEditingService((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
   const handleEditClick = (service) => {
     setMode("edit");
     setShowServiceModal(true);
@@ -240,25 +240,25 @@ function ServicesPage({
     setMode("add");
     setShowServiceModal(true);
   };
-  const handleUpdateService = async (e) => {
-    e.preventDefault();
-    try {
-      await api.put(`/services/admin/update-service/${editingService.id}`, {
-        ...editingService,
-        providerId: Number(editingService.providerId),
-        price: Number(editingService.price),
-      });
+  // const handleUpdateService = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     await api.put(`/services/admin/update-service/${editingService.id}`, {
+  //       ...editingService,
+  //       providerId: Number(editingService.providerId),
+  //       price: Number(editingService.price),
+  //     });
 
-      toast.success("Service updated successfully");
+  //     toast.success("Service updated successfully");
 
-      setShowEditModal(false);
+  //     setShowEditModal(false);
 
-      await fetchServices(page, searchQuery);
-    } catch (err) {
-      toast.error("Failed to update service");
-      handleApiError(err, "Unable to update the service.");
-    }
-  };
+  //     await fetchServices(page, searchQuery);
+  //   } catch (err) {
+  //     toast.error("Failed to update service");
+  //     handleApiError(err, "Unable to update the service.");
+  //   }
+  // };
   if (loading) {
     return (
       <div className="mx-auto max-w-6xl px-4">
@@ -511,49 +511,7 @@ function ServicesPage({
           )}
         </div>
         {showGiftInfo && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-            role="presentation"
-            onMouseDown={() => setShowGiftInfo(false)}
-          >
-            <div
-              className="relative w-full max-w-md rounded-xl bg-white shadow-2xl p-6"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="gift-info-title"
-              onMouseDown={(e) => e.stopPropagation()}
-            >
-              <button
-                type="button"
-                onClick={() => setShowGiftInfo(false)}
-                className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
-                aria-label="Close"
-              >
-                <X size={20} />
-              </button>
-
-              <h3 className="text-lg font-semibold text-[#1F6F5C] mb-4">
-                Note
-              </h3>
-
-              <div className="text-gray-700 leading-relaxed">
-                <p>
-                  The <strong>Gift Now</strong> button will be enabled only
-                  after you:
-                </p>
-
-                <ul className="list-disc pl-5 mt-3 space-y-2">
-                  <li>Log in to your account.</li>
-                  <li>Select one or more healthcare services.</li>
-                </ul>
-
-                <div className="mt-4 rounded-lg bg-[#F5F9F8] border border-[#D6E7E2] p-3 text-sm">
-                  Once both conditions are met, you can proceed to complete your
-                  gift purchase.
-                </div>
-              </div>
-            </div>
-          </div>
+          <GiftButtonInfo setShowGiftInfo={setShowGiftInfo} />
         )}
       </section>
     </>
