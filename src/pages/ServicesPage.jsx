@@ -482,7 +482,7 @@ function ServicesPage({
         {filteredServices.length === 0 && (
           <div className="mt-18 px-24 flex flex-col items-center justify-center py-8 text-gray-500">
             <SearchX className="w-12 h-12 mb-3 text-gray-400" />
-            <strong>No services found</strong>
+            <strong className="whitespace-nowrap">No services found</strong>
           </div>
         )}
         <div className="mt-8 flex justify-end overflow-hidden rounded-xl">
