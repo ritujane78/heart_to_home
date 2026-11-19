@@ -9,7 +9,7 @@ function Loading({
       className="flex items-center justify-center py-10"
       style={{ minHeight: height }}
     >
-      <div className="flex h-96 w-full flex-col items-center justify-center rounded-xl shadow">
+      <div className="flex h-96 w-full flex-col items-center justify-center rounde">
         <BallTriangle
           height={100}
           width={100}

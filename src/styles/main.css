@@ -141,10 +141,14 @@ main {
   flex-direction: column;
 }
 .tab.active,
-.signup-tab.active,
 .login-tab.active {
   font-weight: 600;
   box-shadow: 0 4px 12px #1f6f5cb8;
+}
+.signup-tab.active{
+  font-weight: 600;
+  box-shadow: 0 4px 12px #efdc63;
+
 }
 .topbar {
   position: sticky;
