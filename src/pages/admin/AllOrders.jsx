@@ -189,7 +189,7 @@ const AllOrders = () => {
       },
     },
     {
-      field: "orderedAt",
+      field: "createdAt",
       headerName: "Ordered",
       minWidth: 220,
       flex: 1,
@@ -204,7 +204,7 @@ const AllOrders = () => {
             <span>
               <MdDateRange className="text-slate-700 text-lg" />
             </span>
-            <span>{params?.row?.orderedAt}</span>
+            <span>{params?.row?.createdAt}</span>
           </div>
         );
       },
@@ -214,7 +214,7 @@ const AllOrders = () => {
     id: order.id,
     senderEmail: order.senderEmail,
     status: order.orderStatus.replaceAll("_", " "),
-    orderedAt: moment(order.orderedAt).format("MMMM DD, YYYY"),
+    createdAt: order.createdAt?moment(order.createdAt).format("MMMM DD, YYYY"): 'Invalid Date',
   }));
   if (loading) {
     return (

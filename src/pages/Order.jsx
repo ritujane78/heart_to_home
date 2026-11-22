@@ -221,9 +221,9 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
 
                     <div className="flex gap-3">
                       <Calendar className="mt-1 text-[#1e5146]" size={18} />
-                      <div>
+                    <div> 
                         <p className="text-sm text-gray-500">Ordered At</p>
-                        <p>{moment(order.orderedAt).format("MMMM DD, YYYY")}</p>
+                        <p>order.createdAt?moment(order.createdAt).format("MMMM DD, YYYY"): 'Invalid Date'}</p>
                       </div>
                     </div>
 

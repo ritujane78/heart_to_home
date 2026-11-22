@@ -169,7 +169,13 @@ export default function AdminOrders() {
             <p>
               Ordered:
               <br />
-              {moment(order.orderedAt).format("MMMM DD, YYYY")}
+              {
+                order.createdAt?
+                  moment(order.createdAt).format("MMMM DD, YYYY")
+                :
+                <p>Invalid Date</p>
+              
+              }
             </p>
           </div>
         </div>

@@ -58,7 +58,11 @@ const Login = () => {
     setIsAdmin(roles.includes("ROLE_ADMIN"));
 
     if (roles.includes("ROLE_ADMIN")) {
-      navigate("/admin/all-orders");
+      if (decodedToken.sub.toLowerCase() === "hth_admin") {
+        navigate("/admin/all-users");
+      } else {
+        navigate("/admin/all-orders");
+      }
     } else {
       navigate("/my-orders");
     }

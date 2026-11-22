@@ -2,18 +2,28 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { useMyContext } from "../store/ContextApi";
 
-const ProtectedRoute = ({ children, adminPage }) => {
-  // Access the token and isAdmin state by using the useMyContext hook from the ContextProvider
-  const { token, isAdmin } = useMyContext();
+const ProtectedRoute = ({
+  children,
+  adminPage,
+  restrictedUsernames = [],
+}) => {
+  const { token, isAdmin, currentUser } = useMyContext();
 
-  //navigate to login page to an unauthenticated
+  // Redirect unauthenticated users
   if (!token) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
   }
 
-  //navigate to access-denied page if a user try to access the admin page
-  if (token && adminPage && !isAdmin) {
-    return <Navigate to="/access-denied" />;
+  // Redirect non-admins from admin pages
+  if (adminPage && !isAdmin) {
+    return <Navigate to="/access-denied" replace />;
+  }
+
+  // Restrict specific usernames from selected pages
+  const username = currentUser?.username?.toLowerCase();
+
+  if (restrictedUsernames.map((u) => u.toLowerCase()).includes(username)) {
+    return <Navigate to="/access-denied" replace />;
   }
 
   return children;

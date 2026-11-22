@@ -324,23 +324,25 @@ function App() {
       navigate("/login", { replace: true });
     }
   };
-  const adminItems = [
-    {
-      title: "All Users",
-      icon: <Users className="w-6 h-6" />,
-      path: "/admin/all-users",
-    },
-    {
-      title: "All Orders",
-      icon: <ClipboardList className="w-6 h-6" />,
-      path: "/admin/all-orders",
-    },
-    {
-      title: "Messages",
-      icon: <Mail className="w-6 h-6" />,
+  const restrictedAdmin = currentUser?.username?.toLowerCase() === "hth_admin";
+
+const adminItems = [
+  {
+    title: "All Users",
+    icon: <Users className="w-6 h-6" />,
+    path: "/admin/all-users",
+  },
+  {
+    title: "All Orders",
+    icon: <ClipboardList className="w-6 h-6" />,
+    path: "/admin/all-orders",
+  },
+  {
+    title: "Messages",
+    icon: <Mail className="w-6 h-6" />,
       path: "/admin/messages",
     },
-  ];
+  ].filter((item) => !(restrictedAdmin && item.path === "/admin/all-orders"));
 
   return (
     <>
@@ -536,7 +538,10 @@ function App() {
             <Route
               path="/admin/all-orders"
               element={
-                <ProtectedRoute adminPage={true}>
+                <ProtectedRoute
+                  adminPage={true}
+                  restrictedUsernames={["hth_admin"]}
+                >
                   <AllOrders />
                 </ProtectedRoute>
               }
@@ -545,7 +550,10 @@ function App() {
             <Route
               path="/admin/orders/:id"
               element={
-                <ProtectedRoute adminPage={true}>
+                <ProtectedRoute
+                  adminPage={true}
+                  restrictedUsernames={["hth_admin"]}
+                >
                   <OrderDetails />
                 </ProtectedRoute>
               }
