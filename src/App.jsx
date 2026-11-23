@@ -4,6 +4,7 @@ import {
   Route,
   NavLink,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 import { Home, Mail, Stethoscope } from "lucide-react";
 import logo from "./assets/images/logo.png";
@@ -63,10 +64,28 @@ function App() {
   const [exchangeRates, setExchangeRates] = useState({});
   const [exchangeRateStatus, setExchangeRateStatus] = useState("idle");
   const navigate = useNavigate();
+  const location = useLocation();
   const { token, setToken, currentUser, setCurrentUser, isAdmin, setIsAdmin } =
     useMyContext();
   const giftFormRef = useRef(null);
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    const authPages = [
+      "/login",
+      "/signup",
+      "/forgot-password",
+      "/reset-password",
+      "/access-denied",
+    ];
+
+    if (!authPages.includes(location.pathname)) {
+      sessionStorage.setItem(
+        "GM_POST_LOGIN_PATH",
+        `${location.pathname}${location.search}${location.hash}`,
+      );
+    }
+  }, [location.pathname, location.search, location.hash]);
 
   const abortControllerRef = useRef(null);
 
@@ -312,6 +331,7 @@ function App() {
     } catch (error) {
       handleApiError(error, "Logout failed.");
     } finally {
+      sessionStorage.removeItem("GM_POST_LOGIN_PATH");
       localStorage.removeItem("GM_JWT_TOKEN");
       localStorage.removeItem("GM_REFRESH_TOKEN");
       localStorage.removeItem("GM_USER");

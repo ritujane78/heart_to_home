@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useMyContext } from "../store/ContextApi";
 
 const ProtectedRoute = ({
@@ -8,9 +8,14 @@ const ProtectedRoute = ({
   restrictedUsernames = [],
 }) => {
   const { token, isAdmin, currentUser } = useMyContext();
+  const location = useLocation();
 
   // Redirect unauthenticated users
   if (!token) {
+    sessionStorage.setItem(
+      "GM_POST_LOGIN_PATH",
+      `${location.pathname}${location.search}${location.hash}`,
+    );
     return <Navigate to="/login" replace />;
   }
 

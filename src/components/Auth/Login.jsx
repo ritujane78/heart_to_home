@@ -16,7 +16,7 @@ const Login = () => {
   const [jwtToken, setJwtToken] = useState("");
   const [loading, setLoading] = useState(false);
   // Access the token and setToken function using the useMyContext hook from the ContextProvider
-  const { token, setToken, setIsAdmin } = useMyContext();
+  const { setToken, setIsAdmin } = useMyContext();
   const navigate = useNavigate();
 
   //react hook form initialization
@@ -57,7 +57,18 @@ const Login = () => {
     setToken(accessToken);
     setIsAdmin(roles.includes("ROLE_ADMIN"));
 
-    if (roles.includes("ROLE_ADMIN")) {
+    const savedPath = sessionStorage.getItem("GM_POST_LOGIN_PATH");
+    sessionStorage.removeItem("GM_POST_LOGIN_PATH");
+
+    // Only honor same-origin app paths saved by the protected route.
+    const returnPath =
+      savedPath?.startsWith("/") && !savedPath.startsWith("//")
+        ? savedPath
+        : null;
+
+    if (returnPath) {
+      navigate(returnPath, { replace: true });
+    } else if (roles.includes("ROLE_ADMIN")) {
       if (decodedToken.sub.toLowerCase() === "hth_admin") {
         navigate("/admin/all-users");
       } else {
