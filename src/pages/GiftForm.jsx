@@ -17,12 +17,6 @@ function GiftForm({
   const [showPhoneInfo, setShowPhoneInfo] = useState(false);
   const [showEmailInfo, setShowEmailInfo] = useState(false);
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        setShowPhoneInfo(false);
-        setShowEmailInfo(false);
-      }
-    };
     if (
       !giftDetails.senderName &&
       currentUser?.firstName &&
@@ -44,8 +38,6 @@ function GiftForm({
       });
     }
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   if (selectedServices.length === 0) {
@@ -137,7 +129,7 @@ function GiftForm({
                   <button
                     type="button"
                     onClick={() => setShowPhoneInfo(true)}
-                    className="ml-[2px] text-[#1F6F5C] hover:text-[#174d40] transition active:outline-none focus:outline-none focus-visible:outline-none"
+                    className="ml-2 text-[#1F6F5C] hover:text-[#174d40] transition active:outline-none focus:outline-none focus-visible:outline-none"
                     aria-label="Phone number format"
                     title="Accepted Phone Number Formats"
                   >
@@ -214,7 +206,7 @@ function GiftForm({
                   <button
                     type="button"
                     onClick={() => setShowEmailInfo(true)}
-                    className="ml-[2px] ~text-[#1F6F5C] hover:text-[#174d40] transition active:outline-none focus:outline-none focus-visible:outline-none"
+                    className="ml-2 ~text-[#1F6F5C] hover:text-[#174d40] transition active:outline-none focus:outline-none focus-visible:outline-none"
                     aria-label="Why do we need your email address?"
                     title="Why do we need your email address?"
                   >

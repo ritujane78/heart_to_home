@@ -1,7 +1,19 @@
 
 import { X, Info } from "lucide-react";
+import { useEffect } from "react";
 
 function PhoneInfo({ setShowPhoneInfo }) {
+  useEffect(() => {
+      const handleKeyDown = (e) => {
+        if (e.key === "Escape") {
+          setShowPhoneInfo(false);
+        }
+      };
+  
+      window.addEventListener("keydown", handleKeyDown);
+  
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [setShowPhoneInfo]);
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
@@ -58,14 +70,6 @@ function PhoneInfo({ setShowPhoneInfo }) {
             numbers are accepted.
           </p>
         </div>
-
-        <button
-          type="button"
-          onClick={() => setShowPhoneInfo(false)}
-          className="mt-6 w-full rounded-lg bg-[#1F6F5C] px-4 py-2.5 font-medium text-white transition hover:bg-[#174d40]"
-        >
-          Got it
-        </button>
       </div>
     </div>
   );

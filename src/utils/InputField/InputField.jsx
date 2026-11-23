@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Info } from "lucide-react";
 
 const InputField = ({
   label,
@@ -18,6 +18,8 @@ const InputField = ({
   resetField,
   validation = {},
   disableCopyPaste = false,
+  onInfoClick,
+  infoTitle = "More information",
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -32,12 +34,26 @@ const InputField = ({
 
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <label
-        htmlFor={id}
-        className="font-semibold text-md text-slate-800"
-      >
-        {label}
-      </label>
+       <div className="flex items-center">
+        <label
+          htmlFor={id}
+          className="font-semibold text-md text-slate-800"
+        >
+          {label}
+        </label>
+
+        {onInfoClick && (
+          <button
+            type="button"
+            onClick={onInfoClick}
+            className="text-[#1F6F5C] hover:text-[#174d40] transition ml-2 active:outline-none focus:outline-none focus-visible:outline-none"
+            aria-label={infoTitle}
+            title={infoTitle}
+          >
+            <Info size={18} />
+          </button>
+        )}
+      </div>
 
       <div className="relative">
         <input

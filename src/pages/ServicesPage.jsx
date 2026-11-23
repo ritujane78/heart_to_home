@@ -69,18 +69,6 @@ function ServicesPage({
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key !== "Escape") return;
-
-      setShowGiftInfo(false);
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
   const fetchProviders = async () => {
     try {
       const response = await api.get("/providers");
@@ -110,7 +98,7 @@ function ServicesPage({
     }, 1000);
 
     return () => window.clearTimeout(timeoutId);
-  }, [searchQuery]);
+  }, [searchQuery]);  
 
   useEffect(() => {
     if (previousSearchQuery.current === searchQuery) return;

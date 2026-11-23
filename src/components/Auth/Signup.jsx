@@ -9,11 +9,14 @@ import toast from "react-hot-toast";
 import { useMyContext } from "../../store/ContextApi";
 import { useEffect } from "react";
 import { handleApiError } from "../../utils/errorHandler";
+import { Info } from "lucide-react";
+import SignupEmailInfo from "../SignupInfoEmail";
 
 const Signup = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const [role, setRole] = useState();
   const [loading, setLoading] = useState(false);
+  const [showEmailInfo, setShowEmailInfo] = useState(false);
   // Access the token and setToken function using the useMyContext hook from the ContextProvider
   const { token } = useMyContext();
   const navigate = useNavigate();
@@ -89,7 +92,6 @@ const Signup = () => {
     } finally {
       setLoading(false);
     }
-
   };
 
   //if there is token  exist navigate to the user to the home page if he tried to access the login page
@@ -149,7 +151,6 @@ const Signup = () => {
             register={register}
             errors={errors}
           />
-
           <InputField
             label="Email"
             required
@@ -159,6 +160,8 @@ const Signup = () => {
             placeholder="Email"
             register={register}
             errors={errors}
+            onInfoClick={() => setShowEmailInfo(true)}
+            infoTitle="Why do we need your email address?"
           />
 
           <InputField
@@ -190,6 +193,9 @@ const Signup = () => {
             LogIn
           </Link>
         </p>
+        {showEmailInfo && (
+          <SignupEmailInfo setShowEmailInfo={setShowEmailInfo} />
+        )}
       </form>
     </div>
   );

@@ -1,7 +1,19 @@
 
 import { X, Info } from "lucide-react";
+import { useEffect } from "react";
 
 function GiftButtonInfo({ setShowGiftInfo }) {
+    useEffect(() => {
+      const handleKeyDown = (e) => {
+        if (e.key === "Escape") {
+          setShowGiftInfo(false);
+        }
+      };
+  
+      window.addEventListener("keydown", handleKeyDown);
+  
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [setShowGiftInfo]);
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
@@ -30,7 +42,7 @@ function GiftButtonInfo({ setShowGiftInfo }) {
             id="gift-info-title"
             className="text-lg font-semibold"
           >
-            Important Note
+            Button Enable
           </h3>
         </div>
 
@@ -50,14 +62,6 @@ function GiftButtonInfo({ setShowGiftInfo }) {
             your gift purchase.
           </div>
         </div>
-
-        <button
-          type="button"
-          onClick={() => setShowGiftInfo(false)}
-          className="mt-6 w-full rounded-lg bg-[#1F6F5C] px-4 py-2.5 font-medium text-white transition hover:bg-[#174d40]"
-        >
-          Got it
-        </button>
       </div>
     </div>
   );
