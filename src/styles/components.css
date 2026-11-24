@@ -102,7 +102,7 @@
 @media (max-width: 920px) {
   .tabs {
     width: 100%;
-    overflow-x: hidden;
+    overflow: visible;
   }
 
   .tab {
@@ -114,18 +114,18 @@
 
 @media (max-width: 620px) {
   .tabs {
-    margin-left: 5px;
+    margin-inline: 0;
   }
+
+  .tabs > .tab:last-child {
+    flex-grow: 1.2;
+  }
+
   .tab {
     padding: 0 6px;
     gap: 5px;
     font-size: 0.75rem;
   }
-   .tab:last-child {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-
   .tab svg {
     width: 16px;
     height: 16px;

@@ -60,9 +60,11 @@ const Login = () => {
     const savedPath = sessionStorage.getItem("GM_POST_LOGIN_PATH");
     sessionStorage.removeItem("GM_POST_LOGIN_PATH");
 
-    // Only honor same-origin app paths saved by the protected route.
+    // Return to Services when it was the last page; otherwise use role defaults.
     const returnPath =
-      savedPath?.startsWith("/") && !savedPath.startsWith("//")
+      savedPath?.startsWith("/services") &&
+      (savedPath.length === "/services".length ||
+        ["?", "#"].includes(savedPath["/services".length]))
         ? savedPath
         : null;
 

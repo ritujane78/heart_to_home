@@ -223,7 +223,12 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
                       <Calendar className="mt-1 text-[#1e5146]" size={18} />
                     <div> 
                         <p className="text-sm text-gray-500">Ordered At</p>
-                        <p>order.createdAt?moment(order.createdAt).format("MMMM DD, YYYY"): 'Invalid Date'</p>
+                        <p>
+                          {
+                            order.createdAt?moment(order.createdAt).format("MMMM DD, YYYY"): 
+                            'Invalid Date'
+                          }
+                        </p>
                       </div>
                     </div>
 
