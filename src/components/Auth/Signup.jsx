@@ -20,7 +20,13 @@ const Signup = () => {
   // Access the token and setToken function using the useMyContext hook from the ContextProvider
   const { token } = useMyContext();
   const navigate = useNavigate();
-
+  
+  const nameValidation = {
+    pattern: {
+      value: /^[A-Za-z]+(?:[ '\u2019-][A-Za-z]+)*$/,
+      message: "Invalid characters found",
+    },
+  };
   //react hook form initialization
   const {
     register,
@@ -127,6 +133,7 @@ const Signup = () => {
               placeholder="First Name"
               register={register}
               errors={errors}
+              validation={nameValidation}
             />
 
             <InputField
@@ -138,6 +145,7 @@ const Signup = () => {
               placeholder="Last Name"
               register={register}
               errors={errors}
+              validation={nameValidation}
             />
           </div>
 
