@@ -169,7 +169,19 @@ export default function PaymentPage({
         if (orderStatus === "ORDER_SAVED") {
           paymentCompleted.current = true;
 
-          toast.success("Order placed successfully.");
+          toast.success(
+            <span>  
+              Payment successful! A confirmation email has been sent to the sender's email address. Please check the{" "}
+              <strong>
+                <em>Inbox</em>
+              </strong>{" "}
+              and{" "}
+              <strong>
+                <em>spam</em>
+              </strong>{" "}
+              folder.
+            </span>
+          );
 
           navigate("/my-orders", {
             replace: true,
@@ -312,7 +324,7 @@ export default function PaymentPage({
 
           {(giftDetails.message || validationErrors.message) && (
             <div>
-              <h4 className="font-semibold text-[#1f6f5c]">Message</h4>
+              <p className="text-xl font-bold text-[#1f6f5c]">Message</p>
 
               <p className="whitespace-pre-wrap">{giftDetails.message}</p>
 

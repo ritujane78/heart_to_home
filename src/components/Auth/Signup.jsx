@@ -106,12 +106,24 @@ const Signup = () => {
       const response = await api.post("/auth/public/signup", data);
 
       const message =
-        response.data?.message || "Registration successful.";
+        response.data?.message || "Registration successful!";
 
       if (message.toLowerCase().includes("couldn't send")) {
         toast(message, { icon: "⚠️" });
       } else {
-        toast.success(message);
+        toast.success(
+          <span>  
+            Account created successfully! A welcome email has been sent to your registered email address. Please check your{" "}
+            <strong>
+              <em>Inbox</em>
+            </strong>{" "}
+            and{" "}
+            <strong>
+              <em>spam</em>
+            </strong>{" "}
+            folder.
+          </span>
+        );
       }
 
       reset();
