@@ -42,7 +42,19 @@ export default function PaymentPage({
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
   const [paymentError, setPaymentError] = useState("");
+  const [validationErrors, setValidationErrors] = useState({});
+  const [checkoutValidationError, setCheckoutValidationError] = useState("");
   const paymentCompleted = useRef(false);
+
+  const renderFieldError = (field) => {
+    if (!validationErrors[field]) return null;
+
+    return (
+      <p className="mt-1 text-sm text-red-600" role="alert">
+        {validationErrors[field]}
+      </p>
+    );
+  };
 
   if (selectedServices.length === 0 && !paymentCompleted.current) {
     return <Navigate to="/services" replace />;
@@ -80,6 +92,8 @@ export default function PaymentPage({
       toast.error("Please enter your card details.");
       return;
     }
+    setValidationErrors({});
+    setCheckoutValidationError("");
     setPaymentError("");
     setIsSaving(true);
 
@@ -164,7 +178,7 @@ export default function PaymentPage({
           resetGift();
 
           return;
-        }else {
+        } else {
           setPaymentError(
             "Payment was successful, but we couldn't confirm your order. Please contact the Heart to Home support team.",
           );
@@ -173,7 +187,16 @@ export default function PaymentPage({
         }
       }
     } catch (error) {
-      handleApiError(error, "Something went wrong during checkout.");
+      const serverErrors = error.response?.data?.validationErrors;
+
+      if (serverErrors && Object.keys(serverErrors).length > 0) {
+        setValidationErrors(serverErrors);
+        setCheckoutValidationError(
+          "There was a validation error. Please review and correct the highlighted details above.",
+        );
+      } else {
+        handleApiError(error, "Something went wrong during checkout.");
+      }
     } finally {
       setIsSaving(false);
     }
@@ -197,7 +220,9 @@ export default function PaymentPage({
           </button>
         </div>
 
-        <div className="divide-y">
+        <div className="divide-y ">
+          {renderFieldError("serviceIds")}
+
           {selectedServices.map((service) => (
             <div key={service.id} className="flex justify-between p-4">
               <span>
@@ -229,22 +254,69 @@ export default function PaymentPage({
 
         <div className="space-y-5 p-4">
           <div>
-            <h4 className="font-semibold text-[#1f6f5c]">Recipient</h4>
-            <p>{giftDetails.recipientName}</p>
-            <p>{giftDetails.recipientPhone}</p>
-            <p>{giftDetails.relationship}</p>
+            <p className="text-xl font-bold mb-2 text-[#1f6f5c]">Recipient</p>
+
+            <div
+              className={`rounded-md transition-colors ${
+                validationErrors.recipientName
+                  ? "border border-red-400 mb-3 p-2 bg-red-50"
+                  : ""
+              }`}
+            >
+              <p className="font-medium">{giftDetails.recipientName}</p>
+              {renderFieldError("recipientName")}
+            </div>
+
+            <div
+              className={`rounded-md mb-4 transition-colors ${
+                validationErrors.recipientPhone
+                  ? "border border-red-400 p-2  mb-3 bg-red-50"
+                  : ""
+              }`}
+            >
+              <p>{giftDetails.recipientPhone}</p>
+              {renderFieldError("recipientPhone")}
+            </div>
+
+            <p className="text-xl">
+              <strong>{giftDetails.relationship}</strong>
+            </p>
+            {renderFieldError("relationship")}
           </div>
 
           <div>
-            <h4 className="font-semibold text-[#1f6f5c]">Sender</h4>
-            <p>{giftDetails.senderName}</p>
-            <p>{giftDetails.senderEmail}</p>
+            <p className="text-xl font-bold mb-2 text-[#1f6f5c]">Sender</p>
+
+            <div
+              className={`rounded-md transition-colors ${
+                validationErrors.senderName
+                  ? "border border-red-400 mb-3 p-2 bg-red-50"
+                  : ""
+              }`}
+            >
+              <p>{giftDetails.senderName}</p>
+              {renderFieldError("senderName")}
+            </div>
+
+            <div
+              className={`rounded-md mb-2 transition-colors ${
+                validationErrors.senderEmail
+                  ? "border border-red-400 mb-3 p-2 bg-red-50"
+                  : ""
+              }`}
+            >
+              <p>{giftDetails.senderEmail}</p>
+              {renderFieldError("senderEmail")}
+            </div>
           </div>
 
-          {giftDetails.message && (
+          {(giftDetails.message || validationErrors.message) && (
             <div>
               <h4 className="font-semibold text-[#1f6f5c]">Message</h4>
+
               <p className="whitespace-pre-wrap">{giftDetails.message}</p>
+
+              {renderFieldError("message")}
             </div>
           )}
         </div>
@@ -314,13 +386,11 @@ export default function PaymentPage({
 
         {paymentError && (
           <div className="flex flex-col items-center text-center">
-            <img
-              src={sorry}
-              alt="sorry"
-              className="h-24 w-24 object-contain"
-            />
+            <img src={sorry} alt="sorry" className="h-24 w-24 object-contain" />
 
-            <p className="mb-3 text-sm font-medium text-red-600">{paymentError}</p>
+            <p className="mb-3 text-sm font-medium text-red-600">
+              {paymentError}
+            </p>
           </div>
         )}
         <button
@@ -330,6 +400,14 @@ export default function PaymentPage({
         >
           {isSaving ? "Processing Payment..." : "Confirm Payment"}
         </button>
+        {checkoutValidationError && (
+          <div
+            className="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700"
+            role="alert"
+          >
+            {checkoutValidationError}
+          </div>
+        )}
       </form>
     </section>
   );

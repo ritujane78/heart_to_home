@@ -1,38 +1,77 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../../services/api";
-import Divider from "@mui/material/Divider";
-import Buttons from "../../utils/Buttons";
-import InputField from "../../utils/InputField/InputField";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+
+import api from "../../services/api";
+import Buttons from "../../utils/Buttons";
+import InputField from "../../utils/InputField/InputField";
 import { useMyContext } from "../../store/ContextApi";
-import { useEffect } from "react";
 import { handleApiError } from "../../utils/errorHandler";
-import { Info } from "lucide-react";
 import SignupEmailInfo from "../SignupInfoEmail";
+import { nameRegex } from "../../utils/nameValidation.js";
 
 const Signup = () => {
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const [role, setRole] = useState();
   const [loading, setLoading] = useState(false);
   const [showEmailInfo, setShowEmailInfo] = useState(false);
-  // Access the token and setToken function using the useMyContext hook from the ContextProvider
+
   const { token } = useMyContext();
   const navigate = useNavigate();
-  
-  const nameValidation = {
+  const firstNameValidation = {
     pattern: {
-      value: /^[A-Za-z]+(?:[ '\u2019-][A-Za-z]+)*$/,
-      message: "Invalid characters found",
+      value: nameRegex,
+      message: "Invalid first name.",
+    },
+    maxLength: {
+      value: 20,
+      message: "First name cannot exceed 20 characters.",
     },
   };
-  //react hook form initialization
+
+  const lastNameValidation = {
+    pattern: {
+      value: nameRegex,
+      message: "Invalid last name.",
+    },
+    maxLength: {
+      value: 20,
+      message: "Last name cannot exceed 20 characters.",
+    },
+  };
+
+  const usernameValidation = {
+    minLength: {
+      value: 3,
+      message: "Username must be at least 3 characters",
+    },
+    maxLength: {
+      value: 20,
+      message: "Username cannot exceed 20 characters",
+    },
+    pattern: {
+      value: /^[a-zA-Z0-9_]+$/,
+      message: "Only letters, numbers and underscores are allowed",
+    },
+  };
+
+  const passwordValidation = {
+    minLength: {
+      value: 8,
+      message: "Password must be at least 8 characters",
+    },
+    maxLength: {
+      value: 40,
+      message: "Password cannot exceed 40 characters",
+    },
+  };
+
   const {
     register,
     handleSubmit,
     reset,
     setError,
+    clearErrors,
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
@@ -46,94 +85,78 @@ const Signup = () => {
   });
 
   useEffect(() => {
-    setRole("ROLE_USER");
-  }, []);
+    if (token) navigate("/");
+  }, [navigate, token]);
 
   const onSubmitHandler = async (data) => {
-    const { firstName, lastName, username, email, password } = data;
-    const sendData = {
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-      role: [role],
-    };
-
     try {
       setLoading(true);
-      const response = await api.post("/auth/public/signup", sendData);
+      clearErrors();
 
-      const message = response.data?.message || "Registration successful.";
+      // Clear previous server-side errors before resubmission
+      Object.keys(errors).forEach((field) => {
+        if (errors[field]?.type === "server") {
+          setError(field, {
+            type: "manual",
+            message: "",
+          });
+        }
+      });
+
+      const response = await api.post("/auth/public/signup", data);
+
+      const message =
+        response.data?.message || "Registration successful.";
 
       if (message.toLowerCase().includes("couldn't send")) {
-        toast(message, {
-          icon: "⚠️",
-        });
+        toast(message, { icon: "⚠️" });
       } else {
         toast.success(message);
       }
 
       reset();
       navigate("/login");
-    } catch (error) {
-      const responseData = error.response?.data;
 
-      // Handle compromised password response
-      if (
-        responseData?.message?.toLowerCase().includes("password") &&
-        responseData?.status === 400
-      ) {
-        setError("password", {
-          type: "server",
-          message: responseData.message,
-        });
-      } else {
-        handleApiError(
-          error,
-          "Unable to create your account. Please try again.",
-          setError,
-        );
-      }
+    } catch (error) {
+      handleApiError(
+        error,
+        "Unable to create your account. Please try again.",
+        setError
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  //if there is token  exist navigate to the user to the home page if he tried to access the login page
-  useEffect(() => {
-    if (token) navigate("/");
-  }, [navigate, token]);
-
   return (
     <div className="min-h-[calc(100vh-74px)] flex justify-center items-start">
       <form
         onSubmit={handleSubmit(onSubmitHandler)}
-        className="sm:w-[450px] w-[360px]  shadow-custom py-6 sm:px-8 px-4"
+        className="sm:w-[450px] w-[360px] shadow-custom py-6 sm:px-8 px-4"
       >
         <div>
           <h1 className="font-montserrat text-center text-[#1e5146] font-bold text-2xl">
             Sign Up
           </h1>
+
           <p className="text-slate-600 text-center mb-6">
             Enter your credentials to create new account
           </p>
-
-          {/* <Divider className="font-semibold">OR</Divider> */}
         </div>
 
         <div className="flex flex-col gap-2">
+
           <div className="grid grid-cols-2 gap-3">
             <InputField
               label="First Name"
               required
               id="firstName"
               type="text"
-              message="*First Name is required"
+              message="First name is required"
               placeholder="First Name"
               register={register}
               errors={errors}
-              validation={nameValidation}
+              validation={firstNameValidation}
             />
 
             <InputField
@@ -141,11 +164,11 @@ const Signup = () => {
               required
               id="lastName"
               type="text"
-              message="*Last Name is required"
+              message="Last name is required"
               placeholder="Last Name"
               register={register}
               errors={errors}
-              validation={nameValidation}
+              validation={lastNameValidation}
             />
           </div>
 
@@ -154,17 +177,19 @@ const Signup = () => {
             required
             id="username"
             type="text"
-            message="*UserName Is Required"
+            message="Username is required"
             placeholder="Username"
             register={register}
             errors={errors}
+            validation={usernameValidation}
           />
+
           <InputField
             label="Email"
             required
             id="email"
             type="email"
-            message="*Email Is Required"
+            message="Email is required"
             placeholder="Email"
             register={register}
             errors={errors}
@@ -177,13 +202,15 @@ const Signup = () => {
             required
             id="password"
             type="password"
-            message="*Password is required"
+            message="Password is required"
             placeholder="Password"
             register={register}
             errors={errors}
-            min={6}
+            validation={passwordValidation}
           />
+
         </div>
+
         <Buttons
           disabled={loading || !isValid}
           type="submit"
@@ -192,7 +219,7 @@ const Signup = () => {
           {loading ? "Loading..." : "Sign Up"}
         </Buttons>
 
-        <p className="text-center text-sm text-slate-700 mt-2 ">
+        <p className="text-center text-sm text-slate-700 mt-2">
           Already have an account?{" "}
           <Link
             className="inline-block text-[#584c02] font-extrabold underline transition-transform duration-200 hover:scale-115"
@@ -201,6 +228,7 @@ const Signup = () => {
             LogIn
           </Link>
         </p>
+
         {showEmailInfo && (
           <SignupEmailInfo setShowEmailInfo={setShowEmailInfo} />
         )}

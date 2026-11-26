@@ -282,6 +282,7 @@ function ServicesPage({
         fetchDisabledServices={fetchDisabledServices}
         onClose={() => setShowRestoreServicesModal(false)}
         setShowRestoreServicesModal={setShowRestoreServicesModal}
+        setSearchParams={setSearchParams}
       />
       <section className="services-layout">
         <div className="currency-toolbar mb-[18px] flex items-end justify-between gap-4 max-md:flex-col max-md:items-stretch">

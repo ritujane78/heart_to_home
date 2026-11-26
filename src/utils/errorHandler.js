@@ -16,23 +16,27 @@ export const handleApiError = (
   // Network error
   if (!error.response) {
     showError(
-      "Unable to connect. Please check your internet connection and try again.",
+      "Unable to connect. Please check your internet connection and try again."
     );
     return;
   }
 
   const { status, data } = error.response;
 
-  // Validation errors from Spring Boot
+  // Field validation errors from Spring Boot
   if (data?.validationErrors) {
-    Object.entries(data.validationErrors).forEach(([field, message]) => {
-      if (setError) {
+    const validationErrors = data.validationErrors;
+
+    if (setError) {
+      Object.entries(validationErrors).forEach(([field, message]) => {
         setError(field, {
           type: "server",
           message,
         });
-      }
-    });
+      });
+    } else {
+      Object.values(validationErrors).forEach(showError);
+    }
 
     return;
   }
@@ -61,7 +65,14 @@ export const handleApiError = (
     case 500:
       showError(
         data?.message ||
-          "Something went wrong on our end. Please try again later.",
+          "Something went wrong on our end. Please try again later."
+      );
+      break;
+
+    case 503:
+      showError(
+        data?.message ||
+          "Service temporarily unavailable. Please try again later."
       );
       break;
 

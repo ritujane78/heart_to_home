@@ -5,6 +5,7 @@ import { useMyContext } from "../store/ContextApi.jsx";
 import { relationships } from "../data/defaultValues.js";
 import EmailInfo from "../components/EmailInfo.jsx";
 import PhoneInfo from "../components/PhoneInfo.jsx";
+import { isValidName } from "../utils/nameValidation.js";
 
 function GiftForm({
   giftFormRef,
@@ -51,6 +52,8 @@ function GiftForm({
 
     if (!giftDetails.recipientName.trim()) {
       e.recipientName = "Recipient name is required.";
+    } else if (!isValidName(giftDetails.recipientName)) {
+      e.recipientName = "Invalid recipient full name.";
     }
 
     if (!giftDetails.recipientPhone.trim()) {
@@ -66,9 +69,11 @@ function GiftForm({
     //   e.recipientEmail = "Enter a valid email address.";
     // }
 
-    if (!giftDetails.senderName.trim()) {
-      e.senderName = "Sender name is required.";
-    }
+      if (!giftDetails.senderName.trim()) {
+        e.senderName = "Sender name is required.";
+      } else if (!isValidName(giftDetails.senderName)) {
+        e.senderName = "Invalid sender full name.";
+      }
 
     if (!giftDetails.senderEmail.trim()) {
       e.senderEmail = "Sender email is required.";

@@ -2,6 +2,7 @@ import { Mail, Phone } from "lucide-react";
 import { useForm } from "react-hook-form";
 import api from "../services/api";
 import toast from "react-hot-toast";
+import { nameRegex } from "../utils/nameValidation.js";
 
 function ContactPage() {
   const {
@@ -148,11 +149,15 @@ function ContactPage() {
                     value: 30,
                     message: "Name cannot exceed 30 characters",
                   },
+                  pattern: {
+                    value: nameRegex,
+                    message: "Invalid full name.",
+                  },
                 })}
               />
 
               {errors.name && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className="mt-1 pt-2 text-sm text-red-500">
                   {errors.name.message}
                 </p>
               )}
@@ -182,7 +187,7 @@ function ContactPage() {
                 />
 
                 {errors.email && (
-                  <p className="mt-1 text-sm text-red-500">
+                  <p className="mt-1 text-sm pt-2 text-red-500">
                     {errors.email.message}
                   </p>
                 )}
@@ -218,7 +223,7 @@ function ContactPage() {
                     </select>
 
                     {errors.countryCode && (
-                      <p className="mt-1 text-sm text-red-500">
+                      <p className="mt-1 pt-2 text-sm text-red-500">
                         {errors.countryCode.message}
                       </p>
                     )}
@@ -243,7 +248,7 @@ function ContactPage() {
                 </div>
 
                 {errors.mobileNumber && (
-                  <p className="mt-1 text-sm text-red-500">
+                  <p className="mt-1 text-sm text-red-500 pt-2">
                     {errors.mobileNumber.message}
                   </p>
                 )}
@@ -279,7 +284,7 @@ function ContactPage() {
               </span>
 
               {errors.message && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className="mt-1 text-sm text-red-500 pt-2">
                   {errors.message.message}
                 </p>
               )}

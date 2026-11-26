@@ -14,6 +14,7 @@ const RestoreServiceModal = ({
   fetchServices,
   fetchDisabledServices,
   setShowRestoreServicesModal,
+  setSearchParams
 }) => {
   const [selectedServiceId, setSelectedServiceId] = useState("");
   const [restoring, setRestoring] = useState(false);
@@ -43,10 +44,21 @@ const RestoreServiceModal = ({
 
       setSelectedServiceId("");
 
-      await fetchServices();
-      fetchDisabledServices();
+      // Reset URL page number to 1
+      setSearchParams(
+        (params) => {
+          params.set("p", "1");
+          return params;
+        },
+        { replace: true },
+      );
+
+      // Refresh services and disabled services
+      await fetchServices(1);
+      await fetchDisabledServices();
+
       onClose();
-    } catch(err) {
+    } catch (err) {
       toast.error("Unable to restore service.");
       handleApiError(err, "Unable to restore the service.");
     } finally {
