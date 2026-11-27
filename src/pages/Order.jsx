@@ -120,7 +120,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
 
   return (
     <div className="min-h-screen bg-gray-100 py-10">
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto max-w-8xl ">
         {/* Header - appears AFTER loading */}
         <div className="flex flex-col items-center gap-3">
           <div className="flex items-center gap-3 px-6 py-3">
@@ -150,7 +150,7 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
           </div>
         ) : (
           <div className="space-y-8">
-            <div className="mt-8 flex justify-end rounded-b-xl md:w-auto w-[85%]">
+            <div className="mt-8 flex justify-end rounded-b-xl md:w-auto w-full">
               <TablePagination
                 component="div"
                 count={orders.length}
@@ -162,11 +162,12 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
               />
             </div>
             {paginatedOrders.map((order, index) => {
-              const serialNumber = orders.length - (page * ordersPerPage + index);
+              const serialNumber =
+                orders.length - (page * ordersPerPage + index);
               return (
                 <div
                   key={order.id}
-                  className="overflow-hidden mb-5 w-[85%] sm:w-auto m-auto rounded-2xl bg-white shadow transition hover:shadow-lg"
+                  className="overflow-hidden mb-5 w-full sm:w-auto m-auto rounded-2xl bg-white shadow transition hover:shadow-lg"
                 >
                   {/* Header */}
                   <div
@@ -194,12 +195,16 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
                   </div>
 
                   {/* Order Details */}
-                  <div className="grid flex items-center justify-center gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="order-details-grid gap-x-6 gap-y-6 p-6">
                     <div className="flex gap-3">
                       <User className="mt-1 text-[#1e5146]" size={18} />
                       <div>
                         <p className="text-sm text-gray-500">Recipient</p>
-                        <p className="font-medium">{order.recipientName}</p>
+                        <p className="font-medium">
+                          {order.recipientName.length > 20
+                            ? `${order.recipientName.slice(0, 20)}...`
+                            : order.recipientName}
+                        </p>
                       </div>
                     </div>
 
@@ -221,13 +226,12 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
 
                     <div className="flex gap-3">
                       <Calendar className="mt-1 text-[#1e5146]" size={18} />
-                    <div> 
+                      <div>
                         <p className="text-sm text-gray-500">Ordered At</p>
                         <p>
-                          {
-                            order.createdAt?moment(order.createdAt).format("MMMM DD, YYYY"): 
-                            'Invalid Date'
-                          }
+                          {order.createdAt
+                            ? moment(order.createdAt).format("MMMM DD, YYYY")
+                            : "Invalid Date"}
                         </p>
                       </div>
                     </div>
@@ -270,11 +274,17 @@ function MyOrdersPage({ exchangeRates, selectedCurrency }) {
                             key={service.id}
                             className="flex items-center justify-between rounded-lg bg-white px-4 py-3"
                           >
-                            <span className="font-medium text-gray-700">
-                              {service.title}
-                            </span>
+                            <div className="flex flex-1 items-start min-w-0">
+                              <span className="w-1/2 font-bold text-gray-700">
+                                {service.title}
+                              </span>
 
-                            <span className="font-semibold text-[#1e5146]">
+                              <span className="ml-2 h-[50px] flex-1 overflow-y-auto text-sm text-gray-600">
+                                {service.description}
+                              </span>
+                            </div>
+
+                            <span className="ml-3 font-semibold text-[#1e5146]">
                               {formatMoney(
                                 service.price,
                                 order.currency,

@@ -400,7 +400,7 @@ function ServicesPage({
             <p>{selectedServices.map((service) => service.code).join(", ")}</p>
           </aside>
         )}
-        <div className="service-grid cursor-pointer">
+        <div className="service-grid cursor-pointer overflow-auto ">
           {filteredServices.map((service) => (
             <div
               key={service.id}

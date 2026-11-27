@@ -1,13 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Package,
-  User,
-  Mail,
-  Phone,
-  Heart,
-  CreditCard,
-  ArrowLeft,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import "../../styles/pages/UpdateOrderStatus.css";
 import api from "../../services/api";
 import moment from "moment";
@@ -46,10 +38,7 @@ export default function AdminOrders() {
         setSelectedStatus(response.data.orderStatus);
       } catch (err) {
         console.error(err);
-        handleApiError(
-              error,
-              "Unable to fetch  the order."
-            );
+        handleApiError(error, "Unable to fetch  the order.");
       } finally {
         setLoading(false);
       }
@@ -75,19 +64,15 @@ export default function AdminOrders() {
       setUpdateMessage(
         response.data.emailSent
           ? `✅ ${response.data.message}`
-          : `⚠️ ${response.data.message}`
+          : `⚠️ ${response.data.message}`,
       );
     } catch (error) {
-      handleApiError(
-        error,
-        "Unable to update the order status."
-      );
+      handleApiError(error, "Unable to update the order status.");
 
       setUpdateMessage(
         `❌ ${
-          error.response?.data?.message ||
-          "Unable to update the order status."
-        }`
+          error.response?.data?.message || "Unable to update the order status."
+        }`,
       );
     } finally {
       setUpdating(false);
@@ -107,7 +92,7 @@ export default function AdminOrders() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-6">
+    <div className="max-w-8xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <button
@@ -127,69 +112,103 @@ export default function AdminOrders() {
       </div>
 
       {/* White card */}
-      <div className=" bg-white rounded-xl shadow-md p-12 border border-gray-200">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {/* Recipient */}
-          <div className="text-center md:text-left">
-            <h4 className="mb-3 font-bold">Recipient</h4>
-
-            <p className="mb-2 flex items-center justify-center gap-2 md:justify-start">
-              <User size={16} />
-              {order.recipientName}
-            </p>
-
-            <p className="mb-2 flex items-center justify-center gap-2 md:justify-start">
-              <Phone size={16} />
-              {order.recipientPhone}
-            </p>
-
-            <p className="flex items-center justify-center gap-2 md:justify-start">
-              <Heart size={16} />
-              {order.relationship}
-            </p>
-          </div>
-
-          {/* Sender */}
-          <div className="text-center md:text-left">
-            <h4 className="mb-3 font-bold">Sender</h4>
-
-            <p className="mb-2">{order.senderName}</p>
-            <p className="mb-2">{order.senderEmail}</p>
-          </div>
-
-          {/* Payment */}
-          <div className="text-center md:text-left">
-            <h4 className="mb-3 font-bold">Payment</h4>
-
-            <p className="mb-2 flex items-center justify-center gap-2 md:justify-start">
-              <CreditCard size={16} />
-              {formatMoney(order.totalPrice, order.currency, 1)}
-            </p>
-
-            <p>
-              Ordered:
-              <br />
-              {
-                order.createdAt?
-                  moment(order.createdAt).format("MMMM DD, YYYY")
-                :
-                <p>Invalid Date</p>
-              
-              }
-            </p>
-          </div>
+      <div className="bg-white rounded-xl shadow-md p-4 sm:p-8 md:p-12 border border-gray-200">
+        <div className="w-full overflow-x-auto">
+          <table className="w-full table-fixed border-collapse text-left">
+            <tbody>
+              <tr className="border-b bg-gray-50">
+                <th colSpan={2} className="px-4 py-3 font-bold text-gray-800">
+                  Recipient
+                </th>
+              </tr>
+              <tr>
+                <th
+                  scope="row"
+                  className="w-1/3 px-4 py-3 font-medium text-gray-600"
+                >
+                  Name
+                </th>
+                <td className="break-words px-4 py-3">{order.recipientName}</td>
+              </tr>
+              <tr>
+                <th scope="row" className="px-4 py-3 font-medium text-gray-600">
+                  Phone
+                </th>
+                <td className="break-words px-4 py-3">
+                  {order.recipientPhone}
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" className="px-4 py-3 font-medium text-gray-600">
+                  Relationship
+                </th>
+                <td className="break-words px-4 py-3">{order.relationship}</td>
+              </tr>
+              <tr className="border-b bg-gray-50">
+                <th colSpan={2} className="px-4 py-3 font-bold text-gray-800">
+                  Sender
+                </th>
+              </tr>
+              <tr>
+                <th scope="row" className="px-4 py-3 font-medium text-gray-600">
+                  Name
+                </th>
+                <td className="break-words px-4 py-3">{order.senderName}</td>
+              </tr>
+              <tr>
+                <th scope="row" className="px-4 py-3 font-medium text-gray-600">
+                  Email
+                </th>
+                <td className="break-words px-4 py-3">{order.senderEmail}</td>
+              </tr>
+              <tr className="border-b bg-gray-50">
+                <th scope="row" className="px-4 py-3 font-bold text-gray-600">
+                  Total
+                </th>
+                <td className="break-words px-4 py-3">
+                  {formatMoney(order.totalPrice, order.currency, 1)}
+                </td>
+              </tr>
+              <tr className="border-b bg-gray-50">
+                <th scope="row" className="px-4 py-3 font-bold text-gray-600">
+                  Ordered Date
+                </th>
+                <td className="break-words px-4 py-3">
+                  {order.createdAt
+                    ? moment(order.createdAt).format("MMMM DD, YYYY")
+                    : "Invalid Date"}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
         {/* Services */}
-        <div className="mt-8 text-center md:text-left">
-          <h4 className="mb-2 font-bold">Services</h4>
+        <div className="mt-8 ml-2 mr-2 text-left">
+          <h4 className="mb-3 font-bold underline">Services</h4>
 
-          <ul className="list-inside list-disc space-y-1">
+          <ul className="space-y-2">
             {order.services.map((service) => (
-              <li key={service.id}>{service.title}</li>
+              <li
+                key={service.id}
+                className="grid grid-cols-1 sm:grid-cols-3 gap-2 rounded-lg bg-white p-3"
+              >
+                <span className="font-bold text-gray-700">{service.title}</span>
+
+                <span className="text-sm text-gray-600">
+                  {service.description}
+                </span>
+
+                <span className="font-semibold text-[#1e5146] text-right">
+                  {formatMoney(
+                    service.price,
+                    order.currency,
+                    order.exchangeRate,
+                  )}
+                </span>
+              </li>
             ))}
           </ul>
-        </div>  
+        </div>
 
         <div className="mt-8 flex flex-col items-center gap-4 border-t pt-6">
           <div className="flex items-center gap-4">

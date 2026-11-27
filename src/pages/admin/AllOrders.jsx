@@ -233,7 +233,7 @@ const AllOrders = () => {
       <div className="overflow-x-auto w-full mx-auto pb-6">
         {rows.length > 0 ? (
           <DataGrid
-            className="transparent-grid w-full max-w-6xl mx-auto shadow-lg shadow-gray-300 rounded-xl"
+            className="transparent-grid w-full max-w-8xl mx-auto shadow-lg shadow-gray-300 rounded-xl"
             rows={rows}
             columns={columns}
             sx={{
